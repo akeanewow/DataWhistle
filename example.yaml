@@ -1,0 +1,55 @@
+# This yaml file is processed either from the command line or through
+# DataWhistle module import.
+# 
+# Command line version:
+#
+#     python3 whistle.py --data input.csv --rules rules.yaml
+#
+# API example:
+#
+#     import pandas, DataWhistle
+#     df = pandas.read_csv('data.csv')
+#     try:
+#         DataWhistle.check(df, 'rules.yaml')
+#     except:
+#         ...
+
+# Checks performed at the dataset level, e.g. on a Pandas DataFrame
+# or database table.
+dataset:
+	# Throw an exception if a check fails, otherwise warn but continue.
+	fail: true
+	# Allow an empty dataset if this is set to 0, otherwise check if
+	# the dataset has the minimum number of rows specified.
+	min_rows: 1
+	allow_duplicate_rows: true
+
+# The following checks are applied column by column. Note a check is
+# only applied if specified, e.g. to not check for a max value, but
+# still check for a min value, remove the max value check.
+columns:
+
+	- row_number_name
+		type: int
+		allow_nuls: false
+		min: 0
+		max: 1000
+		mean_min: 100
+		mean_max: 1000
+
+	- string_column_name
+		type: string
+		allow_nuls: false
+		allow_whitespace: false
+		allow_duplciates: true
+		max_width: 100
+		regex: '^xxyy$'
+		values:
+			- a
+			- b
+			- c
+
+	- date_column_name
+		type: datetime
+		min: '2019-01-01 14:00:00'
+		max: '2020-01-01 14:00:00'
