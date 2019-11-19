@@ -4,6 +4,7 @@ import pandas_checks as pc
 import unittest
 import pandas as pd
 
+
 class TestDFChecks(unittest.TestCase):
 
     def setUp(self):
@@ -26,18 +27,29 @@ class TestDFChecks(unittest.TestCase):
         self.assertEqual(passed, False)
         self.assertEqual(message, 'want 0 duplicate rows, got 2')
 
+
 class TestColChecks(unittest.TestCase):
 
     def setUp(self):
         self.df_file1 = pd.read_csv('data/file1.csv')
 
-    def test_min_val(self):
-        passed, message = pc.colcheck_min_val(self.df_file1, 'x', 1)
+    def test_col_exists(self):
+        passed, message = pc.colcheck_col_exists(self.df_file1, 'x')
         self.assertEqual(passed, False)
         self.assertEqual(message, 'column name x not found in data')
-        passed, message = pc.colcheck_min_val(self.df_file1, 'C', 1)
+        passed, message = pc.colcheck_col_exists(self.df_file1, 'A')
+        self.assertEqual(passed, True)
+        self.assertEqual(message, '')
+
+    def test_col_is_numeric(self):
+        passed, message = pc.colcheck_is_numeric(self.df_file1, 'C')
         self.assertEqual(passed, False)
         self.assertEqual(message, 'cannot check minimum value of a non-numeric column')
+        passed, message = pc.colcheck_is_numeric(self.df_file1, 'A')
+        self.assertEqual(passed, True)
+        self.assertEqual(message, '')
+
+    def test_min_val(self):
         passed, message = pc.colcheck_min_val(self.df_file1, 'A', -1)
         self.assertEqual(passed, True)
         self.assertEqual(message, '')
