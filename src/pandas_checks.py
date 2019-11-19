@@ -49,7 +49,7 @@ def colcheck_is_numeric(df: pd.DataFrame, col_name: str) -> Tuple[bool, str]:
     """Check if a specified column is numeric."""
     if pd.api.types.is_numeric_dtype(df[col_name]):
        return True, ''
-    return False, f'cannot check minimum value of a non-numeric column'
+    return False, f'column {col_name} expected to be numeric but is not'
 
 
 def colcheck_min_val(df: pd.DataFrame, col_name: str, min_val: float) -> Tuple[bool, str]:

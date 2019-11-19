@@ -44,7 +44,7 @@ class TestColChecks(unittest.TestCase):
     def test_col_is_numeric(self):
         passed, message = pc.colcheck_is_numeric(self.df_file1, 'C')
         self.assertEqual(passed, False)
-        self.assertEqual(message, 'cannot check minimum value of a non-numeric column')
+        self.assertEqual(message, 'column C expected to be numeric but is not')
         passed, message = pc.colcheck_is_numeric(self.df_file1, 'A')
         self.assertEqual(passed, True)
         self.assertEqual(message, '')
