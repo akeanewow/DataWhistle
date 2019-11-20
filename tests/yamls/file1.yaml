@@ -1,0 +1,31 @@
+---
+dataset:
+  fail: true
+  min_rows: 1
+  allow_duplicate_rows: true
+
+columns:
+  - row_number_name:
+    type: numeric
+#    allow_nuls: false
+    min: 0
+#    max: 1000
+#    mean_min: 100
+#    mean_max: 1000
+
+#  - string_column_name:
+#    type: string
+#    allow_nuls: false
+#    allow_whitespace: false
+#    allow_duplciates: true
+#    max_width: 100
+#    regex: '^xxyy$'
+#    values:
+#      - a
+#      - b
+#      - c
+#
+#  - date_column_name:
+#    type: datetime
+#    min: '2019-01-01 14:00:00'
+#    max: '2020-01-01 14:00:00'
