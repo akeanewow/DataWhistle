@@ -55,7 +55,7 @@ class TestColChecks(unittest.TestCase):
         self.assertEqual(message, '')
         passed, message = pc.colcheck_min_val(self.df_file1, 'A', 2)
         self.assertEqual(passed, False)
-        self.assertEqual(message, 'want 2 minimum value, got 1')
+        self.assertEqual(message, 'column A want 2 minimum value, got 1')
 
 if __name__ == '__main__':
     unittest.main()
