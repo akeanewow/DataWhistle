@@ -13,7 +13,6 @@ class DataSetCheckSuite:
         self.error_messages: [str] = []
         self._checks = []
         self.columns = []
-        self.num_checks_done = 0
 
     def _assemble_checks(self):
         self._checks = []
@@ -24,16 +23,20 @@ class DataSetCheckSuite:
 
     def run_checks(self):
         self.error_messages = []
-        self.num_checks_done = 0
         self._assemble_checks()
         checks_failed: bool = False
         for check in self._checks:
             passed, message = check()
-            self.num_checks_done += 1
             if not passed:
                 self.error_messages.append(message)
                 if self.fail:
                     checks_failed = True
+                    break
+        if not checks_failed:
+            for column in self.columns:
+                error_messages = column.run_checks()
+                self.error_messages += error_messages
+                if len(error_messages) > 0 & self.fail:
                     break
 
     def check_min_rows(self) -> Tuple[bool, str]: raise NotImplementedError
@@ -57,6 +60,7 @@ class ColumnCheckSuite:
 
     def __init__(self, colname: str, coltype: str):
         self.name: str = colname
+        self.error_messages: List[str] = []
         self.type: str = coltype
         self._checks = []
 
@@ -65,15 +69,25 @@ class ColumnCheckSuite:
         self._checks.append(self.check_col_exists)
         self._checks.append(self.check_col_type)
 
+    def run_checks(self, fail: bool) -> List[str]:
+        self.error_messages = []
+        self._assemble_checks()
+        for check in self._checks:
+            passed, message = check()
+            if not passed:
+                self.error_messages.append(message)
+                if fail: break
+        return self.error_messages
+
     def check_col_exists(self) -> Tuple[bool, str]: raise NotImplementedError
     def check_col_type(self) -> Tuple[bool, str]: raise NotImplementedError
 
 
 class PandasColumnCheckSuite(ColumnCheckSuite):
 
-    def __init__(self, dataframe: pd.DataFrame):
+    def __init__(self, dataframe: pd.DataFrame, colname: str, coltype: str):
         self.dataframe: pd.DataFrame = dataframe
-        super().__init__()
+        super().__init__(colname, coltype)
 
     def check_col_exists(self) -> Tuple[bool, str]:
         return pc.colcheck_col_exists(self.dataframe, self.name)
