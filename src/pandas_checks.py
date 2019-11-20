@@ -1,5 +1,5 @@
-import pandas as pd
 from typing import Tuple
+import pandas as pd
 
 
 # DataFrame level checks (as opposed to column level checks)
