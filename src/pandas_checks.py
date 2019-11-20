@@ -34,8 +34,8 @@ def dfcheck_no_duplicate_rows(df: pd.DataFrame) -> Tuple[bool, str]:
 # The return value is a tuple containing a bool indicating if the
 # test passed or failed (true = passed) and a string describing
 # the error condition if the test failed. Error messages follow
-# the pattern 'want [expected value or condition], got [actual
-# value or condition]'.
+# the pattern 'column [column name] want [expected value or
+# condition], got [actual value or condition]'.
 
 
 def colcheck_col_exists(df: pd.DataFrame, col_name: str) -> Tuple[bool, str]:
@@ -57,5 +57,5 @@ def colcheck_min_val(df: pd.DataFrame, col_name: str, min_val: float) -> Tuple[b
     actual_min = df[col_name].min()
     if actual_min >= min_val:
         return True, ''
-    return False, f'want {min_val} minimum value, got {actual_min}'
+    return False, f'column {col_name} want {min_val} minimum value, got {actual_min}'
 
