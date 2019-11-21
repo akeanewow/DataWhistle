@@ -5,11 +5,18 @@ import pandas_checks as pc
 
 
 class DataSetCheckSuite:
+    '''
+    The DataSetCheckSuite object is used to run checks. Checks are implemented
+    in child classes by overriding check_* methods to enable different checking
+    of different data sources.
+    '''
 
     def __init__(self):
+        # test settings
         self.fail: bool = False
         self.min_rows: int = 0
         self.allow_duplicate_rows: bool = True
+        # other properties
         self.error_messages: [str] = []
         self.columns: List[PandasColumnCheckSuite] = []
         self._checks: List[Callable] = []
@@ -22,6 +29,9 @@ class DataSetCheckSuite:
             self._checks.append(self.check_allow_duplicate_rows)
 
     def run_checks(self) -> None:
+        '''
+        Run all checks based on object properties capturing test settings.i
+        '''
         self.error_messages = []
         self._assemble_checks()
         checks_failed: bool = False
@@ -47,6 +57,11 @@ class DataSetCheckSuite:
 
 
 class ColumnCheckSuite:
+    '''
+    The ColumnCheckSuite object is used to run checks. Checks are implemented
+    in child classes by overriding check_* methods to enable different checking
+    of different data sources.
+    '''
 
     def __init__(self, colname: str, coltype: str):
         self.name: str = colname
@@ -59,6 +74,9 @@ class ColumnCheckSuite:
         self._checks.append(self.check_col_type)
 
     def run_checks(self, fail: bool) -> List[str]:
+        '''
+        Run all checks based on object properties capturing test settings.i
+        '''
         passed, message = self.check_col_exists()
         if not passed:
             self.error_messages.append(message)
@@ -81,6 +99,10 @@ class ColumnCheckSuite:
 
 
 class PandasDatsetCheckSuite(DataSetCheckSuite):
+    '''
+    Pandas DataFrame testing object. Check methods from the parent class are
+    overriden to implement Pandas specific functionality.
+    '''
 
     def __init__(self, dataframe: pd.DataFrame):
         self.dataframe: pd.DataFrame = dataframe
@@ -94,6 +116,10 @@ class PandasDatsetCheckSuite(DataSetCheckSuite):
 
 
 class PandasColumnCheckSuite(ColumnCheckSuite):
+    '''
+    Pandas DataFrame column testing object. Check methods from the parent class
+    are overriden to implement Pandas specific functionality.
+    '''
 
     def __init__(self, dataframe: pd.DataFrame, colname: str, coltype: str):
         self.dataframe: pd.DataFrame = dataframe

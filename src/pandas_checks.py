@@ -13,7 +13,7 @@ import pandas as pd  # type: ignore
 
 
 def dfcheck_min_rows(df: pd.DataFrame, min_rows: int) -> Tuple[bool, str]:
-    """Check if a DataFrame has a minimum number of rows."""
+    '''Check if a DataFrame has a minimum number of rows.'''
     num_rows: int = len(df)
     if num_rows >= min_rows:
         return True, ''
@@ -21,7 +21,7 @@ def dfcheck_min_rows(df: pd.DataFrame, min_rows: int) -> Tuple[bool, str]:
 
 
 def dfcheck_no_duplicate_rows(df: pd.DataFrame) -> Tuple[bool, str]:
-    """Check if a DataFrame has duplicate rows."""
+    '''Check if a DataFrame has duplicate rows.'''
     num_duplicates: int = sum(df.duplicated())
     if num_duplicates == 0:
         return True, ''
@@ -39,21 +39,21 @@ def dfcheck_no_duplicate_rows(df: pd.DataFrame) -> Tuple[bool, str]:
 
 
 def colcheck_col_exists(df: pd.DataFrame, col_name: str) -> Tuple[bool, str]:
-    """Check if a column with the specified name exists in the dataset."""
+    '''Check if a column with the specified name exists in the dataset.'''
     if col_name in df.columns:
         return True, ''
     return False, f'column {col_name} not found in data'
 
 
 def colcheck_is_numeric(df: pd.DataFrame, col_name: str) -> Tuple[bool, str]:
-    """Check if a column is numeric."""
+    '''Check if a column is numeric.'''
     if pd.api.types.is_numeric_dtype(df[col_name]):
         return True, ''
     return False, f'column {col_name} expected to be numeric but is not'
 
 
 def colcheck_is_str(df: pd.DataFrame, col_name: str) -> Tuple[bool, str]:
-    """Check if a column is string type."""
+    '''Check if a column is string type.'''
     if pd.api.types.is_string_dtype(df[col_name]):
         return True, ''
     return False, f'column {col_name} expected to be string type but is not'
@@ -62,7 +62,7 @@ def colcheck_is_str(df: pd.DataFrame, col_name: str) -> Tuple[bool, str]:
 def colcheck_min_val(df: pd.DataFrame,
                      col_name: str,
                      min_val: float) -> Tuple[bool, str]:
-    """Check if a column has a value less than a minimum value."""
+    '''Check if a column has a value less than a minimum value.'''
     actual_min = df[col_name].min()
     if actual_min >= min_val:
         return True, ''
