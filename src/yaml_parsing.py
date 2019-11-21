@@ -1,15 +1,13 @@
-from yaml import load
-try:
-    from yaml import CLoader as Loader
-except ImportError:
-    from yaml import Loader
+from yaml import load  # type: ignore
+from typing import Dict
 
 
-def load_rules_from_yaml(filename: str):
+def load_raw_yaml(filename: str) -> Dict:
     stream = open(filename, 'r')
     parsed = load(stream)
-    print(parsed)
+    return parsed
 
 
 if __name__ == '__main__':
-    load_rules_from_yaml('../tests/yamls/file1.yaml')
+    raw: Dict = load_raw_yaml('../tests/yamls/file1.yaml')
+    print(raw)

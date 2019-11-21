@@ -1,4 +1,5 @@
+import unittest
 import sys
 sys.path.append('../src')
-import yaml_parsing as yp
-import unittest
+import yaml_parsing as yp  # noqa: e402
+

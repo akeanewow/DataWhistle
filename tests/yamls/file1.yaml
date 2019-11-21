@@ -8,13 +8,13 @@ columns:
   - row_number_name:
     type: numeric
 #    allow_nuls: false
-    min: 0
+#    min: 0
 #    max: 1000
 #    mean_min: 100
 #    mean_max: 1000
 
-#  - string_column_name:
-#    type: string
+  - string_column_name:
+    type: string
 #    allow_nuls: false
 #    allow_whitespace: false
 #    allow_duplciates: true

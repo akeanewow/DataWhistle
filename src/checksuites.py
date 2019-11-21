@@ -1,9 +1,7 @@
-import pandas as pd
-from typing import List, Tuple
+import pandas as pd  # type: ignore
+from typing import Callable, List, Tuple
 
 import pandas_checks as pc
-
-# TODO: complete type annotations
 
 
 class DataSetCheckSuite:
@@ -13,17 +11,17 @@ class DataSetCheckSuite:
         self.min_rows: int = 0
         self.allow_duplicate_rows: bool = True
         self.error_messages: [str] = []
-        self.columns = []
-        self._checks = []
+        self.columns: List[PandasColumnCheckSuite] = []
+        self._checks: List[Callable] = []
 
-    def _assemble_checks(self):
+    def _assemble_checks(self) -> None:
         self._checks = []
         if self.min_rows > 0:
             self._checks.append(self.check_min_rows)
         if not self.allow_duplicate_rows:
             self._checks.append(self.check_allow_duplicate_rows)
 
-    def run_checks(self):
+    def run_checks(self) -> None:
         self.error_messages = []
         self._assemble_checks()
         checks_failed: bool = False
@@ -36,7 +34,7 @@ class DataSetCheckSuite:
                     break
         if not checks_failed:
             for column in self.columns:
-                error_messages = column.run_checks()
+                error_messages = column.run_checks(self.fail)
                 self.error_messages += error_messages
                 if len(error_messages) > 0 & self.fail:
                     break
@@ -54,9 +52,9 @@ class ColumnCheckSuite:
         self.name: str = colname
         self.error_messages: List[str] = []
         self.type: str = coltype
-        self._checks = []
+        self._checks: List[Callable] = []
 
-    def _assemble_checks(self):
+    def _assemble_checks(self) -> None:
         self._checks = []
         self._checks.append(self.check_col_type)
 

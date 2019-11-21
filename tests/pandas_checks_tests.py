@@ -1,5 +1,5 @@
 import unittest
-import pandas as pd
+import pandas as pd  # type: ignore
 import sys
 sys.path.append('../src')
 import pandas_checks as pc  # noqa: e402
