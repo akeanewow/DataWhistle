@@ -1,8 +1,8 @@
 ---
 dataset:
+  allow_duplicate_rows: true
   fail: true
   min_rows: 1
-  allow_duplicate_rows: true
 
 columns:
   - row_number_name:

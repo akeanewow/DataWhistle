@@ -26,7 +26,7 @@ class DataSetCheckSuite:
         if self.min_rows > 0:
             self._checks.append(self.check_min_rows)
         if not self.allow_duplicate_rows:
-            self._checks.append(self.check_allow_duplicate_rows)
+            self._checks.append(self.check_no_duplicate_rows)
 
     def run_checks(self) -> None:
         '''
@@ -52,7 +52,7 @@ class DataSetCheckSuite:
     def check_min_rows(self) -> Tuple[bool, str]:
         raise NotImplementedError
 
-    def check_allow_duplicate_rows(self) -> Tuple[bool, str]:
+    def check_no_duplicate_rows(self) -> Tuple[bool, str]:
         raise NotImplementedError
 
 
@@ -111,7 +111,7 @@ class PandasDatsetCheckSuite(DataSetCheckSuite):
     def check_min_rows(self) -> Tuple[bool, str]:
         return pc.dfcheck_min_rows(self.dataframe, self.min_rows)
 
-    def check_allow_duplicate_rows(self) -> Tuple[bool, str]:
+    def check_no_duplicate_rows(self) -> Tuple[bool, str]:
         return pc.dfcheck_no_duplicate_rows(self.dataframe)
 
 
