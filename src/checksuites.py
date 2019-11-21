@@ -5,6 +5,7 @@ import pandas_checks as pc
 
 # TODO: complete type annotations
 
+
 class DataSetCheckSuite:
 
     def __init__(self):
@@ -54,10 +55,13 @@ class ColumnCheckSuite:
 
     def _assemble_checks(self):
         self._checks = []
-        self._checks.append(self.check_col_exists)
         self._checks.append(self.check_col_type)
 
     def run_checks(self, fail: bool) -> List[str]:
+        passed, message = self.check_col_exists()
+        if not passed:
+            self.error_messages.append(message)
+            return [message]
         self.error_messages = []
         self._assemble_checks()
         for check in self._checks:
@@ -82,6 +86,7 @@ class PandasDatsetCheckSuite(DataSetCheckSuite):
 
     def check_allow_duplicate_rows(self) -> Tuple[bool, str]:
         return pc.dfcheck_no_duplicate_rows(self.dataframe)
+
 
 class PandasColumnCheckSuite(ColumnCheckSuite):
 

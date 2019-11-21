@@ -42,14 +42,21 @@ def colcheck_col_exists(df: pd.DataFrame, col_name: str) -> Tuple[bool, str]:
     """Check if a column with the specified name exists in the dataset."""
     if col_name in df.columns:
         return True, ''
-    return False, f'column name {col_name} not found in data'
+    return False, f'column {col_name} not found in data'
 
 
 def colcheck_is_numeric(df: pd.DataFrame, col_name: str) -> Tuple[bool, str]:
-    """Check if a specified column is numeric."""
+    """Check if a column is numeric."""
     if pd.api.types.is_numeric_dtype(df[col_name]):
        return True, ''
     return False, f'column {col_name} expected to be numeric but is not'
+
+
+def colcheck_is_str(df: pd.DataFrame, col_name: str) -> Tuple[bool, str]:
+    """Check if a column is string type."""
+    if pd.api.types.is_string_dtype(df[col_name]):
+        return True, ''
+    return False, f'column {col_name} expected to be string type but is not'
 
 
 def colcheck_min_val(df: pd.DataFrame, col_name: str, min_val: float) -> Tuple[bool, str]:

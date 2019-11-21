@@ -23,7 +23,6 @@ class TestPandasDatasetCheckSuite(unittest.TestCase):
         self.assertEqual(len(pdcs.error_messages), 0)
         pdcs.allow_duplicate_rows = False
         pdcs.run_checks()
-        self.assertEqual(len(pdcs.error_messages), 1)
         self.assertEqual(pdcs.error_messages, ['want 0 duplicate rows, got 2'])
 
     def test_run_checks_columnobjectonly(self):
@@ -32,8 +31,10 @@ class TestPandasDatasetCheckSuite(unittest.TestCase):
         self.assertEqual(len(pdcs.error_messages), 0)
         pdcs = cs.PandasColumnCheckSuite(self.df_file1, 'C', 'numeric')
         pdcs.run_checks(False)
-        self.assertEqual(len(pdcs.error_messages), 1)
         self.assertEqual(pdcs.error_messages, ['column C expected to be numeric but is not'])
+        pdcs = cs.PandasColumnCheckSuite(self.df_file1, 'X', 'numeric')
+        pdcs.run_checks(False)
+        self.assertEqual(pdcs.error_messages, ['column X not found in data'])
 
 
 if __name__ == '__main__':

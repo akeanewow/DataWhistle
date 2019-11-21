@@ -36,7 +36,7 @@ class TestColChecks(unittest.TestCase):
     def test_col_exists(self):
         passed, message = pc.colcheck_col_exists(self.df_file1, 'x')
         self.assertEqual(passed, False)
-        self.assertEqual(message, 'column name x not found in data')
+        self.assertEqual(message, 'column x not found in data')
         passed, message = pc.colcheck_col_exists(self.df_file1, 'A')
         self.assertEqual(passed, True)
         self.assertEqual(message, '')
@@ -48,6 +48,13 @@ class TestColChecks(unittest.TestCase):
         passed, message = pc.colcheck_is_numeric(self.df_file1, 'A')
         self.assertEqual(passed, True)
         self.assertEqual(message, '')
+
+    def test_col_is_str(self):
+        passed, message = pc.colcheck_is_str(self.df_file1, 'A')
+        self.assertEqual(passed, False)
+        self.assertEqual(message, 'column A expected to be string type but is not')
+        passed, message = pc.colcheck_is_str(self.df_file1, 'C')
+        self.assertEqual(passed, True)
 
     def test_min_val(self):
         passed, message = pc.colcheck_min_val(self.df_file1, 'A', -1)
