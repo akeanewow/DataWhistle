@@ -1,8 +1,8 @@
+import pandas_checks as pc
+import unittest
 import sys
 sys.path.append('../src')
-import pandas_checks as pc # noqa: E402
-import unittest
-import pandas as pd
+import pandas as pd  # noqa: e402
 
 
 class TestDFChecks(unittest.TestCase):
@@ -52,7 +52,9 @@ class TestColChecks(unittest.TestCase):
     def test_col_is_str(self):
         passed, message = pc.colcheck_is_str(self.df_file1, 'A')
         self.assertEqual(passed, False)
-        self.assertEqual(message, 'column A expected to be string type but is not')
+        self.assertEqual(
+                message,
+                'column A expected to be string type but is not')
         passed, message = pc.colcheck_is_str(self.df_file1, 'C')
         self.assertEqual(passed, True)
 
@@ -63,6 +65,7 @@ class TestColChecks(unittest.TestCase):
         passed, message = pc.colcheck_min_val(self.df_file1, 'A', 2)
         self.assertEqual(passed, False)
         self.assertEqual(message, 'column A want 2 minimum value, got 1')
+
 
 if __name__ == '__main__':
     unittest.main()

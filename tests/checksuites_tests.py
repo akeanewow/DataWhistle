@@ -1,8 +1,8 @@
-import sys
-sys.path.append('../src')
-import checksuites as cs
 import unittest
 import pandas as pd
+import sys
+sys.path.append('../src')
+import checksuites as cs  # noqa: e402
 
 
 class TestPandasDatasetCheckSuite(unittest.TestCase):
@@ -31,7 +31,9 @@ class TestPandasDatasetCheckSuite(unittest.TestCase):
         self.assertEqual(len(pdcs.error_messages), 0)
         pdcs = cs.PandasColumnCheckSuite(self.df_file1, 'C', 'numeric')
         pdcs.run_checks(False)
-        self.assertEqual(pdcs.error_messages, ['column C expected to be numeric but is not'])
+        self.assertEqual(
+                pdcs.error_messages,
+                ['column C expected to be numeric but is not'])
         pdcs = cs.PandasColumnCheckSuite(self.df_file1, 'X', 'numeric')
         pdcs.run_checks(False)
         self.assertEqual(pdcs.error_messages, ['column X not found in data'])
