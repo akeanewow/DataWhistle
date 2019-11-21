@@ -7,8 +7,8 @@ import pandas_checks as pc
 class DataSetCheckSuite:
     '''
     The DataSetCheckSuite object is used to run checks. Checks are implemented
-    in child classes by overriding check_* methods to enable different checking
-    of different data sources.
+    in child classes by overriding check_* methods to enable checking of
+    different data sources.
     '''
 
     def __init__(self):
@@ -30,7 +30,7 @@ class DataSetCheckSuite:
 
     def run_checks(self) -> None:
         '''
-        Run all checks based on object properties capturing test settings.i
+        Run all checks based on object properties capturing test settings.
         '''
         self.error_messages = []
         self._assemble_checks()
@@ -59,8 +59,8 @@ class DataSetCheckSuite:
 class ColumnCheckSuite:
     '''
     The ColumnCheckSuite object is used to run checks. Checks are implemented
-    in child classes by overriding check_* methods to enable different checking
-    of different data sources.
+    in child classes by overriding check_* methods to enable checking of
+    different data sources.
     '''
 
     def __init__(self, colname: str, coltype: str):
@@ -75,7 +75,7 @@ class ColumnCheckSuite:
 
     def run_checks(self, fail: bool) -> List[str]:
         '''
-        Run all checks based on object properties capturing test settings.i
+        Run all checks based on object properties capturing test settings.
         '''
         passed, message = self.check_col_exists()
         if not passed:
