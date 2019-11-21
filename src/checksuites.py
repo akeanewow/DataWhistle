@@ -3,6 +3,7 @@ import pandas as pd
 
 import pandas_checks as pc
 
+# TODO: complete type annotations
 
 class DataSetCheckSuite:
 
@@ -11,8 +12,8 @@ class DataSetCheckSuite:
         self.min_rows: int = 0
         self.allow_duplicate_rows: bool = True
         self.error_messages: [str] = []
-        self._checks = []
         self.columns = []
+        self._checks = []
 
     def _assemble_checks(self):
         self._checks = []
@@ -43,19 +44,6 @@ class DataSetCheckSuite:
     def check_allow_duplicate_rows(self) -> Tuple[bool, str]: raise NotImplementedError
 
 
-class PandasDatsetCheckSuite(DataSetCheckSuite):
-
-    def __init__(self, dataframe: pd.DataFrame):
-        self.dataframe: pd.DataFrame = dataframe
-        super().__init__()
-
-    def check_min_rows(self) -> Tuple[bool, str]:
-        return pc.dfcheck_min_rows(self.dataframe, self.min_rows)
-
-    def check_allow_duplicate_rows(self) -> Tuple[bool, str]:
-        return pc.dfcheck_no_duplicate_rows(self.dataframe)
-
-
 class ColumnCheckSuite:
 
     def __init__(self, colname: str, coltype: str):
@@ -83,6 +71,18 @@ class ColumnCheckSuite:
     def check_col_type(self) -> Tuple[bool, str]: raise NotImplementedError
 
 
+class PandasDatsetCheckSuite(DataSetCheckSuite):
+
+    def __init__(self, dataframe: pd.DataFrame):
+        self.dataframe: pd.DataFrame = dataframe
+        super().__init__()
+
+    def check_min_rows(self) -> Tuple[bool, str]:
+        return pc.dfcheck_min_rows(self.dataframe, self.min_rows)
+
+    def check_allow_duplicate_rows(self) -> Tuple[bool, str]:
+        return pc.dfcheck_no_duplicate_rows(self.dataframe)
+
 class PandasColumnCheckSuite(ColumnCheckSuite):
 
     def __init__(self, dataframe: pd.DataFrame, colname: str, coltype: str):
@@ -92,8 +92,9 @@ class PandasColumnCheckSuite(ColumnCheckSuite):
     def check_col_exists(self) -> Tuple[bool, str]:
         return pc.colcheck_col_exists(self.dataframe, self.name)
 
+    # TODO: add type checks
     def check_col_type(self) -> Tuple[bool, str]:
-        if self.type in ['int', 'float', 'numeric']:
+        if self.type == 'numeric':
             return pc.colcheck_is_numeric(self.dataframe, self.name)
         return False, 'Incomplete method'
 
