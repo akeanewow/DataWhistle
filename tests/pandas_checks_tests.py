@@ -1,8 +1,8 @@
-import pandas_checks as pc
 import unittest
+import pandas as pd
 import sys
 sys.path.append('../src')
-import pandas as pd  # noqa: e402
+import pandas_checks as pc  # noqa: e402
 
 
 class TestDFChecks(unittest.TestCase):
