@@ -1,5 +1,5 @@
-from typing import List, Tuple
 import pandas as pd
+from typing import List, Tuple
 
 import pandas_checks as pc
 
@@ -41,8 +41,11 @@ class DataSetCheckSuite:
                 if len(error_messages) > 0 & self.fail:
                     break
 
-    def check_min_rows(self) -> Tuple[bool, str]: raise NotImplementedError
-    def check_allow_duplicate_rows(self) -> Tuple[bool, str]: raise NotImplementedError
+    def check_min_rows(self) -> Tuple[bool, str]:
+        raise NotImplementedError
+
+    def check_allow_duplicate_rows(self) -> Tuple[bool, str]:
+        raise NotImplementedError
 
 
 class ColumnCheckSuite:
@@ -68,11 +71,15 @@ class ColumnCheckSuite:
             passed, message = check()
             if not passed:
                 self.error_messages.append(message)
-                if fail: break
+                if fail:
+                    break
         return self.error_messages
 
-    def check_col_exists(self) -> Tuple[bool, str]: raise NotImplementedError
-    def check_col_type(self) -> Tuple[bool, str]: raise NotImplementedError
+    def check_col_exists(self) -> Tuple[bool, str]:
+        raise NotImplementedError
+
+    def check_col_type(self) -> Tuple[bool, str]:
+        raise NotImplementedError
 
 
 class PandasDatsetCheckSuite(DataSetCheckSuite):
@@ -97,9 +104,10 @@ class PandasColumnCheckSuite(ColumnCheckSuite):
     def check_col_exists(self) -> Tuple[bool, str]:
         return pc.colcheck_col_exists(self.dataframe, self.name)
 
-    # TODO: add type checks
     def check_col_type(self) -> Tuple[bool, str]:
         if self.type == 'numeric':
             return pc.colcheck_is_numeric(self.dataframe, self.name)
-        return False, 'Incomplete method'
-
+        if self.type == 'string':
+            return pc.colcheck_is_str(self.dataframe, self.name)
+        return False, (f'column {self.name} could not tested '
+                       f'for type {self.type} (unknown type)')

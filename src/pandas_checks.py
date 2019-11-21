@@ -48,7 +48,7 @@ def colcheck_col_exists(df: pd.DataFrame, col_name: str) -> Tuple[bool, str]:
 def colcheck_is_numeric(df: pd.DataFrame, col_name: str) -> Tuple[bool, str]:
     """Check if a column is numeric."""
     if pd.api.types.is_numeric_dtype(df[col_name]):
-       return True, ''
+        return True, ''
     return False, f'column {col_name} expected to be numeric but is not'
 
 
@@ -59,10 +59,13 @@ def colcheck_is_str(df: pd.DataFrame, col_name: str) -> Tuple[bool, str]:
     return False, f'column {col_name} expected to be string type but is not'
 
 
-def colcheck_min_val(df: pd.DataFrame, col_name: str, min_val: float) -> Tuple[bool, str]:
+def colcheck_min_val(df: pd.DataFrame,
+                     col_name: str,
+                     min_val: float) -> Tuple[bool, str]:
     """Check if a column has a value less than a minimum value."""
     actual_min = df[col_name].min()
     if actual_min >= min_val:
         return True, ''
-    return False, f'column {col_name} want {min_val} minimum value, got {actual_min}'
-
+    return False, (f'column {col_name} '
+                   f'want {min_val} minimum value, '
+                   f'got {actual_min}')

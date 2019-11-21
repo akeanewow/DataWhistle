@@ -10,36 +10,30 @@
 #     import pandas, DataWhistle
 #     df = pandas.read_csv('data.csv')
 #     try:
-#         DataWhistle.check(df, 'rules.yaml')
+#         DataWhistle.run_checks(df, 'rules.yaml')
 #     except:
 #         ...
 
 ---
 
-# Checks performed at the dataset level, e.g. on a Pandas DataFrame
-# or database table.
+# Checks performed at the dataset level
 dataset:
-  # Throw an exception if a check fails, otherwise warn but continue.
-  fail: true
-  # Allow an empty dataset if this is set to 0, otherwise check if
-  # the dataset has the minimum number of rows specified.
-  min_rows: 1
+  stop_on_fail: true          # Stop testing on first test fail
+  min_rows: 1                 # Ignored if 0 or negative
   allow_duplicate_rows: true
 
-# The following checks are applied column by column. Note a check is
-# only applied if specified, e.g. to not check for a max value, but
-# still check for a min value, remove the max value check.
+# Column checks
 columns:
 
-  - row_number_name:
-    type: int
+  - some_column_name:
+    type: numeric
     allow_nuls: false
     min: 0
     max: 1000
     mean_min: 100
     mean_max: 1000
 
-  - string_column_name:
+  - another_column_name:
     type: string
     allow_nuls: false
     allow_whitespace: false
@@ -51,7 +45,7 @@ columns:
       - b
       - c
 
-  - date_column_name:
+  - yet_another_column_name:
     type: datetime
     min: '2019-01-01 14:00:00'
     max: '2020-01-01 14:00:00'

@@ -1,6 +1,6 @@
 import sys
 sys.path.append('../src')
-import pandas_checks as pc
+import pandas_checks as pc # noqa: E402
 import unittest
 import pandas as pd
 
