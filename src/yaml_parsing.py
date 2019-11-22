@@ -5,6 +5,7 @@ import checksuites as cs
 
 _YAML_TOPLEVEL_KEYS = ['dataset', 'columns']
 _YAML_DATASET_KEYS = ['stop_on_fail', 'allow_duplicate_rows', 'min_rows']
+_YAML_COLUMN_KEYS = ['type']
 
 
 def load_raw_yaml(filename: str) -> Dict:
@@ -24,6 +25,13 @@ def _checkdatasetkeys(dsdictkeys: List[str]) -> None:
     for key in dsdictkeys:
         if key not in _YAML_DATASET_KEYS:
             raise AttributeError(f'unexpected dataset attribute {key}')
+
+
+def _checkcolumnkeys(colname: str, colkeys: List[str]) -> None:
+    for key in colkeys:
+        if key not in _YAML_COLUMN_KEYS:
+            raise AttributeError((f'column {colname} '
+                                  f'unexpected attribute {key}'))
 
 
 def apply_yamldict_to_checksuite(ymld: Dict,
@@ -47,6 +55,11 @@ def apply_yamldict_to_checksuite(ymld: Dict,
                 raise AttributeError((f'dataset: min_rows want an integer, '
                                       f'got {val}({type(val)})'))
             suite.min_rows = val
+    if 'columns' in ykeys:
+        coldict = ymld['columns']
+        colnames = coldict.keys()
+        for colname in colnames:
+            pass
 
 
 if __name__ == '__main__':
