@@ -42,6 +42,15 @@ class TestYamlParsing(unittest.TestCase):
         ymld = yp.load_yaml_file_to_dict('yamls/file1.yaml')
         yp.apply_yamldict_to_checksuite(ymld, checksuite)
 
+    def test_apply_yamldict_to_checksuite_valuechecks(self):
+        checksuite = cs.PandasDatsetCheckSuite(self.df_file1)
+        ymld = yp.load_yaml_file_to_dict('yamls/file1.yaml')
+        yp.apply_yamldict_to_checksuite(ymld, checksuite)
+        # Dataset checks
+        self.assertFalse(checksuite.allow_duplicate_rows)
+        self.assertTrue(checksuite.stop_on_fail)
+        self.assertEqual(checksuite.min_rows, 3)
+
 
 if __name__ == '__main__':
     unittest.main()

@@ -1,8 +1,9 @@
+# well formed yaml file passing yamllint
 ---
 dataset:
-  allow_duplicate_rows: true
+  allow_duplicate_rows: false
   stop_on_fail: true
-  min_rows: 1
+  min_rows: 3
 
 columns:
   - name: A

@@ -2,7 +2,7 @@
 dataset:
   allow_duplicate_rows: true
   stop_on_fail: true
-  min_rows: 1
+  min_rows: 3
 
 columns:
   - name: A
@@ -10,4 +10,4 @@ columns:
 
   - name: C
     type: string
-    stuff: 123
+    stuff: 123   #<----- deliberate unknown attribute

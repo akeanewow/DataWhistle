@@ -1,4 +1,5 @@
 ---
+# Deliberate unknown attributes
 stuff:
   something: True
 

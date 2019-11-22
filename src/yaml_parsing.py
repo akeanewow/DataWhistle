@@ -1,5 +1,5 @@
 import yaml  # type: ignore
-from typing import Dict, List
+from typing import Any, Dict, List
 import checksuites as cs
 
 
@@ -7,6 +7,9 @@ _YAML_TOPLEVEL_KEYS = ['dataset', 'columns']
 _YAML_DATASET_KEYS = ['stop_on_fail', 'allow_duplicate_rows', 'min_rows']
 _YAML_COLUMN_KEYS = ['name', 'type']
 _YAML_COLUMN_TYPES = ['numeric', 'string']
+
+_TRUE_VALS = [True, 1, 'true', 'True', '1']
+_FALSE_VALS = [False, 0, 'false', 'False', '0']
 
 
 class YamlParsingError(Exception):
@@ -49,6 +52,14 @@ def _checkcolumntype(coltype: str) -> None:
         raise YamlParsingError(f'column type {coltype} not recognised')
 
 
+def _check_bool_val(val: Any) -> bool:
+    if val in _TRUE_VALS:
+        return True
+    if val not in _FALSE_VALS:
+        raise YamlParsingError(f'want boolean value, got {val}')
+    return False
+
+
 def apply_yamldict_to_checksuite(ymld: Dict,
                                  suite: cs.PandasDatsetCheckSuite) -> None:
     '''Apply yaml parsed into dictionary to a checksuite object.'''
@@ -59,10 +70,10 @@ def apply_yamldict_to_checksuite(ymld: Dict,
         dsdictkeys = list(dsdict.keys())
         _checkdatasetkeys(dsdictkeys)
         if 'stop_on_fail' in dsdictkeys:
-            suite.stop_on_fail = dsdict['stop_on_fail'] is True
+            suite.stop_on_fail = _check_bool_val(dsdict['stop_on_fail'])
         dups = 'allow_duplicate_rows'
         if dups in dsdictkeys:
-            suite.allow_duplicate_rows = dsdict[dups] is False
+            suite.allow_duplicate_rows = _check_bool_val(dsdict[dups])
         if 'min_rows' in dsdictkeys:
             val = dsdict['min_rows']
             if not isinstance(val, int):
