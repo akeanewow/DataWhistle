@@ -14,7 +14,7 @@ columns:                      # Header for checks at the column level
 #    mean_min: 100
 #    mean_max: 1000
 
-  - name: B                   # Name of a column expected in the dataset
+  - name: C                   # Name of a column expected in the dataset
     type: string              # 'numeric' or 'string'
 #    allow_nuls: false        # Not yet implemented
 #    allow_whitespace: false

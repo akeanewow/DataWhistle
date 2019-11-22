@@ -10,7 +10,7 @@ Define rules for your dataset in a yaml file (see example.yaml).  Use whistle.py
 Example usage:
 
 ```sh
-whistle.py --data some.csv --rules abc.yaml
+whistle.py --csv some.csv --rules abc.yaml
 ```
 
 ### Status

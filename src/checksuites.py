@@ -48,7 +48,7 @@ class DataSetCheckSuite:
             for column in self.columns:
                 error_messages = column.run_checks(self.stop_on_fail)
                 self.error_messages += error_messages
-                if len(error_messages) > 0 & self.stop_on_fail:
+                if len(error_messages) > 0 and self.stop_on_fail:
                     break
 
     def clearcolumns(self) -> None:
