@@ -1,51 +1,32 @@
-# This yaml file is processed either from the command line or through
-# DataWhistle module import.
-#
-# Command line version:
-#
-#     python3 whistle.py --data input.csv --rules rules.yaml
-#
-# API example:
-#
-#     import pandas, DataWhistle
-#     df = pandas.read_csv('data.csv')
-#     try:
-#         DataWhistle.run_checks(df, 'rules.yaml')
-#     except:
-#         ...
-
 ---
+dataset:                      # Header for checks at the dataset level
+  allow_duplicate_rows: true  # More than one identical row allowed (bool)
+  min_rows: 1                 # The minimum numbers of data rows epxected (int)
+  stop_on_fail: true          # Stop testing on first test fail (bool)
 
-# Checks performed at the dataset level
-dataset:
-  stop_on_fail: true          # Stop testing on first test fail
-  min_rows: 1                 # Ignored if 0 or negative
-  allow_duplicate_rows: true
+columns:                      # Header for checks at the column level
 
-# Column checks
-columns:
+  - name: A                   # Name of a column expected in the dataset
+    type: numeric             # 'numeric' or 'string'
+#    allow_nuls: falsei       # Not yet implemented
+#    min: 0
+#    max: 1000
+#    mean_min: 100
+#    mean_max: 1000
 
-  - some_column_name:
-    type: numeric
-    allow_nuls: false
-    min: 0
-    max: 1000
-    mean_min: 100
-    mean_max: 1000
+  - name: B                   # Name of a column expected in the dataset
+    type: string              # 'numeric' or 'string'
+#    allow_nuls: false        # Not yet implemented
+#    allow_whitespace: false
+#    allow_duplciates: true
+#    max_width: 100
+#    regex: '^xxyy$'
+#    values:
+#      - a
+#      - b
+#      - c
 
-  - another_column_name:
-    type: string
-    allow_nuls: false
-    allow_whitespace: false
-    allow_duplciates: true
-    max_width: 100
-    regex: '^xxyy$'
-    values:
-      - a
-      - b
-      - c
-
-  - yet_another_column_name:
-    type: datetime
-    min: '2019-01-01 14:00:00'
-    max: '2020-01-01 14:00:00'
+#  - name: C
+#    type: datetime
+#    min: '2019-01-01 14:00:00'
+#    max: '2020-01-01 14:00:00'

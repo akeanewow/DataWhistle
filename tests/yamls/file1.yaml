@@ -2,8 +2,8 @@
 ---
 dataset:
   allow_duplicate_rows: false
-  stop_on_fail: true
   min_rows: 3
+  stop_on_fail: true
 
 columns:
   - name: A
