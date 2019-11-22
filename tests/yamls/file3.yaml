@@ -1,0 +1,6 @@
+---
+stuff:
+  something: True
+
+morestuff:
+  something: False

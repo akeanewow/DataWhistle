@@ -59,11 +59,10 @@ def apply_yamldict_to_checksuite(ymld: Dict,
         dsdictkeys = list(dsdict.keys())
         _checkdatasetkeys(dsdictkeys)
         if 'stop_on_fail' in dsdictkeys:
-            if dsdict['fail'] is True:
-                suite.stop_on_fail = True
-        if 'allow_duplicate_rows' in dsdictkeys:
-            if dsdict['allow_duplicate_rows'] is False:
-                suite.allow_duplicate_rows = False
+            suite.stop_on_fail = dsdict['stop_on_fail'] is True
+        dups = 'allow_duplicate_rows'
+        if dups in dsdictkeys:
+            suite.allow_duplicate_rows = dsdict[dups] is False
         if 'min_rows' in dsdictkeys:
             val = dsdict['min_rows']
             if not isinstance(val, int):

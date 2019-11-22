@@ -1,0 +1,13 @@
+---
+dataset:
+  allow_duplicate_rows: true
+  stop_on_fail: true
+  min_rows: 1
+
+columns:
+  - name: A
+    type: numeric
+
+  - name: C
+    type: string
+    stuff: 123
