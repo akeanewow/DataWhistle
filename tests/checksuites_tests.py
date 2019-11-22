@@ -2,7 +2,7 @@ import unittest
 import pandas as pd  # type: ignore
 import sys
 sys.path.append('../src')
-import checksuites as cs  # noqa: e402
+import checksuites as cs  # type: ignore
 
 
 class TestPandasDatasetCheckSuite(unittest.TestCase):

@@ -1,3 +1,4 @@
+---
 dataset:
   allow_duplicate_rows: true
   stop_on_fail: true

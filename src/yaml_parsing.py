@@ -1,4 +1,4 @@
-from yaml import load  # type: ignore
+import yaml  # type: ignore
 from typing import Dict, List
 import checksuites as cs
 
@@ -9,38 +9,44 @@ _YAML_COLUMN_KEYS = ['name', 'type']
 _YAML_COLUMN_TYPES = ['numeric', 'string']
 
 
-def load_raw_yaml(filename: str) -> Dict:
+class YamlParsingError(Exception):
+    pass
+
+
+def load_yaml_file_to_dict(filename: str) -> Dict:
     '''Parse a yaml file into a Dict object.'''
-    stream = open(filename, 'r')
-    parsed = load(stream)
+    with open(filename, 'r') as stream:
+        parsed = yaml.safe_load(stream)
+    if not isinstance(parsed, dict):
+        raise YamlParsingError(f'error converting YAML markup in {filename}')
     return parsed
 
 
 def _checktoplevelkeys(ykeys: List[str]) -> None:
     for key in ykeys:
         if key not in _YAML_TOPLEVEL_KEYS:
-            raise AttributeError(f'unexpected yaml attribute {key}')
+            raise YamlParsingError(f'unexpected yaml attribute {key}')
 
 
 def _checkdatasetkeys(dsdictkeys: List[str]) -> None:
     for key in dsdictkeys:
         if key not in _YAML_DATASET_KEYS:
-            raise AttributeError(f'unexpected dataset attribute {key}')
+            raise YamlParsingError(f'unexpected dataset attribute {key}')
 
 
 def _checkcolumnkeys(colkeys: List[str]) -> None:
     if 'name' not in colkeys:
-        raise AttributeError('column name missing')
+        raise YamlParsingError('column name missing')
     if 'type' not in colkeys:
-        raise AttributeError('column type missing')
+        raise YamlParsingError('column type missing')
     for key in colkeys:
         if key not in _YAML_COLUMN_KEYS:
-            raise AttributeError(f'unexpected column attribute {key}')
+            raise YamlParsingError(f'unexpected column attribute {key}')
 
 
 def _checkcolumntype(coltype: str) -> None:
     if coltype not in _YAML_COLUMN_TYPES:
-        raise AttributeError(f'column type {coltype} not recognised')
+        raise YamlParsingError(f'column type {coltype} not recognised')
 
 
 def apply_yamldict_to_checksuite(ymld: Dict,
@@ -61,8 +67,8 @@ def apply_yamldict_to_checksuite(ymld: Dict,
         if 'min_rows' in dsdictkeys:
             val = dsdict['min_rows']
             if not isinstance(val, int):
-                raise AttributeError((f'dataset: min_rows want an integer, '
-                                      f'got {val}({type(val)})'))
+                raise YamlParsingError((f'dataset: min_rows want an integer, '
+                                        f'got {val}({type(val)})'))
             suite.min_rows = val
     if 'columns' in ykeys:
         colslist = ymld['columns']
