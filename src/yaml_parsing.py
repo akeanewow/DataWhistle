@@ -1,7 +1,10 @@
 from yaml import load  # type: ignore
-from typing import Dict
 import pandas as pd  # type: ignore
+from typing import Dict
 import checksuites as cs
+
+
+_YAML_TOPLEVEL_KEYS = ['dataset', 'columns']
 
 
 def load_raw_yaml(filename: str) -> Dict:
@@ -11,24 +14,23 @@ def load_raw_yaml(filename: str) -> Dict:
     return parsed
 
 
-def yamldict_to_pandaschecksuite(
-        ymld: Dict,
-        df: pd.DataFrame) -> cs.PandasDatsetCheckSuite:
-    pdc: cs.PandasDatsetCheckSuite = cs.PandasDatsetCheckSuite(df)
-    '''Convert yaml parsed into a Dict to a pandas check suite.'''
-    ymldkeys = ymld.keys()
-    if 'dataset' in ymldkeys:
+def apply_yamldict_to_checksuite(ymld: Dict,
+                                 suite: cs.PandasDatsetCheckSuite,
+                                 df: pd.DataFrame) -> None:
+    '''Apply yaml parsed into dictionary to a checksuite object.'''
+    ykeys = ymld.keys()
+    for key in ykeys:
+        if key not in _YAML_TOPLEVEL_KEYS:
+            raise AttributeError(f'Unexpected yaml attribute {key}')
+    if 'dataset' in ykeys:
         dsdict = ymld['dataset']
         dsdictkeys = dsdict.keys()
-        if 'fail' in dsdictkeys:
-            if dsdict['fail'] == True:
-                pdc.fail = True
+        if 'stop_on_fail' in dsdictkeys:
+            if dsdict['fail'] is True:
+                suite.stop_on_fail = True
         if 'allow_duplicate_rows' in dsdictkeys:
-            if dsdict['allow_duplicate_rows'] == False:
-                pdc.allow_duplicate_rows = False
-        if 'min_rows' in dsdictkeys:
-            pass
-    return pdc
+            if dsdict['allow_duplicate_rows'] is False:
+                suite.allow_duplicate_rows = False
 
 
 if __name__ == '__main__':

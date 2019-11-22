@@ -1,6 +1,8 @@
+# Avoid forward decalaration type check errors. See PEP563.
+from __future__ import annotations
+
 import pandas as pd  # type: ignore
 from typing import Callable, List, Tuple
-
 import pandas_checks as pc
 
 
@@ -13,7 +15,7 @@ class DataSetCheckSuite:
 
     def __init__(self):
         # test settings
-        self.fail: bool = False
+        self.stop_on_fail: bool = False
         self.min_rows: int = 0
         self.allow_duplicate_rows: bool = True
         # other properties
@@ -39,15 +41,22 @@ class DataSetCheckSuite:
             passed, message = check()
             if not passed:
                 self.error_messages.append(message)
-                if self.fail:
+                if self.stop_on_fail:
                     checks_failed = True
                     break
         if not checks_failed:
             for column in self.columns:
-                error_messages = column.run_checks(self.fail)
+                error_messages = column.run_checks(self.stop_on_fail)
                 self.error_messages += error_messages
-                if len(error_messages) > 0 & self.fail:
+                if len(error_messages) > 0 & self.stop_on_fail:
                     break
+
+    def clearcolumns(self) -> None:
+        '''Clear column rules to add new rules.'''
+        self.columns = []
+
+    def addcolumn(self, colname: str, coltype: str) -> PandasColumnCheckSuite:
+        raise NotImplementedError
 
     def check_min_rows(self) -> Tuple[bool, str]:
         raise NotImplementedError
@@ -73,7 +82,7 @@ class ColumnCheckSuite:
         self._checks = []
         self._checks.append(self.check_col_type)
 
-    def run_checks(self, fail: bool) -> List[str]:
+    def run_checks(self, stop_on_fail: bool) -> List[str]:
         '''
         Run all checks based on object properties capturing test settings.
         '''
@@ -87,7 +96,7 @@ class ColumnCheckSuite:
             passed, message = check()
             if not passed:
                 self.error_messages.append(message)
-                if fail:
+                if stop_on_fail:
                     break
         return self.error_messages
 
@@ -108,6 +117,12 @@ class PandasDatsetCheckSuite(DataSetCheckSuite):
         self.dataframe: pd.DataFrame = dataframe
         super().__init__()
 
+    def addcolumn(self, colname: str, coltype: str) -> PandasColumnCheckSuite:
+        '''Add a column to set rules on.'''
+        column = PandasColumnCheckSuite(self.dataframe, colname, coltype)
+        self.columns.append(column)
+        return column
+
     def check_min_rows(self) -> Tuple[bool, str]:
         return pc.dfcheck_min_rows(self.dataframe, self.min_rows)
 
@@ -117,7 +132,7 @@ class PandasDatsetCheckSuite(DataSetCheckSuite):
 
 class PandasColumnCheckSuite(ColumnCheckSuite):
     '''
-    Pandas DataFrame column testing object. Check methods from the parent class
+    pandas DataFrame column testing object. Check methods from the parent class
     are overriden to implement Pandas specific functionality.
     '''
 

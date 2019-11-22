@@ -1,11 +1,11 @@
 ---
 dataset:
   allow_duplicate_rows: true
-  fail: true
+  stop_on_fail: true
   min_rows: 1
 
 columns:
-  - row_number_name:
+  - A:
     type: numeric
 #    allow_nuls: false
 #    min: 0
@@ -13,7 +13,7 @@ columns:
 #    mean_min: 100
 #    mean_max: 1000
 
-  - string_column_name:
+  - C:
     type: string
 #    allow_nuls: false
 #    allow_whitespace: false
