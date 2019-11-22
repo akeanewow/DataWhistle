@@ -5,7 +5,8 @@ import checksuites as cs
 
 _YAML_TOPLEVEL_KEYS = ['dataset', 'columns']
 _YAML_DATASET_KEYS = ['stop_on_fail', 'allow_duplicate_rows', 'min_rows']
-_YAML_COLUMN_KEYS = ['type']
+_YAML_COLUMN_KEYS = ['name', 'type']
+_YAML_COLUMN_TYPES = ['numeric', 'string']
 
 
 def load_raw_yaml(filename: str) -> Dict:
@@ -27,11 +28,19 @@ def _checkdatasetkeys(dsdictkeys: List[str]) -> None:
             raise AttributeError(f'unexpected dataset attribute {key}')
 
 
-def _checkcolumnkeys(colname: str, colkeys: List[str]) -> None:
+def _checkcolumnkeys(colkeys: List[str]) -> None:
+    if 'name' not in colkeys:
+        raise AttributeError('column name missing')
+    if 'type' not in colkeys:
+        raise AttributeError('column type missing')
     for key in colkeys:
         if key not in _YAML_COLUMN_KEYS:
-            raise AttributeError((f'column {colname} '
-                                  f'unexpected attribute {key}'))
+            raise AttributeError(f'unexpected column attribute {key}')
+
+
+def _checkcolumntype(coltype: str) -> None:
+    if coltype not in _YAML_COLUMN_TYPES:
+        raise AttributeError(f'column type {coltype} not recognised')
 
 
 def apply_yamldict_to_checksuite(ymld: Dict,
@@ -56,12 +65,13 @@ def apply_yamldict_to_checksuite(ymld: Dict,
                                       f'got {val}({type(val)})'))
             suite.min_rows = val
     if 'columns' in ykeys:
-        coldict = ymld['columns']
-        colnames = coldict.keys()
-        for colname in colnames:
-            pass
-
-
-if __name__ == '__main__':
-    raw = load_raw_yaml('../tests/yamls/file1.yaml')
-    print(raw)
+        colslist = ymld['columns']
+        if len(colslist) == 0:
+            return
+        for coldict in colslist:
+            colkeys = list(coldict.keys())
+            _checkcolumnkeys(colkeys)
+            colname = coldict['name']
+            coltype = coldict['type']
+            _checkcolumntype(coltype)
+            suite.addcolumn(colname, coltype)
