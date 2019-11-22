@@ -50,6 +50,14 @@ class TestYamlParsing(unittest.TestCase):
         self.assertFalse(checksuite.allow_duplicate_rows)
         self.assertTrue(checksuite.stop_on_fail)
         self.assertEqual(checksuite.min_rows, 3)
+        # Column checks
+        self.assertEqual(len(checksuite.columns), 2)
+        col1 = checksuite.columns[0]
+        col2 = checksuite.columns[1]
+        self.assertEqual(col1.name, 'A')
+        self.assertEqual(col1.type, 'numeric')
+        self.assertEqual(col2.name, 'C')
+        self.assertEqual(col2.type, 'string')
 
 
 if __name__ == '__main__':

@@ -86,10 +86,13 @@ class ColumnCheckSuite:
         '''
         Run all checks based on object properties capturing test settings.
         '''
+        # have to always check if a column exists otherwise all
+        # other column checks will fail anyway
         passed, message = self.check_col_exists()
         if not passed:
             self.error_messages.append(message)
             return [message]
+        # keep going with tests if the column exists
         self.error_messages = []
         self._assemble_checks()
         for check in self._checks:
