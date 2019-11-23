@@ -35,17 +35,17 @@ def check_csv(filename: str, rulesfilename: str, verbose: bool) -> None:
     checksuite = cs.PandasDatsetCheckSuite(df)
     yp.apply_yamldict_to_checksuite(ymld, checksuite)
     if verbose:
-        print('done.\nRunning checks ...')
-    checksuite.run_checks()
+        print('done.\nRunning checks ', end='')
+    checksuite.run_checks(verbose=verbose)
     if len(checksuite.error_messages) > 0:
         if verbose:
-            print('Checks failed:')
+            print(' done.\nChecks failed:')
         for msg in checksuite.error_messages:
             print(msg)
         sys.exit(1)
     else:
         if verbose:
-            print('All checks passed.')
+            print(' done.\nAll checks passed.')
 
 
 def load_file_pandas(filename: str, verbose: bool) -> pd.DataFrame:

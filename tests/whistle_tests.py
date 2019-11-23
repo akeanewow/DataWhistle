@@ -19,7 +19,7 @@ _NOARGS = ('Data source e.g. CSV file and rules file required (use -h '
 
 _ALL_PASSED = '''Reading data file ... done.
 Parsing rules file ... done.
-Running checks ...
+Running checks ...... done.
 All checks passed.
 '''
 

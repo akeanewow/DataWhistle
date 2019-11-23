@@ -10,7 +10,12 @@ Define rules for your dataset in a yaml file (see example.yaml).  Use whistle.py
 Example usage:
 
 ```sh
-whistle.py --csv some.csv --rules abc.yaml
+whistle.py --csv data.csv --rules checks.yaml --verbose
+Reading data file ... done.
+Parsing rules file ... done.
+Running checks .F....................................... done.
+Checks failed:
+want 0 duplicate rows, got 2
 ```
 
 ### Status

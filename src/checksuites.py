@@ -30,7 +30,7 @@ class DataSetCheckSuite:
         if not self.allow_duplicate_rows:
             self._checks.append(self.check_no_duplicate_rows)
 
-    def run_checks(self) -> None:
+    def run_checks(self, verbose: bool = False) -> None:
         '''
         Run all checks based on object properties capturing test settings.
         '''
@@ -40,13 +40,19 @@ class DataSetCheckSuite:
         for check in self._checks:
             passed, message = check()
             if not passed:
+                if verbose:
+                    print('F', end='')
                 self.error_messages.append(message)
                 if self.stop_on_fail:
                     checks_failed = True
                     break
+            else:
+                if verbose:
+                    print('.', end='')
         if not checks_failed:
             for column in self.columns:
-                error_messages = column.run_checks(self.stop_on_fail)
+                error_messages = column.run_checks(self.stop_on_fail,
+                                                   verbose=verbose)
                 self.error_messages += error_messages
                 if len(error_messages) > 0 and self.stop_on_fail:
                     break
@@ -82,7 +88,8 @@ class ColumnCheckSuite:
         self._checks = []
         self._checks.append(self.check_col_type)
 
-    def run_checks(self, stop_on_fail: bool) -> List[str]:
+    def run_checks(self, stop_on_fail: bool,
+                   verbose: bool = False) -> List[str]:
         '''
         Run all checks based on object properties capturing test settings.
         '''
@@ -90,17 +97,27 @@ class ColumnCheckSuite:
         # other column checks will fail anyway
         passed, message = self.check_col_exists()
         if not passed:
+            if verbose:
+                print('F', end='')
             self.error_messages.append(message)
             return [message]
+        else:
+            if verbose:
+                print('.', end='')
         # keep going with tests if the column exists
         self.error_messages = []
         self._assemble_checks()
         for check in self._checks:
             passed, message = check()
             if not passed:
+                if verbose:
+                    print('F', end='')
                 self.error_messages.append(message)
                 if stop_on_fail:
                     break
+            else:
+                if verbose:
+                    print('.', end='')
         return self.error_messages
 
     def check_col_exists(self) -> Tuple[bool, str]:
