@@ -135,7 +135,7 @@ class PandasDatsetCheckSuite(DataSetCheckSuite):
 
 class PandasColumnCheckSuite(ColumnCheckSuite):
     '''
-    pandas DataFrame column testing object. Check methods from the parent class
+    Pandas DataFrame column testing object. Check methods from the parent class
     are overriden to implement Pandas specific functionality.
     '''
 

@@ -1,7 +1,7 @@
 ---
 dataset:                      # Header for checks at the dataset level
   allow_duplicate_rows: true  # More than one identical row allowed (bool)
-  min_rows: 1                 # The minimum numbers of data rows epxected (int)
+  min_rows: 3                 # The minimum numbers of data rows epxected (int)
   stop_on_fail: true          # Stop testing on first test fail (bool)
 
 columns:                      # Header for checks at the column level
