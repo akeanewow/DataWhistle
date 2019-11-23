@@ -15,7 +15,7 @@ def main() -> None:
     parser.add_argument("-c", "--csv", type=str,
                         help='a comma separated value file to check')
     parser.add_argument("-r", "--rules", type=str,
-                        help='rules to check defined in a yaml file')
+                        help='rules to apply defined in a yaml file')
     parser.add_argument("-v", "--verbose", action='store_true',
                         help='increase output verbosity')
     args = parser.parse_args()
