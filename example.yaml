@@ -1,22 +1,22 @@
 ---
-dataset:                      # Header for checks at the dataset level
-  allow_duplicate_rows: true  # More than one identical row allowed (bool)
-  min_rows: 3                 # The minimum numbers of data rows epxected (int)
-  stop_on_fail: true          # Stop testing on first test fail (bool)
+dataset:                       # Header for checks at the dataset level
+  allow_duplicate_rows: false  # More than one identical row allowed (bool)
+  min_rows: 3                  # The minimum numbers of data rows epxected (int)
+  stop_on_fail: true           # Stop testing on first test fail (bool)
 
-columns:                      # Header for checks at the column level
+columns:                       # Header for checks at the column level
 
-  - name: A                   # Name of a column expected in the dataset
-    type: numeric             # 'numeric' or 'string'
-#    allow_nuls: falsei       # Not yet implemented
+  - name: A                    # Name of a column expected in the dataset
+    type: numeric              # 'numeric' or 'string'
+#    allow_nuls: falsei        # Not yet implemented
 #    min: 0
 #    max: 1000
 #    mean_min: 100
 #    mean_max: 1000
 
-  - name: C                   # Name of a column expected in the dataset
-    type: string              # 'numeric' or 'string'
-#    allow_nuls: false        # Not yet implemented
+  - name: C                    # Name of a column expected in the dataset
+    type: string               # 'numeric' or 'string'
+#    allow_nuls: false         # Not yet implemented
 #    allow_whitespace: false
 #    allow_duplciates: true
 #    max_width: 100
