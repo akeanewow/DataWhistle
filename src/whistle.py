@@ -46,6 +46,7 @@ def check_csv(filename: str, rulesfilename: str, verbose: bool) -> None:
     else:
         if verbose:
             print(' done.\nAll checks passed.')
+        sys.exit(0)
 
 
 def load_file_pandas(filename: str, verbose: bool) -> pd.DataFrame:
@@ -54,10 +55,10 @@ def load_file_pandas(filename: str, verbose: bool) -> pd.DataFrame:
     try:
         df = pd.read_csv(filename)
     except FileNotFoundError:
-        print(f'\nFile {filename} not found')
+        print(f'File {filename} not found')
         sys.exit(2)
     except Exception as ex:
-        print(f'\nUnexpected error:\n{ex}')
+        print(f'Unexpected Pandas error:\n{ex}')
         sys.exit(3)
     if verbose:
         print('done.')
