@@ -26,12 +26,16 @@ def main() -> None:
            '(use -h command line argument to get help)'))
 
 
-def check_csv(filename: str, rulesfilename: str, verbose: bool) -> None:
+def check_csv(csvfile: str, rulesfile: str, verbose: bool) -> None:
     '''Run checks on a CSV file.'''
-    df = load_file_pandas(filename, verbose)
+    df = load_file_pandas(csvfile, verbose)
     if verbose:
         print('Parsing rules file ... ', end='')
-    ymld = yp.load_yaml_file_to_dict(rulesfilename)
+    try:
+        ymld = yp.load_yaml_file_to_dict(rulesfile)
+    except FileNotFoundError:
+        print(f'File {rulesfile} not found')
+        sys.exit(4)
     checksuite = cs.PandasDatsetCheckSuite(df)
     yp.apply_yamldict_to_checksuite(ymld, checksuite)
     if verbose:
@@ -49,13 +53,13 @@ def check_csv(filename: str, rulesfilename: str, verbose: bool) -> None:
         sys.exit(0)
 
 
-def load_file_pandas(filename: str, verbose: bool) -> pd.DataFrame:
+def load_file_pandas(csvfile: str, verbose: bool) -> pd.DataFrame:
     if verbose:
         print('Reading data file ... ', end='')
     try:
-        df = pd.read_csv(filename)
+        df = pd.read_csv(csvfile)
     except FileNotFoundError:
-        print(f'File {filename} not found')
+        print(f'File {csvfile} not found')
         sys.exit(2)
     except Exception as ex:
         print(f'Unexpected Pandas error:\n{ex}')

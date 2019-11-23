@@ -62,6 +62,14 @@ class TestWhistle(unittest.TestCase):
         self.assertEqual(result.returncode, 2)
         self.assertEqual(result.stdout, 'File data/zile1.csv not found\n')
 
+    def test_yamlfile_not_found(self):
+        result = subprocess.run(['python3', '../src/whistle.py',
+                                 '-c', 'data/file1.csv',
+                                 '-r', 'yamls/zile1.yaml'],
+                                capture_output=True, text=True)
+        self.assertEqual(result.returncode, 4)
+        self.assertEqual(result.stdout, 'File yamls/zile1.yaml not found\n')
+
 
 if __name__ == '__main__':
     unittest.main()
