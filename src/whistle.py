@@ -33,11 +33,14 @@ def check_csv(csvfile: str, rulesfile: str, verbose: bool) -> None:
         print('Parsing rules file ... ', end='')
     try:
         ymld = yp.load_yaml_file_to_dict(rulesfile)
+        checksuite = cs.PandasDatsetCheckSuite(df)
+        yp.apply_yamldict_to_checksuite(ymld, checksuite)
     except FileNotFoundError:
         print(f'File {rulesfile} not found')
         sys.exit(4)
-    checksuite = cs.PandasDatsetCheckSuite(df)
-    yp.apply_yamldict_to_checksuite(ymld, checksuite)
+    except yp.YamlParsingError as e:
+        print(e)
+        sys.exit(5)
     if verbose:
         print('done.\nRunning checks ', end='')
     checksuite.run_checks(verbose=verbose)

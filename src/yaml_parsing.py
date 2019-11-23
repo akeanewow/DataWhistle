@@ -28,13 +28,13 @@ def load_yaml_file_to_dict(filename: str) -> Dict:
 def _checktoplevelkeys(ykeys: List[str]) -> None:
     for key in ykeys:
         if key not in _YAML_TOPLEVEL_KEYS:
-            raise YamlParsingError(f'unexpected yaml attribute {key}')
+            raise YamlParsingError(f'unexpected yaml attribute: {key}')
 
 
 def _checkdatasetkeys(dsdictkeys: List[str]) -> None:
     for key in dsdictkeys:
         if key not in _YAML_DATASET_KEYS:
-            raise YamlParsingError(f'unexpected dataset attribute {key}')
+            raise YamlParsingError(f'unexpected dataset attribute: {key}')
 
 
 def _checkcolumnkeys(colkeys: List[str]) -> None:
@@ -44,7 +44,7 @@ def _checkcolumnkeys(colkeys: List[str]) -> None:
         raise YamlParsingError('column type missing')
     for key in colkeys:
         if key not in _YAML_COLUMN_KEYS:
-            raise YamlParsingError(f'unexpected column attribute {key}')
+            raise YamlParsingError(f'unexpected column attribute: {key}')
 
 
 def _checkcolumntype(coltype: str) -> None:

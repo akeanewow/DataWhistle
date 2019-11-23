@@ -8,7 +8,7 @@ columns:                       # Header for checks at the column level
 
   - name: A                    # Name of a column expected in the dataset
     type: numeric              # 'numeric' or 'string'
-#    allow_nuls: falsei        # Not yet implemented
+#    allow_nuls: false         # Not yet implemented
 #    min: 0
 #    max: 1000
 #    mean_min: 100
