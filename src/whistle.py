@@ -44,9 +44,10 @@ def check_csv(csvfile: str, rulesfile: str, verbose: bool) -> None:
     if verbose:
         print('done.\nRunning checks ', end='')
     checksuite.run_checks(verbose=verbose)
-    if len(checksuite.error_messages) > 0:
+    num_errs = len(checksuite.error_messages)
+    if num_errs > 0:
         if verbose:
-            print(' done.\nChecks failed:')
+            print(f' done.\nChecks failed ({num_errs}):')
         for msg in checksuite.error_messages:
             print(msg)
         sys.exit(1)

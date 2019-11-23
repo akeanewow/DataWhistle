@@ -1,0 +1,21 @@
+# well formed yaml file passing yamllint
+---
+dataset:
+  allow_duplicate_rows: false
+  min_rows: 10
+  stop_on_fail: false
+
+columns:
+  - name: A
+    type: string
+    min: 10
+
+  - name: B
+    type: numeric
+    min: 10.1
+
+  - name: C
+    type: string
+
+  - name: D
+    type: numeric

@@ -5,7 +5,7 @@ import checksuites as cs
 
 _YAML_TOPLEVEL_KEYS = ['dataset', 'columns']
 _YAML_DATASET_KEYS = ['stop_on_fail', 'allow_duplicate_rows', 'min_rows']
-_YAML_COLUMN_KEYS = ['name', 'type']
+_YAML_COLUMN_KEYS = ['name', 'type', 'min']
 _YAML_COLUMN_TYPES = ['numeric', 'string']
 
 _TRUE_VALS = [True, 1, 'true', 'True', '1']
@@ -90,4 +90,11 @@ def apply_yamldict_to_checksuite(ymld: Dict,
             colname = coldict['name']
             coltype = coldict['type']
             _checkcolumntype(coltype)
-            suite.addcolumn(colname, coltype)
+            col = suite.addcolumn(colname, coltype)
+            if 'min' in colkeys:
+                val = coldict['min']
+                if (not isinstance(val, int)) and (not isinstance(val, float)):
+                    raise YamlParsingError(f'column {colname} cannot check '
+                                           'minimum value of non numeric '
+                                           'column')
+                col.min_val = val

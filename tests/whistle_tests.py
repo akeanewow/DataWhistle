@@ -19,8 +19,15 @@ _NOARGS = ('Data source e.g. CSV file and rules file required (use -h '
 
 _ALL_PASSED = '''Reading data file ... done.
 Parsing rules file ... done.
-Running checks ...... done.
+Running checks ....... done.
 All checks passed.
+'''
+
+_ALL_FAILED = '''want 0 duplicate rows, got 2
+want 10 rows, got 7
+column A expected to be string type but is not
+column A cannot check minimum value on a non-numeric column
+column B want 10.1 minimum value, got 1.0
 '''
 
 
@@ -77,6 +84,14 @@ class TestWhistle(unittest.TestCase):
                                 capture_output=True, text=True)
         self.assertEqual(result.returncode, 5)
         self.assertEqual(result.stdout, 'unexpected yaml attribute: stuff\n')
+
+    def test_all_failed(self):
+        result = subprocess.run(['python3', '../src/whistle.py',
+                                 '-c', 'data/file2.csv',
+                                 '-r', 'yamls/file1a.yaml'],
+                                capture_output=True, text=True)
+        self.assertEqual(result.returncode, 1)
+        self.assertEqual(result.stdout, _ALL_FAILED)
 
 
 if __name__ == '__main__':

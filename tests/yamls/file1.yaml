@@ -8,8 +8,8 @@ dataset:
 columns:
   - name: A
     type: numeric
+    min: 0
 #    allow_nuls: false
-#    min: 0
 #    max: 1000
 #    mean_min: 100
 #    mean_max: 1000

@@ -7,15 +7,15 @@ dataset:                       # Header for checks at the dataset level
 columns:                       # Header for checks at the column level
 
   - name: A                    # Name of a column expected in the dataset
-    type: numeric              # 'numeric' or 'string'
+    type: numeric              # Column type ('numeric' or 'string')
+    min: 0                     # Minimum value if numeric column (int / float)
 #    allow_nuls: false         # Not yet implemented
-#    min: 0
 #    max: 1000
 #    mean_min: 100
 #    mean_max: 1000
 
   - name: C                    # Name of a column expected in the dataset
-    type: string               # 'numeric' or 'string'
+    type: string               # Column type ('numeric' or 'string')
 #    allow_nuls: false         # Not yet implemented
 #    allow_whitespace: false
 #    allow_duplciates: true

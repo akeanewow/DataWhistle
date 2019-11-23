@@ -2,7 +2,7 @@
 from __future__ import annotations
 
 import pandas as pd  # type: ignore
-from typing import Callable, List, Tuple
+from typing import Callable, Optional, List, Tuple
 import pandas_checks as pc
 
 
@@ -15,9 +15,9 @@ class DataSetCheckSuite:
 
     def __init__(self):
         # test settings
-        self.stop_on_fail: bool = False
-        self.min_rows: int = 0
         self.allow_duplicate_rows: bool = True
+        self.min_rows: int = 0
+        self.stop_on_fail: bool = False
         # other properties
         self.error_messages: [str] = []
         self.columns: List[PandasColumnCheckSuite] = []
@@ -25,10 +25,10 @@ class DataSetCheckSuite:
 
     def _assemble_checks(self) -> None:
         self._checks = []
-        if self.min_rows > 0:
-            self._checks.append(self.check_min_rows)
         if not self.allow_duplicate_rows:
             self._checks.append(self.check_no_duplicate_rows)
+        if self.min_rows > 0:
+            self._checks.append(self.check_min_rows)
 
     def run_checks(self, verbose: bool = False) -> None:
         '''
@@ -79,14 +79,19 @@ class ColumnCheckSuite:
     '''
 
     def __init__(self, colname: str, coltype: str):
+        # test settings
         self.name: str = colname
-        self.error_messages: List[str] = []
         self.type: str = coltype
+        self.min_val: Optional[float] = None
+        # other properties
+        self.error_messages: List[str] = []
         self._checks: List[Callable] = []
 
     def _assemble_checks(self) -> None:
         self._checks = []
         self._checks.append(self.check_col_type)
+        if self.min_val is not None:
+            self._checks.append(self.check_col_min_val)
 
     def run_checks(self, stop_on_fail: bool,
                    verbose: bool = False) -> List[str]:
@@ -121,6 +126,9 @@ class ColumnCheckSuite:
         return self.error_messages
 
     def check_col_exists(self) -> Tuple[bool, str]:
+        raise NotImplementedError
+
+    def check_col_min_val(self) -> Tuple[bool, str]:
         raise NotImplementedError
 
     def check_col_type(self) -> Tuple[bool, str]:
@@ -170,3 +178,13 @@ class PandasColumnCheckSuite(ColumnCheckSuite):
             return pc.colcheck_is_str(self.dataframe, self.name)
         return False, (f'column {self.name} could not tested '
                        f'for type {self.type} (unknown type)')
+
+    def check_col_min_val(self) -> Tuple[bool, str]:
+        if not self.type == 'numeric':
+            return False, (f'column {self.name} cannot check minimum '
+                           'value on a non-numeric column')
+        if self.min_val is None:
+            return False, (f'column {self.name} could not check '
+                           'minimum value')
+        min_val = float(self.min_val)
+        return pc.colcheck_min_val(self.dataframe, self.name, min_val)
