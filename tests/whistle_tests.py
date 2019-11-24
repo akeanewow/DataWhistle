@@ -29,6 +29,7 @@ column A expected to be string type but is not
 column A cannot check minimum value on a non-numeric column
 column B want 10.1 minimum value, got 1.0
 column D want 0 nulls, got 2
+column F want 0 nulls, got 2
 '''
 
 

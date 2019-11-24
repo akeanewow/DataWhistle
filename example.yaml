@@ -17,7 +17,7 @@ columns:                       # Header for checks at the column level
 
   - name: C                    # Name of a column expected in the dataset
     type: string               # Column type ('numeric' or 'string')
-    allow_nulls: false          # Null values allowed in column (bool)
+    allow_nulls: false         # Null values allowed in column (bool)
 # Not yet implemented
 #    allow_whitespace: false
 #    allow_duplciates: true

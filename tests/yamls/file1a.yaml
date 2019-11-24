@@ -23,3 +23,7 @@ columns:
   - name: D
     type: numeric
     allow_nulls: false
+
+  - name: F
+    type: string
+    allow_nulls: false
