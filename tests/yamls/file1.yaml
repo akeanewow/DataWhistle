@@ -6,27 +6,12 @@ dataset:
   stop_on_fail: true
 
 columns:
+
   - name: A
     type: numeric
     allow_nulls: true
     min: 0
-#    max: 1000
-#    mean_min: 100
-#    mean_max: 1000
 
   - name: C
     type: string
     allow_nulls: false
-#    allow_whitespace: false
-#    allow_duplciates: true
-#    max_width: 100
-#    regex: '^xxyy$'
-#    values:
-#      - a
-#      - b
-#      - c
-#
-#  - date_column_name:
-#    type: datetime
-#    min: '2019-01-01 14:00:00'
-#    max: '2020-01-01 14:00:00'

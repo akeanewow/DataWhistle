@@ -1,35 +1,17 @@
+# Example rules to apply to a dataset and columns in the dataset
 ---
-dataset:                       # Header for checks at the dataset level
+dataset:
   allow_duplicate_rows: false  # More than one identical row allowed (bool)
   min_rows: 3                  # The minimum number of data rows epxected (int)
   stop_on_fail: true           # Stop testing on first test fail (bool)
 
-columns:                       # Header for checks at the column level
+columns:
 
   - name: A                    # Name of a column expected in the dataset
     type: numeric              # Column type ('numeric' or 'string')
     allow_nulls: true          # Null values allowed in column (bool)
     min: 0                     # Minimum value if numeric column (int / float)
-# Not yet implemented
-#    max: 1000
-#    mean_min: 100
-#    mean_max: 1000
 
   - name: C                    # Name of a column expected in the dataset
     type: string               # Column type ('numeric' or 'string')
     allow_nulls: false         # Null values allowed in column (bool)
-# Not yet implemented
-#    allow_whitespace: false
-#    allow_duplciates: true
-#    max_width: 100
-#    regex: '^xxyy$'
-#    values:
-#      - a
-#      - b
-#      - c
-
-#  - name: C
-# Not yet implemented
-#    type: datetime
-#    min: '2019-01-01 14:00:00'
-#    max: '2020-01-01 14:00:00'
