@@ -1,11 +1,11 @@
 ### Source code file overview
 
-| File | Purpose |
-|---|---|
+| File             | Purpose             |
+|------------------|-------------------------------------------------------------------|
 | pandas_checks.py | Base data checks of a Pandas DataFrame (start here to add checks) |
-| checksuites.py | Classes used to process checks and plug in different data sources |
-| yaml_parsing.py | Functions to parse rules file and apply it to checksuite classes |
-| whistle.py | Command line app to process rules |
+| checksuites.py   | Classes used to process checks and plug in different data sources |
+| yaml_parsing.py  | Functions to parse rules file and apply it to checksuite classes  |
+| whistle.py       | Command line app to process rules                                 |
 
 Unit testing files have equivalent names with '_tests' added to the above names.
 
