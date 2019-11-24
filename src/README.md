@@ -1,6 +1,6 @@
 ### Source code file overview
 
-| File             | Purpose             |
+| File             | Purpose                                                           |
 |------------------|-------------------------------------------------------------------|
 | pandas_checks.py | Base data checks of a Pandas DataFrame (start here to add checks) |
 | checksuites.py   | Classes used to process checks and plug in different data sources |
@@ -11,12 +11,12 @@ Unit testing files have equivalent names with '_tests' added to the above names.
 
 ### checksuites.py class hierarchy
 
-| Class | Purpose |
-| --- | --- |
-| DataSetCheckSuite | Dataset level check processor (common methods) |
-| - PandasDatasetCheckSuite | Pandas DataFrame level checks (Pandas specific) |
-| ColumnCheckSuite | Column level check processor (common methods) |
-| - PandasColumnCheckSuite | Pandas column / Series level checks (Pandas specific) |
+| Class                     | Purpose                                               |
+|---------------------------|-------------------------------------------------------|
+| DataSetCheckSuite         | Dataset level check processor (common methods)        |
+| - PandasDatasetCheckSuite | Pandas DataFrame level checks (Pandas specific)       |
+| ColumnCheckSuite          | Column level check processor (common methods)         |
+| - PandasColumnCheckSuite  | Pandas column / Series level checks (Pandas specific) |
 
 ### Steps to add a new check
 
