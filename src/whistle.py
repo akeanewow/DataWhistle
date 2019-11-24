@@ -41,6 +41,9 @@ def check_csv(csvfile: str, rulesfile: str, verbose: bool) -> None:
     except yp.YamlParsingError as e:
         print(e)
         sys.exit(5)
+    except Exception as ex:
+        print(f'Unexpected YAML parsing error:\n{ex}')
+        sys.exit(6)
     if verbose:
         print('done.\nRunning checks ', end='')
     checksuite.run_checks(verbose=verbose)
@@ -58,6 +61,7 @@ def check_csv(csvfile: str, rulesfile: str, verbose: bool) -> None:
 
 
 def load_file_pandas(csvfile: str, verbose: bool) -> pd.DataFrame:
+    '''Load a data file into a Pandas DataFrame.'''
     if verbose:
         print('Reading data file ... ', end='')
     try:

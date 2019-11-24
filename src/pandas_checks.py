@@ -69,3 +69,11 @@ def colcheck_min_val(df: pd.DataFrame,
     return False, (f'column {col_name} '
                    f'want {min_val} minimum value, '
                    f'got {actual_min}')
+
+
+def colcheck_no_nuls(df: pd.DataFrame, col_name: str) -> Tuple[bool, str]:
+    '''Check if a column contains null values.'''
+    countnull = pd.isnull(df[col_name]).sum()
+    if countnull == 0:
+        return True, ''
+    return False, f'column {col_name} want 0 nulls, got {countnull}'
