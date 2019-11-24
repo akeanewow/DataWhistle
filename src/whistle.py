@@ -57,7 +57,6 @@ def check_csv(csvfile: str, rulesfile: str, verbose: bool) -> None:
     else:
         if verbose:
             print(' done.\nAll checks passed.')
-        sys.exit(0)
 
 
 def load_file_pandas(csvfile: str, verbose: bool) -> pd.DataFrame:

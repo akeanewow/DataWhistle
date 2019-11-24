@@ -1,5 +1,11 @@
 import unittest
 import subprocess
+import io
+import sys
+sys.path.append('../src')
+
+import yaml_parsing as yp  # type: ignore
+import whistle  # type: ignore
 
 
 _HELP = '''usage: whistle.py [-h] [-c CSV] [-r RULES] [-v]
@@ -33,7 +39,7 @@ column F want 0 nulls, got 2
 '''
 
 
-class TestWhistle(unittest.TestCase):
+class TestCommandLine(unittest.TestCase):
 
     def test_help(self):
         result = subprocess.run(['python3', '../src/whistle.py', '-h'],
@@ -47,53 +53,47 @@ class TestWhistle(unittest.TestCase):
         self.assertEqual(result.returncode, 0)
         self.assertEqual(result.stdout, _NOARGS)
 
+
+class TestWhistle(unittest.TestCase):
+
+    def setUp(self):
+        self.capturedStout = io.StringIO()
+        sys.stdout = self.capturedStout
+
+    def tearDown(self):
+        sys.stdout = sys.__stdout__
+
     def test_allpassed_silent(self):
-        result = subprocess.run(['python3', '../src/whistle.py',
-                                 '-c', 'data/file1.csv',
-                                 '-r', 'yamls/file1.yaml'],
-                                capture_output=True, text=True)
-        self.assertEqual(result.returncode, 0)
-        self.assertEqual(result.stdout, '')
+        whistle.check_csv('data/file1.csv', 'yamls/file1.yaml',
+                          False)
+        self.assertEqual(self.capturedStout.getvalue(), '')
 
     def test_allpassed_verbose(self):
-        result = subprocess.run(['python3', '../src/whistle.py',
-                                 '-c', 'data/file1.csv',
-                                 '-r', 'yamls/file1.yaml', '-v'],
-                                capture_output=True, text=True)
-        self.assertEqual(result.returncode, 0)
-        self.assertEqual(result.stdout, _ALL_PASSED)
+        whistle.check_csv('data/file1.csv', 'yamls/file1.yaml',
+                          True)
+        self.assertEqual(self.capturedStout.getvalue(), _ALL_PASSED)
 
     def test_csvfile_not_found(self):
-        result = subprocess.run(['python3', '../src/whistle.py',
-                                 '-c', 'data/zile1.csv',
-                                 '-r', 'yamls/file1.yaml'],
-                                capture_output=True, text=True)
-        self.assertEqual(result.returncode, 2)
-        self.assertEqual(result.stdout, 'File data/zile1.csv not found\n')
+        with self.assertRaises(SystemExit) as e:
+            whistle.check_csv('data/zile1.csv', 'yamls/file1.yaml', True)
+        self.assertEqual(e.exception.code, 2)
 
     def test_yamlfile_not_found(self):
-        result = subprocess.run(['python3', '../src/whistle.py',
-                                 '-c', 'data/file1.csv',
-                                 '-r', 'yamls/zile1.yaml'],
-                                capture_output=True, text=True)
-        self.assertEqual(result.returncode, 4)
-        self.assertEqual(result.stdout, 'File yamls/zile1.yaml not found\n')
+        with self.assertRaises(SystemExit) as e:
+            whistle.check_csv('data/file1.csv', 'yamls/zile1.yaml', True)
+        self.assertEqual(e.exception.code, 4)
 
     def test_yamlerror(self):
-        result = subprocess.run(['python3', '../src/whistle.py',
-                                 '-c', 'data/file1.csv',
-                                 '-r', 'yamls/file3.yaml'],
-                                capture_output=True, text=True)
-        self.assertEqual(result.returncode, 5)
-        self.assertEqual(result.stdout, 'unexpected yaml attribute: stuff\n')
+        with self.assertRaises(SystemExit) as e:
+            whistle.check_csv('data/file1.csv', 'yamls/file3.yaml', True)
+        self.assertEqual(e.exception.code, 5)
 
     def test_all_failed(self):
-        result = subprocess.run(['python3', '../src/whistle.py',
-                                 '-c', 'data/file2.csv',
-                                 '-r', 'yamls/file1a.yaml'],
-                                capture_output=True, text=True)
-        self.assertEqual(result.returncode, 1)
-        self.assertEqual(result.stdout, _ALL_FAILED)
+        with self.assertRaises(SystemExit) as e:
+            whistle.check_csv('data/file2.csv', 'yamls/file1a.yaml',
+                              False)
+        self.assertEqual(e.exception.code, 1)
+        self.assertEqual(self.capturedStout.getvalue(), _ALL_FAILED)
 
 
 if __name__ == '__main__':
