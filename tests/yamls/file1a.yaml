@@ -27,3 +27,6 @@ columns:
   - name: F
     type: string
     allow_nulls: false
+
+  - name: X
+    type: string
