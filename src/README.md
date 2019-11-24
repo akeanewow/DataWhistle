@@ -25,3 +25,13 @@ Unit testing files have equivalent names with '_tests' added to the above names.
    1. Update `apply_yamldict_to_checksuite` logic to convert YAML and add it to the checksuite class.
 1. Update whistle_tests.py with any new unit tests and changes in command line output.
 1. Run mypy and flake8 on all files and check that all tests pass.
+
+### checksuites.py class hierarchy
+
+| Class | Purpose |
+| --- | --- |
+| DataSetCheckSuite | Dataset level check processor (common methods) |
+| - PandasDatsetCheckSuite | Pandas DataFrame level checks (Pandas specific) |
+| PandasDatsetCheckSuite | Column level check processor (common methods) |
+| - ColumnCheckSuite) | Pandas column / Series level checks (Pandas specific) |
+
