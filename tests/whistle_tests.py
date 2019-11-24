@@ -19,7 +19,7 @@ _NOARGS = ('Data source e.g. CSV file and rules file required (use -h '
 
 _ALL_PASSED = '''Reading data file ... done.
 Parsing rules file ... done.
-Running checks ....... done.
+Running checks ........ done.
 All checks passed.
 '''
 
@@ -28,6 +28,7 @@ want 10 rows, got 7
 column A expected to be string type but is not
 column A cannot check minimum value on a non-numeric column
 column B want 10.1 minimum value, got 1.0
+column D want 0 nulls, got 2
 '''
 
 

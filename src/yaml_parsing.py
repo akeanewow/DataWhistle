@@ -5,7 +5,7 @@ import checksuites as cs
 
 _YAML_TOPLEVEL_KEYS = ['dataset', 'columns']
 _YAML_DATASET_KEYS = ['stop_on_fail', 'allow_duplicate_rows', 'min_rows']
-_YAML_COLUMN_KEYS = ['name', 'type', 'min']
+_YAML_COLUMN_KEYS = ['name', 'type', 'allow_nulls', 'min']
 _YAML_COLUMN_TYPES = ['numeric', 'string']
 
 _TRUE_VALS = [True, 1, 'true', 'True', '1']
@@ -91,6 +91,8 @@ def apply_yamldict_to_checksuite(ymld: Dict,
             coltype = coldict['type']
             _checkcolumntype(coltype)
             col = suite.addcolumn(colname, coltype)
+            if 'allow_nulls' in colkeys:
+                col.allow_nulls = _check_bool_val(coldict['allow_nulls'])
             if 'min' in colkeys:
                 val = coldict['min']
                 if (not isinstance(val, int)) and (not isinstance(val, float)):

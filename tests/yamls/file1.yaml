@@ -8,15 +8,15 @@ dataset:
 columns:
   - name: A
     type: numeric
+    allow_nulls: true 
     min: 0
-#    allow_nuls: false
 #    max: 1000
 #    mean_min: 100
 #    mean_max: 1000
 
   - name: C
     type: string
-#    allow_nuls: false
+    allow_nulls: false
 #    allow_whitespace: false
 #    allow_duplciates: true
 #    max_width: 100

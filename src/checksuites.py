@@ -82,6 +82,7 @@ class ColumnCheckSuite:
         # test settings
         self.name: str = colname
         self.type: str = coltype
+        self.allow_nulls: bool = True
         self.min_val: Optional[float] = None
         # other properties
         self.error_messages: List[str] = []
@@ -90,6 +91,8 @@ class ColumnCheckSuite:
     def _assemble_checks(self) -> None:
         self._checks = []
         self._checks.append(self.check_col_type)
+        if not self.allow_nulls:
+            self._checks.append(self.check_col_non_nulls)
         if self.min_val is not None:
             self._checks.append(self.check_col_min_val)
 
@@ -129,6 +132,9 @@ class ColumnCheckSuite:
         raise NotImplementedError
 
     def check_col_min_val(self) -> Tuple[bool, str]:
+        raise NotImplementedError
+
+    def check_col_non_nulls(self) -> Tuple[bool, str]:
         raise NotImplementedError
 
     def check_col_type(self) -> Tuple[bool, str]:
@@ -171,14 +177,6 @@ class PandasColumnCheckSuite(ColumnCheckSuite):
     def check_col_exists(self) -> Tuple[bool, str]:
         return pc.colcheck_col_exists(self.dataframe, self.name)
 
-    def check_col_type(self) -> Tuple[bool, str]:
-        if self.type == 'numeric':
-            return pc.colcheck_is_numeric(self.dataframe, self.name)
-        if self.type == 'string':
-            return pc.colcheck_is_str(self.dataframe, self.name)
-        return False, (f'column {self.name} could not tested '
-                       f'for type {self.type} (unknown type)')
-
     def check_col_min_val(self) -> Tuple[bool, str]:
         if not self.type == 'numeric':
             return False, (f'column {self.name} cannot check minimum '
@@ -188,3 +186,14 @@ class PandasColumnCheckSuite(ColumnCheckSuite):
                            'minimum value')
         min_val = float(self.min_val)
         return pc.colcheck_min_val(self.dataframe, self.name, min_val)
+
+    def check_col_non_nulls(self) -> Tuple[bool, str]:
+        return pc.colcheck_no_nulls(self.dataframe, self.name)
+
+    def check_col_type(self) -> Tuple[bool, str]:
+        if self.type == 'numeric':
+            return pc.colcheck_is_numeric(self.dataframe, self.name)
+        if self.type == 'string':
+            return pc.colcheck_is_str(self.dataframe, self.name)
+        return False, (f'column {self.name} could not tested '
+                       f'for type {self.type} (unknown type)')

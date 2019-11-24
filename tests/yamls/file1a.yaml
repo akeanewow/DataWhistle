@@ -9,13 +9,17 @@ columns:
   - name: A
     type: string
     min: 10
+    allow_nulls: true
 
   - name: B
     type: numeric
     min: 10.1
+    allow_nulls: true
 
   - name: C
     type: string
+    allow_nulls: true
 
   - name: D
     type: numeric
+    allow_nulls: false

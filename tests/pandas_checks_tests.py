@@ -67,10 +67,10 @@ class TestColChecks(unittest.TestCase):
         self.assertEqual(message, 'column A want 2 minimum value, got 1')
 
     def test_col_no_nulls(self):
-        passed, message = pc.colcheck_no_nuls(self.df_file1, 'A')
+        passed, message = pc.colcheck_no_nulls(self.df_file1, 'A')
         self.assertEqual(passed, True)
         self.assertEqual(message, '')
-        passed, message = pc.colcheck_no_nuls(self.df_file1, 'D')
+        passed, message = pc.colcheck_no_nulls(self.df_file1, 'D')
         self.assertEqual(passed, False)
         self.assertEqual(message, 'column D want 0 nulls, got 2')
 

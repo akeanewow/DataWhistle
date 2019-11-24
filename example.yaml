@@ -8,15 +8,17 @@ columns:                       # Header for checks at the column level
 
   - name: A                    # Name of a column expected in the dataset
     type: numeric              # Column type ('numeric' or 'string')
+    allow_nulls: true          # Null values allowed in column (bool)
     min: 0                     # Minimum value if numeric column (int / float)
-#    allow_nuls: false         # Not yet implemented
+# Not yet implemented
 #    max: 1000
 #    mean_min: 100
 #    mean_max: 1000
 
   - name: C                    # Name of a column expected in the dataset
     type: string               # Column type ('numeric' or 'string')
-#    allow_nuls: false         # Not yet implemented
+    allow_nulls: false          # Null values allowed in column (bool)
+# Not yet implemented
 #    allow_whitespace: false
 #    allow_duplciates: true
 #    max_width: 100
@@ -27,6 +29,7 @@ columns:                       # Header for checks at the column level
 #      - c
 
 #  - name: C
+# Not yet implemented
 #    type: datetime
 #    min: '2019-01-01 14:00:00'
 #    max: '2020-01-01 14:00:00'

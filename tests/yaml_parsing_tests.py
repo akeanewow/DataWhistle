@@ -54,11 +54,15 @@ class TestYamlParsing(unittest.TestCase):
         self.assertEqual(len(checksuite.columns), 2)
         col1 = checksuite.columns[0]
         col2 = checksuite.columns[1]
+        # col 1
         self.assertEqual(col1.name, 'A')
         self.assertEqual(col1.type, 'numeric')
+        self.assertEqual(col1.allow_nulls, True)
         self.assertEqual(col1.min_val, 0)
+        # col 2
         self.assertEqual(col2.name, 'C')
         self.assertEqual(col2.type, 'string')
+        self.assertEqual(col2.allow_nulls, False)
 
 
 if __name__ == '__main__':
