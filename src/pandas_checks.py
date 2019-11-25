@@ -45,6 +45,28 @@ def colcheck_col_exists(df: pd.DataFrame, col_name: str) -> Tuple[bool, str]:
     return False, f'column {col_name} not found in data'
 
 
+def colcheck_count_distinct(df: pd.DataFrame, col_name: str, count: int,
+                            operator: str = '=') -> Tuple[bool, str]:
+    '''
+    Check if the count of distinct values in a column is equal to, greater
+    than or less than a specified count.
+
+    The operator parameter can be '=', '>' or '<'.
+    '''
+    count_val = df[col_name].nunique()
+    if operator == '=' and count_val == count:
+        return True, ''
+    if operator == '>' and count_val > count:
+        return True, ''
+    if operator == '<' and count_val < count:
+        return True, ''
+    if operator not in ['=', '<', '>']:
+        return False, (f'column {col_name} count distinct '
+                       f'operator {operator} not recognised')
+    return False, (f'column {col_name} want count distinct {operator} {count}, '
+                   f'got {count_val}')
+
+
 def colcheck_is_numeric(df: pd.DataFrame, col_name: str) -> Tuple[bool, str]:
     '''Check if a column is numeric.'''
     if pd.api.types.is_numeric_dtype(df[col_name]):

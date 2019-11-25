@@ -41,6 +41,18 @@ class TestColChecks(unittest.TestCase):
         self.assertEqual(passed, True)
         self.assertEqual(message, '')
 
+    def test_col_count_distinct(self):
+        passed, message = pc.colcheck_count_distinct(self.df_file1, 'G', 2, '>')
+        self.assertEqual(passed, False)
+        self.assertEqual(message, 'column G want count distinct > 2, got 2')
+        passed, message = pc.colcheck_count_distinct(self.df_file1, 'G', 2, '<')
+        self.assertEqual(passed, False)
+        self.assertEqual(message, 'column G want count distinct < 2, got 2')
+        passed, message = pc.colcheck_count_distinct(self.df_file1, 'G', 2)
+        self.assertEqual(passed, True)
+        passed, message = pc.colcheck_count_distinct(self.df_file1, 'A', 5)
+        self.assertEqual(passed, True)
+
     def test_col_is_numeric(self):
         passed, message = pc.colcheck_is_numeric(self.df_file1, 'C')
         self.assertEqual(passed, False)
