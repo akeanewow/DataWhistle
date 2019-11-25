@@ -59,10 +59,16 @@ class TestYamlParsing(unittest.TestCase):
         self.assertEqual(col1.type, 'numeric')
         self.assertEqual(col1.allow_nulls, True)
         self.assertEqual(col1.min_val, 0)
+        self.assertEqual(col1.count_distinct_max, 10)
+        self.assertEqual(col1.count_distinct_min, 1)
+        self.assertEqual(col1.count_distinct, 5)
         # col 2
         self.assertEqual(col2.name, 'C')
         self.assertEqual(col2.type, 'string')
         self.assertEqual(col2.allow_nulls, False)
+        self.assertEqual(col1.count_distinct_max, 10)
+        self.assertEqual(col1.count_distinct_min, 1)
+        self.assertEqual(col1.count_distinct, 5)
 
 
 if __name__ == '__main__':

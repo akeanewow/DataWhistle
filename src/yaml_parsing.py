@@ -5,7 +5,8 @@ import checksuites as cs
 
 _YAML_TOPLEVEL_KEYS = ['dataset', 'columns']
 _YAML_DATASET_KEYS = ['stop_on_fail', 'allow_duplicate_rows', 'min_rows']
-_YAML_COLUMN_KEYS = ['name', 'type', 'allow_nulls', 'min']
+_YAML_COLUMN_KEYS = ['name', 'type', 'allow_nulls', 'count_distinct_max',
+                     'count_distinct_min', 'count_distinct', 'min']
 _YAML_COLUMN_TYPES = ['numeric', 'string']
 
 _TRUE_VALS = [True, 1, 'true', 'True', '1']
@@ -93,6 +94,24 @@ def apply_yamldict_to_checksuite(ymld: Dict,
             col = suite.addcolumn(colname, coltype)
             if 'allow_nulls' in colkeys:
                 col.allow_nulls = _check_bool_val(coldict['allow_nulls'])
+            if 'count_distinct_max' in colkeys:
+                val = coldict['count_distinct_max']
+                if not isinstance(val, int):
+                    raise YamlParsingError(f'column {colname} distinct max '
+                                           'value must be int')
+                col.count_distinct_max = val
+            if 'count_distinct_min' in colkeys:
+                val = coldict['count_distinct_min']
+                if not isinstance(val, int):
+                    raise YamlParsingError(f'column {colname} distinct min'
+                                           'value must be int')
+                col.count_distinct_min = val
+            if 'count_distinct' in colkeys:
+                val = coldict['count_distinct']
+                if not isinstance(val, int):
+                    raise YamlParsingError(f'column {colname} count distinct'
+                                           'value must be int')
+                col.count_distinct = val
             if 'min' in colkeys:
                 val = coldict['min']
                 if (not isinstance(val, int)) and (not isinstance(val, float)):
