@@ -11,7 +11,13 @@ columns:
     type: numeric
     allow_nulls: true
     min: 0
+    count_distinct_max: 10
+    count_distinct_min: 1
+    count_distinct: 5
 
   - name: C
     type: string
     allow_nulls: false
+    count_distinct_max: 10
+    count_distinct_min: 1
+    count_distinct: 5

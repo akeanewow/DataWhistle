@@ -10,6 +10,9 @@ columns:
     type: string
     min: 10
     allow_nulls: true
+    count_distinct_max: 1
+    count_distinct_min: 10
+    count_distinct: 7
 
   - name: B
     type: numeric
@@ -23,6 +26,9 @@ columns:
   - name: D
     type: numeric
     allow_nulls: false
+    count_distinct_max: 1
+    count_distinct_min: 10
+    count_distinct: 4
 
   - name: F
     type: string

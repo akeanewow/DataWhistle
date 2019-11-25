@@ -63,8 +63,8 @@ def colcheck_count_distinct(df: pd.DataFrame, col_name: str, count: int,
     if operator not in ['=', '<', '>']:
         return False, (f'column {col_name} count distinct '
                        f'operator {operator} not recognised')
-    return False, (f'column {col_name} want count distinct {operator} {count}, '
-                   f'got {count_val}')
+    return False, (f'column {col_name} want count distinct {operator} '
+                   f'{count}, got {count_val}')
 
 
 def colcheck_is_numeric(df: pd.DataFrame, col_name: str) -> Tuple[bool, str]:

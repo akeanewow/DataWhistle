@@ -83,6 +83,9 @@ class ColumnCheckSuite:
         self.name: str = colname
         self.type: str = coltype
         self.allow_nulls: bool = True
+        self.count_distinct_max: Optional[int] = None
+        self.count_distinct_min: Optional[int] = None
+        self.count_distinct: Optional[int] = None
         self.min_val: Optional[float] = None
         # other properties
         self.error_messages: List[str] = []
@@ -95,6 +98,12 @@ class ColumnCheckSuite:
             self._checks.append(self.check_col_non_nulls)
         if self.min_val is not None:
             self._checks.append(self.check_col_min_val)
+        if self.count_distinct_max is not None:
+            self._checks.append(self.check_col_count_distinct_max)
+        if self.count_distinct_min is not None:
+            self._checks.append(self.check_col_count_distinct_min)
+        if self.count_distinct is not None:
+            self._checks.append(self.check_col_count_distinct)
 
     def run_checks(self, stop_on_fail: bool,
                    verbose: bool = False) -> List[str]:
@@ -127,6 +136,15 @@ class ColumnCheckSuite:
                 if verbose:
                     print('.', end='')
         return self.error_messages
+
+    def check_col_count_distinct_max(self) -> Tuple[bool, str]:
+        raise NotImplementedError
+
+    def check_col_count_distinct_min(self) -> Tuple[bool, str]:
+        raise NotImplementedError
+
+    def check_col_count_distinct(self) -> Tuple[bool, str]:
+        raise NotImplementedError
 
     def check_col_exists(self) -> Tuple[bool, str]:
         raise NotImplementedError
@@ -173,6 +191,30 @@ class PandasColumnCheckSuite(ColumnCheckSuite):
     def __init__(self, dataframe: pd.DataFrame, colname: str, coltype: str):
         self.dataframe: pd.DataFrame = dataframe
         super().__init__(colname, coltype)
+
+    def check_col_count_distinct_max(self) -> Tuple[bool, str]:
+        if self.count_distinct_max is None:
+            return False, (f'column {self.name} could not check count'
+                           'distinct maximum value')
+        max_val = int(self.count_distinct_max)
+        return pc.colcheck_count_distinct(self.dataframe, self.name,
+                                          max_val, '<')
+
+    def check_col_count_distinct_min(self) -> Tuple[bool, str]:
+        if self.count_distinct_min is None:
+            return False, (f'column {self.name} could not check count'
+                           'distinct minimum value')
+        min_val = int(self.count_distinct_min)
+        return pc.colcheck_count_distinct(self.dataframe, self.name,
+                                          min_val, '>')
+
+    def check_col_count_distinct(self) -> Tuple[bool, str]:
+        if self.count_distinct is None:
+            return False, (f'column {self.name} could not check count'
+                           'distinct')
+        val = int(self.count_distinct)
+        return pc.colcheck_count_distinct(self.dataframe, self.name,
+                                          val, '=')
 
     def check_col_exists(self) -> Tuple[bool, str]:
         return pc.colcheck_col_exists(self.dataframe, self.name)
