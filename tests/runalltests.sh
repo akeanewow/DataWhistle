@@ -1,2 +1,2 @@
 #!/bin/zsh
-python3 -m unittest pandas_checks_tests checksuites_tests yaml_parsing_tests whistle_tests
+python3 -m unittest pandaschecks_tests checksuites_tests yamlparsing_tests commandline_tests

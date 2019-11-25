@@ -38,7 +38,7 @@ def dfcheck_no_duplicate_rows(df: pd.DataFrame) -> Tuple[bool, str]:
 # condition], got [actual value or condition]'.
 
 
-def colcheck_col_exists(df: pd.DataFrame, col_name: str) -> Tuple[bool, str]:
+def colcheck_exists(df: pd.DataFrame, col_name: str) -> Tuple[bool, str]:
     '''Check if a column with the specified name exists in the dataset.'''
     if col_name in df.columns:
         return True, ''

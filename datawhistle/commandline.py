@@ -1,16 +1,14 @@
 import argparse
 import sys
 import pandas as pd  # type: ignore
-
-import checksuites as cs
-import yaml_parsing as yp
+import datawhistle as dw
 
 
 _HELP = ('A Programmatic Data Checker '
          '(see https://github.com/akeanewow/DataWhistle)')
 
 
-def main() -> None:
+def commandline_main() -> None:
     parser = argparse.ArgumentParser(description=_HELP)
     parser.add_argument("-c", "--csv", type=str,
                         help='a comma separated value file to check')
@@ -20,25 +18,25 @@ def main() -> None:
                         help='increase output verbosity')
     args = parser.parse_args()
     if args.csv and args.rules:
-        check_csv(args.csv, args.rules, args.verbose)
+        commandline_check_csv(args.csv, args.rules, args.verbose)
         return
     print(('Data source e.g. CSV file and rules file required '
            '(use -h command line argument to get help)'))
 
 
-def check_csv(csvfile: str, rulesfile: str, verbose: bool) -> None:
+def commandline_check_csv(csvfile: str, rulesfile: str, verbose: bool) -> None:
     '''Run checks on a CSV file.'''
-    df = load_file_pandas(csvfile, verbose)
+    df = commandline_load_file_pandas(csvfile, verbose)
     if verbose:
         print('Parsing rules file ... ', end='')
     try:
-        ymld = yp.load_yaml_file_to_dict(rulesfile)
-        checksuite = cs.PandasDatsetCheckSuite(df)
-        yp.apply_yamldict_to_checksuite(ymld, checksuite)
+        ymld = dw.load_yaml_file_to_dict(rulesfile)
+        checksuite = dw.PandasDatsetCheckSuite(df)
+        dw.apply_yamldict_to_checksuite(ymld, checksuite)
     except FileNotFoundError:
         print(f'File {rulesfile} not found')
         sys.exit(4)
-    except yp.YamlParsingError as e:
+    except dw.YamlParsingError as e:
         print(e)
         sys.exit(5)
     except Exception as ex:
@@ -46,7 +44,7 @@ def check_csv(csvfile: str, rulesfile: str, verbose: bool) -> None:
         sys.exit(6)
     if verbose:
         print('done.\nRunning checks ', end='')
-    checksuite.run_checks(verbose=verbose)
+    checksuite.runchecks(verbose=verbose)
     num_errs = len(checksuite.error_messages)
     if num_errs > 0:
         if verbose:
@@ -59,7 +57,7 @@ def check_csv(csvfile: str, rulesfile: str, verbose: bool) -> None:
             print(' done.\nAll checks passed.')
 
 
-def load_file_pandas(csvfile: str, verbose: bool) -> pd.DataFrame:
+def commandline_load_file_pandas(csvfile: str, verbose: bool) -> pd.DataFrame:
     '''Load a data file into a Pandas DataFrame.'''
     if verbose:
         print('Reading data file ... ', end='')
@@ -74,7 +72,3 @@ def load_file_pandas(csvfile: str, verbose: bool) -> pd.DataFrame:
     if verbose:
         print('done.')
     return df
-
-
-if __name__ == '__main__':
-    main()

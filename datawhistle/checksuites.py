@@ -1,9 +1,8 @@
 # Avoid forward decalaration type check errors. See PEP563.
 from __future__ import annotations
-
 import pandas as pd  # type: ignore
 from typing import Callable, Optional, List, Tuple
-import pandas_checks as pc
+import datawhistle.pandaschecks as dwpc
 
 
 class DataSetCheckSuite:
@@ -30,7 +29,7 @@ class DataSetCheckSuite:
         if self.min_rows > 0:
             self._checks.append(self.check_min_rows)
 
-    def run_checks(self, verbose: bool = False) -> None:
+    def runchecks(self, verbose: bool = False) -> None:
         '''
         Run all checks based on object properties capturing test settings.
         '''
@@ -51,8 +50,8 @@ class DataSetCheckSuite:
                     print('.', end='')
         if not checks_failed:
             for column in self.columns:
-                error_messages = column.run_checks(self.stop_on_fail,
-                                                   verbose=verbose)
+                error_messages = column.runchecks(self.stop_on_fail,
+                                                  verbose=verbose)
                 self.error_messages += error_messages
                 if len(error_messages) > 0 and self.stop_on_fail:
                     break
@@ -105,8 +104,8 @@ class ColumnCheckSuite:
         if self.count_distinct is not None:
             self._checks.append(self.check_col_count_distinct)
 
-    def run_checks(self, stop_on_fail: bool,
-                   verbose: bool = False) -> List[str]:
+    def runchecks(self, stop_on_fail: bool,
+                  verbose: bool = False) -> List[str]:
         '''
         Run all checks based on object properties capturing test settings.
         '''
@@ -176,10 +175,10 @@ class PandasDatsetCheckSuite(DataSetCheckSuite):
         return column
 
     def check_min_rows(self) -> Tuple[bool, str]:
-        return pc.dfcheck_min_rows(self.dataframe, self.min_rows)
+        return dwpc.dfcheck_min_rows(self.dataframe, self.min_rows)
 
     def check_no_duplicate_rows(self) -> Tuple[bool, str]:
-        return pc.dfcheck_no_duplicate_rows(self.dataframe)
+        return dwpc.dfcheck_no_duplicate_rows(self.dataframe)
 
 
 class PandasColumnCheckSuite(ColumnCheckSuite):
@@ -197,27 +196,27 @@ class PandasColumnCheckSuite(ColumnCheckSuite):
             return False, (f'column {self.name} could not check count'
                            'distinct maximum value')
         max_val = int(self.count_distinct_max)
-        return pc.colcheck_count_distinct(self.dataframe, self.name,
-                                          max_val, '<')
+        return dwpc.colcheck_count_distinct(self.dataframe, self.name,
+                                            max_val, '<')
 
     def check_col_count_distinct_min(self) -> Tuple[bool, str]:
         if self.count_distinct_min is None:
             return False, (f'column {self.name} could not check count'
                            'distinct minimum value')
         min_val = int(self.count_distinct_min)
-        return pc.colcheck_count_distinct(self.dataframe, self.name,
-                                          min_val, '>')
+        return dwpc.colcheck_count_distinct(self.dataframe, self.name,
+                                            min_val, '>')
 
     def check_col_count_distinct(self) -> Tuple[bool, str]:
         if self.count_distinct is None:
             return False, (f'column {self.name} could not check count'
                            'distinct')
         val = int(self.count_distinct)
-        return pc.colcheck_count_distinct(self.dataframe, self.name,
-                                          val, '=')
+        return dwpc.colcheck_count_distinct(self.dataframe, self.name,
+                                            val, '=')
 
     def check_col_exists(self) -> Tuple[bool, str]:
-        return pc.colcheck_col_exists(self.dataframe, self.name)
+        return dwpc.colcheck_exists(self.dataframe, self.name)
 
     def check_col_min_val(self) -> Tuple[bool, str]:
         if not self.type == 'numeric':
@@ -227,15 +226,15 @@ class PandasColumnCheckSuite(ColumnCheckSuite):
             return False, (f'column {self.name} could not check '
                            'minimum value')
         min_val = float(self.min_val)
-        return pc.colcheck_min_val(self.dataframe, self.name, min_val)
+        return dwpc.colcheck_min_val(self.dataframe, self.name, min_val)
 
     def check_col_non_nulls(self) -> Tuple[bool, str]:
-        return pc.colcheck_no_nulls(self.dataframe, self.name)
+        return dwpc.colcheck_no_nulls(self.dataframe, self.name)
 
     def check_col_type(self) -> Tuple[bool, str]:
         if self.type == 'numeric':
-            return pc.colcheck_is_numeric(self.dataframe, self.name)
+            return dwpc.colcheck_is_numeric(self.dataframe, self.name)
         if self.type == 'string':
-            return pc.colcheck_is_str(self.dataframe, self.name)
+            return dwpc.colcheck_is_str(self.dataframe, self.name)
         return False, (f'column {self.name} could not tested '
                        f'for type {self.type} (unknown type)')

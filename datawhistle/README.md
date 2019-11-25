@@ -2,10 +2,10 @@
 
 | File             | Purpose                                                           |
 |------------------|-------------------------------------------------------------------|
-| pandas_checks.py | Base data checks of a Pandas DataFrame (start here to add checks) |
+| pandaschecks.py | Base data checks of a Pandas DataFrame (start here to add checks) |
 | checksuites.py   | Classes used to process checks and plug in different data sources |
-| yaml_parsing.py  | Functions to parse rules file and apply it to checksuite classes  |
-| whistle.py       | Command line app to process rules                                 |
+| yamlparsing.py  | Functions to parse rules file and apply it to checksuite classes  |
+| commandline.py       | Command line app to process rules                                 |
 
 Unit testing files have equivalent names with '_tests' added to the above names.
 
@@ -20,7 +20,7 @@ Unit testing files have equivalent names with '_tests' added to the above names.
 
 ### Steps to add a new check
 
-1. Add a check and equivalent unit test to base data check file e.g. pandas_checks.py.
+1. Add a check and equivalent unit test to base data check file e.g. pandaschecks.py.
 1. Update the classes in checksuites.py.
    1. `DataSetCheckSuite` for dataset level checks. `ColumnCheckSuite` for column level checks.
       1. Add a check property to `__init__` method.

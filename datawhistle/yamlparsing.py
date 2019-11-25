@@ -1,6 +1,6 @@
 import yaml  # type: ignore
 from typing import Any, Dict, List
-import checksuites as cs
+import datawhistle as dw
 
 
 _YAML_TOPLEVEL_KEYS = ['dataset', 'columns']
@@ -8,7 +8,6 @@ _YAML_DATASET_KEYS = ['stop_on_fail', 'allow_duplicate_rows', 'min_rows']
 _YAML_COLUMN_KEYS = ['name', 'type', 'allow_nulls', 'count_distinct_max',
                      'count_distinct_min', 'count_distinct', 'min']
 _YAML_COLUMN_TYPES = ['numeric', 'string']
-
 _TRUE_VALS = [True, 1, 'true', 'True', '1']
 _FALSE_VALS = [False, 0, 'false', 'False', '0']
 
@@ -26,19 +25,19 @@ def load_yaml_file_to_dict(filename: str) -> Dict:
     return parsed
 
 
-def _checktoplevelkeys(ykeys: List[str]) -> None:
+def _check_yaml_toplevel_keys(ykeys: List[str]) -> None:
     for key in ykeys:
         if key not in _YAML_TOPLEVEL_KEYS:
             raise YamlParsingError(f'unexpected yaml attribute: {key}')
 
 
-def _checkdatasetkeys(dsdictkeys: List[str]) -> None:
+def _check_yaml_dataset_keys(dsdictkeys: List[str]) -> None:
     for key in dsdictkeys:
         if key not in _YAML_DATASET_KEYS:
             raise YamlParsingError(f'unexpected dataset attribute: {key}')
 
 
-def _checkcolumnkeys(colkeys: List[str]) -> None:
+def _check_yaml_column_keys(colkeys: List[str]) -> None:
     if 'name' not in colkeys:
         raise YamlParsingError('column name missing')
     if 'type' not in colkeys:
@@ -48,7 +47,7 @@ def _checkcolumnkeys(colkeys: List[str]) -> None:
             raise YamlParsingError(f'unexpected column attribute: {key}')
 
 
-def _checkcolumntype(coltype: str) -> None:
+def _check_yaml_column_type(coltype: str) -> None:
     if coltype not in _YAML_COLUMN_TYPES:
         raise YamlParsingError(f'column type {coltype} not recognised')
 
@@ -62,14 +61,14 @@ def _check_bool_val(val: Any) -> bool:
 
 
 def apply_yamldict_to_checksuite(ymld: Dict,
-                                 suite: cs.PandasDatsetCheckSuite) -> None:
+                                 suite: dw.PandasDatsetCheckSuite) -> None:
     '''Apply yaml parsed into dictionary to a checksuite object.'''
     ykeys = list(ymld.keys())
-    _checktoplevelkeys(ykeys)
+    _check_yaml_toplevel_keys(ykeys)
     if 'dataset' in ykeys:
         dsdict = ymld['dataset']
         dsdictkeys = list(dsdict.keys())
-        _checkdatasetkeys(dsdictkeys)
+        _check_yaml_dataset_keys(dsdictkeys)
         if 'stop_on_fail' in dsdictkeys:
             suite.stop_on_fail = _check_bool_val(dsdict['stop_on_fail'])
         dups = 'allow_duplicate_rows'
@@ -87,10 +86,10 @@ def apply_yamldict_to_checksuite(ymld: Dict,
             return
         for coldict in colslist:
             colkeys = list(coldict.keys())
-            _checkcolumnkeys(colkeys)
+            _check_yaml_column_keys(colkeys)
             colname = coldict['name']
             coltype = coldict['type']
-            _checkcolumntype(coltype)
+            _check_yaml_column_type(coltype)
             col = suite.addcolumn(colname, coltype)
             if 'allow_nulls' in colkeys:
                 col.allow_nulls = _check_bool_val(coldict['allow_nulls'])
