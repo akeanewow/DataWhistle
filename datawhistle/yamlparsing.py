@@ -78,11 +78,14 @@ def apply_yamldict_to_checksuite(ymld: Dict,
         dsdict = ymld['dataset']
         dsdictkeys = list(dsdict.keys())
         _check_yaml_dataset_keys(dsdictkeys)
+        # stop on first check fail
         if 'stop_on_fail' in dsdictkeys:
             suite.stop_on_fail = _check_bool_val(dsdict['stop_on_fail'])
+        # allow duplicate rows
         dups = 'allow_duplicate_rows'
         if dups in dsdictkeys:
             suite.allow_duplicate_rows = _check_bool_val(dsdict[dups])
+        #  minimum Numbers of rows
         if 'min_rows' in dsdictkeys:
             val = dsdict['min_rows']
             if not isinstance(val, int):
@@ -91,8 +94,6 @@ def apply_yamldict_to_checksuite(ymld: Dict,
             suite.min_rows = val
     if 'columns' in ykeys:
         colslist = ymld['columns']
-        if len(colslist) == 0:
-            return
         for coldict in colslist:
             colkeys = list(coldict.keys())
             _check_yaml_column_keys(colkeys)
@@ -100,8 +101,10 @@ def apply_yamldict_to_checksuite(ymld: Dict,
             coltype = coldict['type']
             _check_yaml_column_type(coltype)
             col = suite.addcolumn(colname, coltype)
+            # allow null values  in the column
             if 'allow_nulls' in colkeys:
                 col.allow_nulls = _check_bool_val(coldict['allow_nulls'])
+            # count distinct checks
             if 'count_distinct_max' in colkeys:
                 val = coldict['count_distinct_max']
                 if not isinstance(val, int):
@@ -120,6 +123,7 @@ def apply_yamldict_to_checksuite(ymld: Dict,
                     raise YamlParsingError(f'column {colname} count distinct'
                                            'value must be int')
                 col.count_distinct = val
+            # column value checks
             if 'min' in colkeys:
                 val = coldict['min']
                 if (not isinstance(val, int)) and (not isinstance(val, float)):
