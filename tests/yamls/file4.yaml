@@ -2,7 +2,7 @@
 dataset:
   allow_duplicate_rows: true
   stop_on_fail: true
-  min_rows: 1
+  row_count_min: 1
   stuff: 1001  # <------ deliberate unknown attribute
 
 columns:

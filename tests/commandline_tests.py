@@ -35,6 +35,7 @@ column X not found in data
 class TestWhistle(unittest.TestCase):
 
     def setUp(self):
+        self.maxDiff = None
         self.capturedStout = io.StringIO()
         sys.stdout = self.capturedStout
 

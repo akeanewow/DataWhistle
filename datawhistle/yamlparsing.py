@@ -7,7 +7,7 @@ _YAML_TOPLEVEL_KEYS = ['dataset', 'columns']
 _YAML_DATASET_KEYS = [
     'stop_on_fail',
     'allow_duplicate_rows',
-    'min_rows']
+    'row_count_min']
 _YAML_COLUMN_KEYS = [
     'name',
     'type',
@@ -83,12 +83,12 @@ def apply_yamldict_to_checksuite(ymld: Dict,
         if dups in dsdictkeys:
             suite.allow_duplicate_rows = _check_bool_val(dsdict[dups])
         #  minimum Numbers of rows
-        if 'min_rows' in dsdictkeys:
-            val = dsdict['min_rows']
+        if 'row_count_min' in dsdictkeys:
+            val = dsdict['row_count_min']
             if not isinstance(val, int):
-                _yamlerr((f'dataset: min_rows want an integer, '
+                _yamlerr((f'dataset: row_count_min want an integer, '
                           f'got {val}({type(val)})'))
-            suite.min_rows = val
+            suite.row_count_min = val
     #
     # Process columns
     if 'columns' not in ykeys:
