@@ -59,12 +59,17 @@ def _check_yaml_dataset_keys(dsdictkeys: List[str]) -> None:
         if key not in _YAML_DATASET_KEYS:
             raise YamlParsingError(f'unexpected dataset attribute: {key}')
 
+def _yamlerr(message: str) -> None:
+    raise YamlParsingError(message)
+
 
 def apply_yamldict_to_checksuite(ymld: Dict,
                                  suite: dw.PandasDatsetCheckSuite) -> None:
     '''Apply yaml parsed into dictionary to a checksuite object.'''
     ykeys = list(ymld.keys())
     _check_yaml_toplevel_keys(ykeys)
+    #
+    # Process dataset
     if 'dataset' in ykeys:
         dsdict = ymld['dataset']
         dsdictkeys = list(dsdict.keys())
@@ -80,48 +85,47 @@ def apply_yamldict_to_checksuite(ymld: Dict,
         if 'min_rows' in dsdictkeys:
             val = dsdict['min_rows']
             if not isinstance(val, int):
-                raise YamlParsingError((f'dataset: min_rows want an integer, '
-                                        f'got {val}({type(val)})'))
+                _yamlerr((f'dataset: min_rows want an integer, '
+                          f'got {val}({type(val)})'))
             suite.min_rows = val
-    if 'columns' in ykeys:
-        colslist = ymld['columns']
-        for coldict in colslist:
-            colkeys = list(coldict.keys())
-            _check_yaml_column_keys(colkeys)
-            colname = coldict['name']
-            coltype = coldict['type']
-            _check_yaml_column_type(coltype)
-            col = suite.addcolumn(colname, coltype)
-            # allow null values  in the column
-            if 'allow_nulls' in colkeys:
-                col.allow_nulls = _check_bool_val(coldict['allow_nulls'])
-            # count distinct checks
-            if 'count_distinct_max' in colkeys:
-                val = coldict['count_distinct_max']
-                if not isinstance(val, int):
-                    raise YamlParsingError(f'column {colname} distinct max '
-                                           'value must be int')
-                col.count_distinct_max = val
-            if 'count_distinct_min' in colkeys:
-                val = coldict['count_distinct_min']
-                if not isinstance(val, int):
-                    raise YamlParsingError(f'column {colname} distinct min'
-                                           'value must be int')
-                col.count_distinct_min = val
-            if 'count_distinct' in colkeys:
-                val = coldict['count_distinct']
-                if not isinstance(val, int):
-                    raise YamlParsingError(f'column {colname} count distinct'
-                                           'value must be int')
-                col.count_distinct = val
-            # column value checks
-            if 'min' in colkeys:
-                val = coldict['min']
-                if (not isinstance(val, int)) and (not isinstance(val, float)):
-                    raise YamlParsingError(f'column {colname} cannot check '
-                                           'minimum value of non numeric '
-                                           'column')
-                col.min_val = val
+    #
+    # Process columns
+    if 'columns' not in ykeys:
+        return
+    colslist = ymld['columns']
+    for coldict in colslist:
+        colkeys = list(coldict.keys())
+        _check_yaml_column_keys(colkeys)
+        colname = coldict['name']
+        coltype = coldict['type']
+        _check_yaml_column_type(coltype)
+        col = suite.addcolumn(colname, coltype)
+        # allow null values  in the column
+        if 'allow_nulls' in colkeys:
+            col.allow_nulls = _check_bool_val(coldict['allow_nulls'])
+        # count distinct checks
+        if 'count_distinct_max' in colkeys:
+            val = coldict['count_distinct_max']
+            if not isinstance(val, int):
+                _yamlerr(f'column {colname} count_distinct_max error {val}')
+            col.count_distinct_max = val
+        if 'count_distinct_min' in colkeys:
+            val = coldict['count_distinct_min']
+            if not isinstance(val, int):
+                _yamlerr(f'column {colname} count_distinct_min error {val}')
+            col.count_distinct_min = val
+        if 'count_distinct' in colkeys:
+            val = coldict['count_distinct']
+            if not isinstance(val, int):
+                _yamlerr(f'column {colname} count_distinct error {val}')
+            col.count_distinct = val
+        # column value checks
+        if 'min' in colkeys:
+            val = coldict['min']
+            if (not isinstance(val, int)) and (not isinstance(val, float)):
+                _yamlerr(f'column {colname} cannot check minimum value of non '
+                         f'numeric column')
+            col.min_val = val
 
 
 def load_yaml_file_to_dict(filename: str) -> Dict:
