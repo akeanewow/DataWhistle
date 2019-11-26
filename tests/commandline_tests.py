@@ -16,17 +16,17 @@ Parsing rules file ... done.
 Running checks FF.FFFFF..F....FFFF..FF done.
 Checks failed (14):
 want 0 duplicate rows, got 2
-want 10 rows, got 7
+want row count >= 10, got 7
 column A expected to be string type but is not
 column A cannot check minimum value on a non-numeric column
-column A want count distinct < 1, got 5
-column A want count distinct > 10, got 5
-column A want count distinct = 7, got 5
+column A want count distinct <= 1, got 5
+column A want count distinct >= 10, got 5
+column A want count distinct == 7, got 5
 column B want 10.1 minimum value, got 1.0
 column D want 0 nulls, got 2
-column D want count distinct < 1, got 3
-column D want count distinct > 10, got 3
-column D want count distinct = 4, got 3
+column D want count distinct <= 1, got 3
+column D want count distinct >= 10, got 3
+column D want count distinct == 4, got 3
 column F want 0 nulls, got 2
 column X not found in data
 '''

@@ -12,12 +12,25 @@ import pandas as pd  # type: ignore
 # value or condition]'.
 
 
-def dfcheck_min_rows(df: pd.DataFrame, min_rows: int) -> Tuple[bool, str]:
-    '''Check if a DataFrame has a minimum number of rows.'''
+def dfcheck_row_count(df: pd.DataFrame, count: int,
+        operator: str = '==') -> Tuple[bool, str]:
+    '''
+    Check if the number of rows in a dataset is equal to, greater
+    than or less than a specified count.
+
+    The operator parameter can be '==', '>=' or '<='.
+    '''
     num_rows: int = len(df)
-    if num_rows >= min_rows:
+    if operator == '==' and num_rows == count:
         return True, ''
-    return False, f'want {min_rows} rows, got {num_rows}'
+    if operator == '>=' and num_rows >= count:
+        return True, ''
+    if operator == '<=' and num_rows <= count:
+        return True, ''
+    if operator not in ['==', '<=', '>=']:
+        return False, (f'dataset row count '
+                       f'operator {operator} not recognised')
+    return False, f'want row count {operator} {count}, got {num_rows}'
 
 
 def dfcheck_no_duplicate_rows(df: pd.DataFrame) -> Tuple[bool, str]:
@@ -46,21 +59,21 @@ def colcheck_exists(df: pd.DataFrame, col_name: str) -> Tuple[bool, str]:
 
 
 def colcheck_count_distinct(df: pd.DataFrame, col_name: str, count: int,
-                            operator: str = '=') -> Tuple[bool, str]:
+                            operator: str = '==') -> Tuple[bool, str]:
     '''
     Check if the count of distinct values in a column is equal to, greater
     than or less than a specified count.
 
-    The operator parameter can be '=', '>' or '<'.
+    The operator parameter can be '==', '>=' or '<='.
     '''
     count_val = df[col_name].nunique()
-    if operator == '=' and count_val == count:
+    if operator == '==' and count_val == count:
         return True, ''
-    if operator == '>' and count_val > count:
+    if operator == '>=' and count_val >= count:
         return True, ''
-    if operator == '<' and count_val < count:
+    if operator == '<=' and count_val <= count:
         return True, ''
-    if operator not in ['=', '<', '>']:
+    if operator not in ['==', '<=', '>=']:
         return False, (f'column {col_name} count distinct '
                        f'operator {operator} not recognised')
     return False, (f'column {col_name} want count distinct {operator} '

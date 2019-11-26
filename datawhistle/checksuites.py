@@ -175,7 +175,7 @@ class PandasDatsetCheckSuite(DataSetCheckSuite):
         return column
 
     def check_min_rows(self) -> Tuple[bool, str]:
-        return dwpc.dfcheck_min_rows(self.dataframe, self.min_rows)
+        return dwpc.dfcheck_row_count(self.dataframe, self.min_rows, '>=')
 
     def check_no_duplicate_rows(self) -> Tuple[bool, str]:
         return dwpc.dfcheck_no_duplicate_rows(self.dataframe)
@@ -197,7 +197,7 @@ class PandasColumnCheckSuite(ColumnCheckSuite):
                            'distinct maximum value')
         max_val = int(self.count_distinct_max)
         return dwpc.colcheck_count_distinct(self.dataframe, self.name,
-                                            max_val, '<')
+                                            max_val, '<=')
 
     def check_col_count_distinct_min(self) -> Tuple[bool, str]:
         if self.count_distinct_min is None:
@@ -205,7 +205,7 @@ class PandasColumnCheckSuite(ColumnCheckSuite):
                            'distinct minimum value')
         min_val = int(self.count_distinct_min)
         return dwpc.colcheck_count_distinct(self.dataframe, self.name,
-                                            min_val, '>')
+                                            min_val, '>=')
 
     def check_col_count_distinct(self) -> Tuple[bool, str]:
         if self.count_distinct is None:
@@ -213,7 +213,7 @@ class PandasColumnCheckSuite(ColumnCheckSuite):
                            'distinct')
         val = int(self.count_distinct)
         return dwpc.colcheck_count_distinct(self.dataframe, self.name,
-                                            val, '=')
+                                            val, '==')
 
     def check_col_exists(self) -> Tuple[bool, str]:
         return dwpc.colcheck_exists(self.dataframe, self.name)
