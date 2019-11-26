@@ -5,7 +5,7 @@
 | pandaschecks.py | Base data checks of a Pandas DataFrame (start here to add checks) |
 | checksuites.py   | Classes used to process checks and plug in different data sources |
 | yamlparsing.py  | Functions to parse rules file and apply it to checksuite classes  |
-| commandline.py       | Command line app to process rules                                 |
+| commandline.py       | Command line functions                                 |
 
 Unit testing files have equivalent names with '_tests' added to the above names.
 
