@@ -25,25 +25,12 @@ class YamlParsingError(Exception):
     pass
 
 
-def load_yaml_file_to_dict(filename: str) -> Dict:
-    '''Parse a yaml file into a Dict object.'''
-    with open(filename, 'r') as stream:
-        parsed = yaml.safe_load(stream)
-    if not isinstance(parsed, dict):
-        raise YamlParsingError(f'error converting YAML markup in {filename}')
-    return parsed
-
-
-def _check_yaml_toplevel_keys(ykeys: List[str]) -> None:
-    for key in ykeys:
-        if key not in _YAML_TOPLEVEL_KEYS:
-            raise YamlParsingError(f'unexpected yaml attribute: {key}')
-
-
-def _check_yaml_dataset_keys(dsdictkeys: List[str]) -> None:
-    for key in dsdictkeys:
-        if key not in _YAML_DATASET_KEYS:
-            raise YamlParsingError(f'unexpected dataset attribute: {key}')
+def _check_bool_val(val: Any) -> bool:
+    if val in _TRUE_VALS:
+        return True
+    if val not in _FALSE_VALS:
+        raise YamlParsingError(f'want boolean value, got {val}')
+    return False
 
 
 def _check_yaml_column_keys(colkeys: List[str]) -> None:
@@ -61,12 +48,16 @@ def _check_yaml_column_type(coltype: str) -> None:
         raise YamlParsingError(f'column type {coltype} not recognised')
 
 
-def _check_bool_val(val: Any) -> bool:
-    if val in _TRUE_VALS:
-        return True
-    if val not in _FALSE_VALS:
-        raise YamlParsingError(f'want boolean value, got {val}')
-    return False
+def _check_yaml_toplevel_keys(ykeys: List[str]) -> None:
+    for key in ykeys:
+        if key not in _YAML_TOPLEVEL_KEYS:
+            raise YamlParsingError(f'unexpected yaml attribute: {key}')
+
+
+def _check_yaml_dataset_keys(dsdictkeys: List[str]) -> None:
+    for key in dsdictkeys:
+        if key not in _YAML_DATASET_KEYS:
+            raise YamlParsingError(f'unexpected dataset attribute: {key}')
 
 
 def apply_yamldict_to_checksuite(ymld: Dict,
@@ -131,3 +122,12 @@ def apply_yamldict_to_checksuite(ymld: Dict,
                                            'minimum value of non numeric '
                                            'column')
                 col.min_val = val
+
+
+def load_yaml_file_to_dict(filename: str) -> Dict:
+    '''Parse a yaml file into a Dict object.'''
+    with open(filename, 'r') as stream:
+        parsed = yaml.safe_load(stream)
+    if not isinstance(parsed, dict):
+        raise YamlParsingError(f'error converting YAML markup in {filename}')
+    return parsed
