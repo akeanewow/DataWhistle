@@ -59,6 +59,7 @@ def _check_yaml_dataset_keys(dsdictkeys: List[str]) -> None:
         if key not in _YAML_DATASET_KEYS:
             raise YamlParsingError(f'unexpected dataset attribute: {key}')
 
+
 def _yamlerr(message: str) -> None:
     raise YamlParsingError(message)
 
