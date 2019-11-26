@@ -4,9 +4,18 @@ import datawhistle as dw
 
 
 _YAML_TOPLEVEL_KEYS = ['dataset', 'columns']
-_YAML_DATASET_KEYS = ['stop_on_fail', 'allow_duplicate_rows', 'min_rows']
-_YAML_COLUMN_KEYS = ['name', 'type', 'allow_nulls', 'count_distinct_max',
-                     'count_distinct_min', 'count_distinct', 'min']
+_YAML_DATASET_KEYS = [
+    'stop_on_fail',
+    'allow_duplicate_rows',
+    'min_rows']
+_YAML_COLUMN_KEYS = [
+    'name',
+    'type',
+    'allow_nulls',
+    'count_distinct_max',
+    'count_distinct_min',
+    'count_distinct',
+    'min']
 _YAML_COLUMN_TYPES = ['numeric', 'string']
 _TRUE_VALS = [True, 1, 'true', 'True', '1']
 _FALSE_VALS = [False, 0, 'false', 'False', '0']
