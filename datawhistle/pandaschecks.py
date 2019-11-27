@@ -106,6 +106,18 @@ def colcheck_min_val(df: pd.DataFrame,
                    f'got {actual_min}')
 
 
+def colcheck_max_val(df: pd.DataFrame,
+                     col_name: str,
+                     max_val: float) -> Tuple[bool, str]:
+    '''Check if a column has a value greater than a maximum value.'''
+    actual_max = df[col_name].max()
+    if actual_max >= max_val:
+        return True, ''
+    return False, (f'column {col_name} '
+                   f'want {max_val} maximum value, '
+                   f'got {actual_max}')
+
+
 def colcheck_no_blanks(df: pd.DataFrame, col_name: str) -> Tuple[bool, str]:
     '''Check if a string column contains blanks or whitespace only values.'''
     err = f'column {col_name} has blanks or whitesplace only values'
