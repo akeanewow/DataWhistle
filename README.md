@@ -5,7 +5,7 @@
 
 A Python Programmatic Data Checker.
 
-Define rules for your dataset in a yaml file (see example.yaml).  Use whistle.py to check if a dataset conforms to the rules.
+Define rules for your dataset in a yaml file (see example.yaml).  Use DataWhistle to check if a dataset conforms to the rules.
 
 Example command line usage:
 
