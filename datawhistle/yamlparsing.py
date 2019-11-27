@@ -7,7 +7,9 @@ _YAML_TOPLEVEL_KEYS = ['dataset', 'columns']
 _YAML_DATASET_KEYS = [
     'stop_on_fail',
     'allow_duplicate_rows',
-    'row_count_min']
+    'row_count_max',
+    'row_count_min',
+    'row_count']
 _YAML_COLUMN_KEYS = [
     'name',
     'type',
@@ -82,13 +84,27 @@ def apply_yamldict_to_checksuite(ymld: Dict,
         dups = 'allow_duplicate_rows'
         if dups in dsdictkeys:
             suite.allow_duplicate_rows = _check_bool_val(dsdict[dups])
-        #  minimum Numbers of rows
+        #  maximum number of rows
+        if 'row_count_max' in dsdictkeys:
+            val = dsdict['row_count_max']
+            if not isinstance(val, int):
+                _yamlerr((f'dataset: row_count_max want an integer, '
+                          f'got {val}({type(val)})'))
+            suite.row_count_max = val
+        #  minimum number of rows
         if 'row_count_min' in dsdictkeys:
             val = dsdict['row_count_min']
             if not isinstance(val, int):
                 _yamlerr((f'dataset: row_count_min want an integer, '
                           f'got {val}({type(val)})'))
             suite.row_count_min = val
+        #  number of rows
+        if 'row_count' in dsdictkeys:
+            val = dsdict['row_count']
+            if not isinstance(val, int):
+                _yamlerr((f'dataset: row_count want an integer, '
+                          f'got {val}({type(val)})'))
+            suite.row_count = val
     #
     # Process columns
     if 'columns' not in ykeys:

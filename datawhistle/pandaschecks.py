@@ -13,7 +13,7 @@ import pandas as pd  # type: ignore
 
 
 def dfcheck_row_count(df: pd.DataFrame, count: int,
-        operator: str = '==') -> Tuple[bool, str]:
+                      operator: str = '==') -> Tuple[bool, str]:
     '''
     Check if the number of rows in a dataset is equal to, greater
     than or less than a specified count.

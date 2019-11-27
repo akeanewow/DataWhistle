@@ -7,16 +7,18 @@ import datawhistle as dw
 
 _ALL_PASSED = '''Reading data file ... done.
 Parsing rules file ... done.
-Running checks .............. done.
+Running checks ................ done.
 All checks passed.
 '''
 
 _ALL_FAILED = '''Reading data file ... done.
 Parsing rules file ... done.
-Running checks FF.FFFFF..F....FFFF..FF done.
-Checks failed (14):
+Running checks FFFF.FFFFF..F....FFFF..FF done.
+Checks failed (16):
 want 0 duplicate rows, got 2
-want row count >= 10, got 7
+want row count <= 1, got 7
+want row count >= 8, got 7
+want row count == 6, got 7
 column A expected to be string type but is not
 column A cannot check minimum value on a non-numeric column
 column A want count distinct <= 1, got 5

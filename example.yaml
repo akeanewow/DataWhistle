@@ -2,7 +2,9 @@
 ---
 dataset:
   allow_duplicate_rows: false  # More than one identical row allowed (bool)
+  row_count_max: 10            # The maximum number of rows expected (int)
   row_count_min: 3             # The minimum number of data rows epxected (int)
+  row_count: 5                 # The row count expected (int)
   stop_on_fail: true           # Stop testing on first test fail (bool)
 
 columns:
