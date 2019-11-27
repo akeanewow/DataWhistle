@@ -81,6 +81,16 @@ class TestColChecks(unittest.TestCase):
         self.assertEqual(passed, False)
         self.assertEqual(message, 'column A want 2 minimum value, got 1')
 
+
+    def test_max_val(self):
+        passed, message = dwpc.colcheck_max_val(self.df_file1, 'A', -1)
+        self.assertEqual(passed, True)
+        self.assertEqual(message, '')
+        passed, message = dwpc.colcheck_max_val(self.df_file1, 'A', 2)
+        self.assertEqual(passed, False)
+        self.assertEqual(message, 'column A want 2 maximum value, got 1')
+
+
     def test_col_no_blanks(self):
         passed, message = dwpc.colcheck_no_blanks(self.df_file1, 'H')
         self.assertEqual(passed, True)
