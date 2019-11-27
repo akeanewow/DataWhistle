@@ -15,7 +15,9 @@ class DataSetCheckSuite:
     def __init__(self):
         # test settings
         self.allow_duplicate_rows: bool = True
-        self.min_rows: int = 0
+        self.row_count_max: Optional[int] = None
+        self.row_count_min: Optional[int] = None
+        self.row_count: Optional[int] = None
         self.stop_on_fail: bool = False
         # other properties
         self.error_messages: [str] = []
@@ -26,8 +28,12 @@ class DataSetCheckSuite:
         self._checks = []
         if not self.allow_duplicate_rows:
             self._checks.append(self.check_no_duplicate_rows)
-        if self.min_rows > 0:
-            self._checks.append(self.check_min_rows)
+        if self.row_count_max is not None:
+            self._checks.append(self.check_row_count_max)
+        if self.row_count_min is not None:
+            self._checks.append(self.check_row_count_min)
+        if self.row_count is not None:
+            self._checks.append(self.check_row_count)
 
     def runchecks(self, verbose: bool = False) -> None:
         '''
@@ -63,7 +69,13 @@ class DataSetCheckSuite:
     def addcolumn(self, colname: str, coltype: str) -> PandasColumnCheckSuite:
         raise NotImplementedError
 
-    def check_min_rows(self) -> Tuple[bool, str]:
+    def check_row_count_max(self) -> Tuple[bool, str]:
+        raise NotImplementedError
+
+    def check_row_count_min(self) -> Tuple[bool, str]:
+        raise NotImplementedError
+
+    def check_row_count(self) -> Tuple[bool, str]:
         raise NotImplementedError
 
     def check_no_duplicate_rows(self) -> Tuple[bool, str]:
@@ -174,8 +186,23 @@ class PandasDatsetCheckSuite(DataSetCheckSuite):
         self.columns.append(column)
         return column
 
-    def check_min_rows(self) -> Tuple[bool, str]:
-        return dwpc.dfcheck_min_rows(self.dataframe, self.min_rows)
+    def check_row_count_max(self) -> Tuple[bool, str]:
+        if self.row_count_max is None:
+            return True, ''
+        val = int(self.row_count_max)
+        return dwpc.dfcheck_row_count(self.dataframe, val, '<=')
+
+    def check_row_count_min(self) -> Tuple[bool, str]:
+        if self.row_count_min is None:
+            return True, ''
+        val = int(self.row_count_min)
+        return dwpc.dfcheck_row_count(self.dataframe, val, '>=')
+
+    def check_row_count(self) -> Tuple[bool, str]:
+        if self.row_count is None:
+            return True, ''
+        val = int(self.row_count)
+        return dwpc.dfcheck_row_count(self.dataframe, val, '==')
 
     def check_no_duplicate_rows(self) -> Tuple[bool, str]:
         return dwpc.dfcheck_no_duplicate_rows(self.dataframe)
@@ -193,27 +220,24 @@ class PandasColumnCheckSuite(ColumnCheckSuite):
 
     def check_col_count_distinct_max(self) -> Tuple[bool, str]:
         if self.count_distinct_max is None:
-            return False, (f'column {self.name} could not check count'
-                           'distinct maximum value')
+            return True, ''
         max_val = int(self.count_distinct_max)
         return dwpc.colcheck_count_distinct(self.dataframe, self.name,
-                                            max_val, '<')
+                                            max_val, '<=')
 
     def check_col_count_distinct_min(self) -> Tuple[bool, str]:
         if self.count_distinct_min is None:
-            return False, (f'column {self.name} could not check count'
-                           'distinct minimum value')
+            return True, ''
         min_val = int(self.count_distinct_min)
         return dwpc.colcheck_count_distinct(self.dataframe, self.name,
-                                            min_val, '>')
+                                            min_val, '>=')
 
     def check_col_count_distinct(self) -> Tuple[bool, str]:
         if self.count_distinct is None:
-            return False, (f'column {self.name} could not check count'
-                           'distinct')
+            return True, ''
         val = int(self.count_distinct)
         return dwpc.colcheck_count_distinct(self.dataframe, self.name,
-                                            val, '=')
+                                            val, '==')
 
     def check_col_exists(self) -> Tuple[bool, str]:
         return dwpc.colcheck_exists(self.dataframe, self.name)

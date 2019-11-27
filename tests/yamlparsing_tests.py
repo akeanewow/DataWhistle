@@ -48,7 +48,9 @@ class TestYamlParsing(unittest.TestCase):
         # Dataset checks
         self.assertFalse(checksuite.allow_duplicate_rows)
         self.assertTrue(checksuite.stop_on_fail)
-        self.assertEqual(checksuite.min_rows, 3)
+        self.assertEqual(checksuite.row_count_max, 10)
+        self.assertEqual(checksuite.row_count_min, 3)
+        self.assertEqual(checksuite.row_count, 5)
         # Column checks
         self.assertEqual(len(checksuite.columns), 2)
         col1 = checksuite.columns[0]

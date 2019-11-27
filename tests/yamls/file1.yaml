@@ -2,7 +2,9 @@
 ---
 dataset:
   allow_duplicate_rows: false
-  min_rows: 3
+  row_count_max: 10
+  row_count_min: 3
+  row_count: 5
   stop_on_fail: true
 
 columns:

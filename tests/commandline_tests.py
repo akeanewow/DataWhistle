@@ -7,26 +7,28 @@ import datawhistle as dw
 
 _ALL_PASSED = '''Reading data file ... done.
 Parsing rules file ... done.
-Running checks .............. done.
+Running checks ................ done.
 All checks passed.
 '''
 
 _ALL_FAILED = '''Reading data file ... done.
 Parsing rules file ... done.
-Running checks FF.FFFFF..F....FFFF..FF done.
-Checks failed (14):
+Running checks FFFF.FFFFF..F....FFFF..FF done.
+Checks failed (16):
 want 0 duplicate rows, got 2
-want 10 rows, got 7
+want row count <= 1, got 7
+want row count >= 8, got 7
+want row count == 6, got 7
 column A expected to be string type but is not
 column A cannot check minimum value on a non-numeric column
-column A want count distinct < 1, got 5
-column A want count distinct > 10, got 5
-column A want count distinct = 7, got 5
+column A want count distinct <= 1, got 5
+column A want count distinct >= 10, got 5
+column A want count distinct == 7, got 5
 column B want 10.1 minimum value, got 1.0
 column D want 0 nulls, got 2
-column D want count distinct < 1, got 3
-column D want count distinct > 10, got 3
-column D want count distinct = 4, got 3
+column D want count distinct <= 1, got 3
+column D want count distinct >= 10, got 3
+column D want count distinct == 4, got 3
 column F want 0 nulls, got 2
 column X not found in data
 '''
@@ -35,6 +37,7 @@ column X not found in data
 class TestWhistle(unittest.TestCase):
 
     def setUp(self):
+        self.maxDiff = None
         self.capturedStout = io.StringIO()
         sys.stdout = self.capturedStout
 

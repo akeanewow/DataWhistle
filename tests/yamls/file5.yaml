@@ -2,7 +2,7 @@
 dataset:
   allow_duplicate_rows: true
   stop_on_fail: true
-  min_rows: 3
+  row_count_min: 3
 
 columns:
   - name: A
