@@ -106,6 +106,16 @@ def colcheck_min_val(df: pd.DataFrame,
                    f'got {actual_min}')
 
 
+def colcheck_no_blanks(df: pd.DataFrame, col_name: str) -> Tuple[bool, str]:
+    '''Check if a string column contains blanks or whitespace only values.'''
+    err = f'column {col_name} has blanks or whitesplace only values'
+    if df[col_name].str.isspace().sum() > 0:
+        return False, err
+    if sum(df[col_name] == '') == 0:
+        return True, ''
+    return False, err
+
+
 def colcheck_no_nulls(df: pd.DataFrame, col_name: str) -> Tuple[bool, str]:
     '''Check if a column contains null values.'''
     countnull = pd.isnull(df[col_name]).sum()

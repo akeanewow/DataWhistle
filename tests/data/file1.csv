@@ -1,6 +1,6 @@
-A,B,C,D,E,F,G
-1,1.0,a,,,,true
-2,2.1,b,2,2.1,b,false
-3,3.2,c,,,,false
-4,4.3,d,4,4.3,d,true
-5,5.4,e,5,5.4,e,true
+A,B,C,D,E,F,G,H
+1,1.0,a,,,,true,txt1
+2,2.1,b,2,2.1,b,false,txt2
+3,3.2,c,,,,false,txt3
+4,4.3,d,4,4.3,d,true,txt4
+5,5.4,e,5,5.4,e,true,txt5
