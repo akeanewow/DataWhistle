@@ -252,6 +252,18 @@ class PandasColumnCheckSuite(ColumnCheckSuite):
         min_val = float(self.min_val)
         return dwpc.colcheck_min_val(self.dataframe, self.name, min_val)
 
+
+    def check_col_max_val(self) -> Tuple[bool, str]:
+        if not self.type == 'numeric':
+            return False, (f'column {self.name} cannot check maximum '
+                           'value on a non-numeric column')
+        if self.max_val is None:
+            return False, (f'column {self.name} could not check '
+                           'maximum value')
+        max_val = float(self.max_val)
+        return dwpc.colcheck_max_val(self.dataframe, self.name, max_val)
+
+
     def check_col_non_nulls(self) -> Tuple[bool, str]:
         return dwpc.colcheck_no_nulls(self.dataframe, self.name)
 
