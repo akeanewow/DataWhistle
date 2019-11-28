@@ -5,7 +5,8 @@
 
 A Python Programmatic Data Checker.
 
-Define rules for your dataset in a yaml file (see example.yaml).  Use DataWhistle to check if a dataset conforms to the rules.
+Define rules for your dataset in a yaml file (see example.yaml).  Use
+DataWhistle to check if a dataset conforms to the rules.
 
 Example command line usage:
 
@@ -17,6 +18,19 @@ Running checks .F....................................... done.
 Checks failed (1):
 want 0 duplicate rows, got 2
 ```
+
+### Data sources
+
+DataWhistle currently checks two data sources.
+
+Comma Separated Value (CSV) files are checked using
+[pandas](https://pandas.pydata.org), in memory.
+
+Google BigQuery tables are checked using the
+[Google Cloud SDK](https://cloud.google.com/sdk/install). When running
+checks it is assumed that the user has logged into a project using the
+[gcloud init](https://cloud.google.com/sdk/gcloud/reference/init) command.
+The bq scripting command is used to execute checks in BigQuery.
 
 ### Status
 

@@ -274,3 +274,25 @@ class PandasColumnCheckSuite(ColumnCheckSuite):
             return dwpc.colcheck_is_str(self.dataframe, self.name)
         return False, (f'column {self.name} could not tested '
                        f'for type {self.type} (unknown type)')
+
+
+class BqDatsetCheckSuite(DataSetCheckSuite):
+    '''
+    BigQuery table testing object. Check methods from the parent class are
+    overriden to implement BigQuery specific functionality.
+    '''
+
+    def __init__(self, tablename: str):
+        self.tablename = tablename
+        super().__init__()
+
+
+class BqColumnCheckSuite(ColumnCheckSuite):
+    '''
+    BigQuery column testing object. Check methods from the parent class
+    are overriden to implement BigQuery specific functionality.
+    '''
+
+    def __init__(self, tablename: str , colname: str, coltype: str):
+        self.tablename = tablename
+        super().__init__(colname, coltype)

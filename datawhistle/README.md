@@ -2,10 +2,11 @@
 
 | File             | Purpose                                                           |
 |------------------|-------------------------------------------------------------------|
-| pandaschecks.py | Base data checks of a Pandas DataFrame (start here to add checks)  |
+| pandaschecks.py  | Base data checks of a Pandas DataFrame (start here to add checks) |
+| bqchecks.py      | Base data checks of a BigQuery table                              |
 | checksuites.py   | Classes used to process checks and plug in different data sources |
-| yamlparsing.py  | Functions to parse rules file and apply it to checksuite classes   |
-| commandline.py       | Command line functions                                        |
+| yamlparsing.py   | Functions to parse rules file and apply it to checksuite classes  |
+| commandline.py   | Command line functions                                            |
 
 Unit testing files have equivalent names with '_tests' added to the above names.
 
@@ -14,9 +15,11 @@ Unit testing files have equivalent names with '_tests' added to the above names.
 | Class                     | Purpose                                               |
 |---------------------------|-------------------------------------------------------|
 | DataSetCheckSuite         | Dataset level check processor (common methods)        |
-| - PandasDatasetCheckSuite | Pandas DataFrame level checks (Pandas specific)       |
+| - PandasDatasetCheckSuite | Pandas DataFrame level checks                         |
+| - BqDatsetCheckSuite      | BigQuery table level checks                           |
 | ColumnCheckSuite          | Column level check processor (common methods)         |
-| - PandasColumnCheckSuite  | Pandas column / Series level checks (Pandas specific) |
+| - PandasColumnCheckSuite  | Pandas column / Series level checks                   |
+| - BqColumnCheckSuite      | BigQuery column level checks                          |
 
 ### Steps to add a new check
 
