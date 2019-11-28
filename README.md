@@ -1,5 +1,7 @@
 # DataWhistle
 
+[![Gitter](https://badges.gitter.im/DataWhistle/community.svg)](https://gitter.im/DataWhistle/community?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
+
 > We are but zookeepers taming animalistic datasets by blowing on whistles.
 > -- <cite>Anonymous Data Scientist</cite>
 
