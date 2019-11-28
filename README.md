@@ -27,8 +27,9 @@ Comma Separated Value (CSV) files are checked using
 [pandas](https://pandas.pydata.org), in memory.
 
 Google BigQuery tables are checked using the
-[Google Cloud SDK](https://cloud.google.com/sdk/install). When running
-checks it is assumed that the user has logged into a project using the
+[Google Cloud SDK](https://cloud.google.com/sdk/install) command line
+tools. When running checks it is assumed that the user has logged into a
+project using the
 [gcloud init](https://cloud.google.com/sdk/gcloud/reference/init) command.
 The bq scripting command is used to execute checks in BigQuery.
 
