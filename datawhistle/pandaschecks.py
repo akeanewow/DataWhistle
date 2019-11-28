@@ -94,30 +94,6 @@ def colcheck_is_str(df: pd.DataFrame, col_name: str) -> Tuple[bool, str]:
     return False, f'column {col_name} expected to be string type but is not'
 
 
-def colcheck_min_val(df: pd.DataFrame,
-                     col_name: str,
-                     min_val: float) -> Tuple[bool, str]:
-    '''Check if a column has a value less than a minimum value.'''
-    actual_min = df[col_name].min()
-    if actual_min >= min_val:
-        return True, ''
-    return False, (f'column {col_name} '
-                   f'want {min_val} minimum value, '
-                   f'got {actual_min}')
-
-
-def colcheck_max_val(df: pd.DataFrame,
-                     col_name: str,
-                     max_val: float) -> Tuple[bool, str]:
-    '''Check if a column has a value greater than a maximum value.'''
-    actual_max = df[col_name].max()
-    if actual_max <= max_val:
-        return True, ''
-    return False, (f'column {col_name} '
-                   f'want {max_val} maximum value, '
-                   f'got {actual_max}')
-
-
 def colcheck_no_blanks(df: pd.DataFrame, col_name: str) -> Tuple[bool, str]:
     '''Check if a string column contains blanks or whitespace only values.'''
     err = f'column {col_name} has blanks or whitesplace only values'
@@ -155,7 +131,7 @@ def colcheck_val(df: pd.DataFrame, col_name: str, val: Union[int, float],
         if actual_val >= val:
             return True, ''
     if operator == '<=':
-        actual_val = df[col_name].min()
+        actual_val = df[col_name].max()
         if actual_val <= val:
             return True, ''
     if operator not in ['==', '<=', '>=']:

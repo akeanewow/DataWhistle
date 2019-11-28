@@ -13,7 +13,7 @@ columns:
     type: numeric
     allow_nulls: true
     min: 0
-    max: 5                     # Maximum value if numeric column (int / float)
+    max: 5
     count_distinct_max: 10
     count_distinct_min: 1
     count_distinct: 5

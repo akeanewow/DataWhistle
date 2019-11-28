@@ -73,22 +73,22 @@ class TestColChecks(unittest.TestCase):
         passed, message = dwpc.colcheck_is_str(self.df_file1, 'C')
         self.assertEqual(passed, True)
 
-    def test_min_val(self):
-        passed, message = dwpc.colcheck_min_val(self.df_file1, 'A', -1)
-        self.assertEqual(passed, True)
-        self.assertEqual(message, '')
-        passed, message = dwpc.colcheck_min_val(self.df_file1, 'A', 2)
-        self.assertEqual(passed, False)
-        self.assertEqual(message, 'column A want 2 minimum value, got 1')
-
-
-    def test_max_val(self):
-        passed, message = dwpc.colcheck_max_val(self.df_file1, 'A', 5)
-        self.assertEqual(passed, True)
-        self.assertEqual(message, '')
-        passed, message = dwpc.colcheck_max_val(self.df_file1, 'A', 2)
-        self.assertEqual(passed, False)
-        self.assertEqual(message, 'column A want 2 maximum value, got 5')
+#    def test_min_val(self):
+#        passed, message = dwpc.colcheck_min_val(self.df_file1, 'A', -1)
+#        self.assertEqual(passed, True)
+#        self.assertEqual(message, '')
+#        passed, message = dwpc.colcheck_min_val(self.df_file1, 'A', 2)
+#        self.assertEqual(passed, False)
+#        self.assertEqual(message, 'column A want 2 minimum value, got 1')
+#
+#
+#    def test_max_val(self):
+#        passed, message = dwpc.colcheck_max_val(self.df_file1, 'A', 5)
+#        self.assertEqual(passed, True)
+#        self.assertEqual(message, '')
+#        passed, message = dwpc.colcheck_max_val(self.df_file1, 'A', 2)
+#        self.assertEqual(passed, False)
+#        self.assertEqual(message, 'column A want 2 maximum value, got 5')
 
 
     def test_col_no_blanks(self):
@@ -107,6 +107,30 @@ class TestColChecks(unittest.TestCase):
         passed, message = dwpc.colcheck_no_nulls(self.df_file1, 'D')
         self.assertEqual(passed, False)
         self.assertEqual(message, 'column D want 0 nulls, got 2')
+
+    def test_col_val(self):
+        # >= checks
+        passed, message = dwpc.colcheck_val(self.df_file1, 'A', -1, '>=')
+        self.assertEqual(passed, True)
+        self.assertEqual(message, '')
+        passed, message = dwpc.colcheck_val(self.df_file1, 'A', 2, '>=')
+        self.assertEqual(passed, False)
+        self.assertEqual(message, 'column A want value >= 2, got 1')
+        # <= checks
+        passed, message = dwpc.colcheck_val(self.df_file1, 'A', 5, '<=')
+        self.assertEqual(passed, True)
+        self.assertEqual(message, '')
+        passed, message = dwpc.colcheck_val(self.df_file1, 'A', 2, '<=')
+        self.assertEqual(passed, False)
+        self.assertEqual(message, 'column A want value <= 2, got 5')
+        # == checks
+        passed, message = dwpc.colcheck_val(self.df_file1, 'I', 1, '==')
+        self.assertEqual(passed, True)
+        self.assertEqual(message, '')
+        passed, message = dwpc.colcheck_val(self.df_file1, 'A', 1, '==')
+        self.assertEqual(passed, False)
+        self.assertEqual(message, (f'column A want all values = 1,'
+                                   ' got different values'))
 
 
 if __name__ == '__main__':

@@ -1,7 +1,7 @@
 # Avoid forward decalaration type check errors. See PEP563.
 from __future__ import annotations
 import pandas as pd  # type: ignore
-from typing import Callable, Optional, List, Tuple
+from typing import Callable, Optional, List, Tuple, Union
 import datawhistle.pandaschecks as dwpc
 
 
@@ -97,8 +97,9 @@ class ColumnCheckSuite:
         self.count_distinct_max: Optional[int] = None
         self.count_distinct_min: Optional[int] = None
         self.count_distinct: Optional[int] = None
-        self.min_val: Optional[float] = None
-        self.max_val: Optional[float] = None
+        self.min_val: Optional[Union[int, float]] = None
+        self.max_val: Optional[Union[int, float]] = None
+        self.val: Optional[Union[int, float]] = None
         # other properties
         self.error_messages: List[str] = []
         self._checks: List[Callable] = []
@@ -256,8 +257,7 @@ class PandasColumnCheckSuite(ColumnCheckSuite):
             return False, (f'column {self.name} could not check '
                            'minimum value')
         min_val = float(self.min_val)
-        return dwpc.colcheck_min_val(self.dataframe, self.name, min_val)
-
+        return dwpc.colcheck_val(self.dataframe, self.name, min_val, '>=')
 
     def check_col_max_val(self) -> Tuple[bool, str]:
         if not self.type == 'numeric':
@@ -267,8 +267,7 @@ class PandasColumnCheckSuite(ColumnCheckSuite):
             return False, (f'column {self.name} could not check '
                            'maximum value')
         max_val = float(self.max_val)
-        return dwpc.colcheck_max_val(self.dataframe, self.name, max_val)
-
+        return dwpc.colcheck_val(self.dataframe, self.name, max_val, '<=')
 
     def check_col_non_nulls(self) -> Tuple[bool, str]:
         return dwpc.colcheck_no_nulls(self.dataframe, self.name)
@@ -299,6 +298,6 @@ class BqColumnCheckSuite(ColumnCheckSuite):
     are overriden to implement BigQuery specific functionality.
     '''
 
-    def __init__(self, tablename: str , colname: str, coltype: str):
+    def __init__(self, tablename: str, colname: str, coltype: str):
         self.tablename = tablename
         super().__init__(colname, coltype)
