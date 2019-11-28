@@ -113,6 +113,8 @@ class ColumnCheckSuite:
             self._checks.append(self.check_col_min_val)
         if self.max_val is not None:
             self._checks.append(self.check_col_max_val)
+        if self.val is not None:
+            self._checks.append(self.check_col_val)
         if self.count_distinct_max is not None:
             self._checks.append(self.check_col_count_distinct_max)
         if self.count_distinct_min is not None:
@@ -168,6 +170,9 @@ class ColumnCheckSuite:
         raise NotImplementedError
 
     def check_col_max_val(self) -> Tuple[bool, str]:
+        raise NotImplementedError
+
+    def check_col_val(self) -> Tuple[bool, str]:
         raise NotImplementedError
 
     def check_col_non_nulls(self) -> Tuple[bool, str]:
@@ -268,6 +273,15 @@ class PandasColumnCheckSuite(ColumnCheckSuite):
                            'maximum value')
         max_val = float(self.max_val)
         return dwpc.colcheck_val(self.dataframe, self.name, max_val, '<=')
+
+    def check_col_val(self) -> Tuple[bool, str]:
+        if not self.type == 'numeric':
+            return False, (f'column {self.name} cannot check '
+                           'value of a non-numeric column')
+        if self.val is None:
+            return False, (f'column {self.name} could not check value')
+        val = float(self.val)
+        return dwpc.colcheck_val(self.dataframe, self.name, val, '==')
 
     def check_col_non_nulls(self) -> Tuple[bool, str]:
         return dwpc.colcheck_no_nulls(self.dataframe, self.name)

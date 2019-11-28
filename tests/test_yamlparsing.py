@@ -52,7 +52,7 @@ class TestYamlParsing(unittest.TestCase):
         self.assertEqual(checksuite.row_count_min, 3)
         self.assertEqual(checksuite.row_count, 5)
         # Column checks
-        self.assertEqual(len(checksuite.columns), 2)
+        self.assertEqual(len(checksuite.columns), 3)
         col1 = checksuite.columns[0]
         col2 = checksuite.columns[1]
         # col 1

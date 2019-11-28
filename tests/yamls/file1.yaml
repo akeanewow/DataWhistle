@@ -1,4 +1,3 @@
-# well formed yaml file passing yamllint
 ---
 dataset:
   allow_duplicate_rows: false
@@ -24,3 +23,7 @@ columns:
     count_distinct_max: 10
     count_distinct_min: 1
     count_distinct: 5
+
+  - name: I
+    type: numeric
+    val: 1

@@ -14,6 +14,7 @@ columns:
     allow_nulls: true          # Null values allowed in column (bool)
     min: 0                     # Minimum value if numeric column (int / float)
     max: 5                     # Maximum value if numeric column (int / float)
+    val: 1                     # All rows have same value (int / float)
     count_distinct_max: 10     # Maximum number of distinct values (int)
     count_distinct_min: 1      # Minimum number of distinct values (int)
     count_distinct: 5          # Number of distinct values expected (int)
