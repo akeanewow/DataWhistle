@@ -11,6 +11,7 @@ columns:
   - name: A
     type: string
     min: 10
+    max: 3
     allow_nulls: true
     count_distinct_max: 1
     count_distinct_min: 10

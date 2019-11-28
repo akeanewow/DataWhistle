@@ -111,7 +111,7 @@ def colcheck_max_val(df: pd.DataFrame,
                      max_val: float) -> Tuple[bool, str]:
     '''Check if a column has a value greater than a maximum value.'''
     actual_max = df[col_name].max()
-    if actual_max >= max_val:
+    if actual_max <= max_val:
         return True, ''
     return False, (f'column {col_name} '
                    f'want {max_val} maximum value, '

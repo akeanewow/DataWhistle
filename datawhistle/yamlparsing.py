@@ -17,7 +17,8 @@ _YAML_COLUMN_KEYS = [
     'count_distinct_max',
     'count_distinct_min',
     'count_distinct',
-    'min']
+    'min',
+    'max']
 _YAML_COLUMN_TYPES = ['numeric', 'string']
 _TRUE_VALS = [True, 1, 'true', 'True', '1']
 _FALSE_VALS = [False, 0, 'false', 'False', '0']
@@ -143,6 +144,12 @@ def apply_yamldict_to_checksuite(ymld: Dict,
                 _yamlerr(f'column {colname} cannot check minimum value of non '
                          f'numeric column')
             col.min_val = val
+        if 'max' in colkeys:
+            val = coldict['max']
+            if (not isinstance(val, int)) and (not isinstance(val, float)):
+                _yamlerr(f'column {colname} cannot check maximum value of non '
+                         f'numeric column')
+            col.max_val = val
 
 
 def load_yaml_file_to_dict(filename: str) -> Dict:

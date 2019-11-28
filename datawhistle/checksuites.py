@@ -98,6 +98,7 @@ class ColumnCheckSuite:
         self.count_distinct_min: Optional[int] = None
         self.count_distinct: Optional[int] = None
         self.min_val: Optional[float] = None
+        self.max_val: Optional[float] = None
         # other properties
         self.error_messages: List[str] = []
         self._checks: List[Callable] = []
@@ -109,6 +110,8 @@ class ColumnCheckSuite:
             self._checks.append(self.check_col_non_nulls)
         if self.min_val is not None:
             self._checks.append(self.check_col_min_val)
+        if self.max_val is not None:
+            self._checks.append(self.check_col_max_val)
         if self.count_distinct_max is not None:
             self._checks.append(self.check_col_count_distinct_max)
         if self.count_distinct_min is not None:
@@ -161,6 +164,9 @@ class ColumnCheckSuite:
         raise NotImplementedError
 
     def check_col_min_val(self) -> Tuple[bool, str]:
+        raise NotImplementedError
+
+    def check_col_max_val(self) -> Tuple[bool, str]:
         raise NotImplementedError
 
     def check_col_non_nulls(self) -> Tuple[bool, str]:
