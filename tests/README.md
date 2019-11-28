@@ -9,7 +9,8 @@ the test data pre-loaded.
 bq commands to load the test files from a storage bucket:
 
 ```sh
-gsutil cp ./*.csv gs://[bucket url]
+gsutil cp file1.csv gs://[bucket url]
+gsutil cp file2.csv gs://[bucket url]
 bq mk [dataset]
 bq load --source_format=CSV --autodetect [dataset].table1 gs://[bucket url]/file1.csv
 bq load --source_format=CSV --autodetect [dataset].table2 gs://[bucket url]/file2.csv
