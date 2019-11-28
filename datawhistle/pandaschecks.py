@@ -1,4 +1,4 @@
-from typing import Tuple
+from typing import Tuple, Union
 import pandas as pd  # type: ignore
 
 
@@ -134,3 +134,32 @@ def colcheck_no_nulls(df: pd.DataFrame, col_name: str) -> Tuple[bool, str]:
     if countnull == 0:
         return True, ''
     return False, f'column {col_name} want 0 nulls, got {countnull}'
+
+
+def colcheck_val(df: pd.DataFrame, col_name: str, val: Union[int, float],
+                 operator: str = '==') -> Tuple[bool, str]:
+    '''
+    Check if the values in a column are equal to, greater than or less than
+    a specified value.
+
+    The operator parameter can be '==', '>=' or '<='.
+    '''
+    if operator == '==':
+        if sum(df[col_name] == val) == len(df):
+            return True, ''
+        else:
+            return False, (f'column {col_name} want all values = {val}, '
+                           f'got different values')
+    if operator == '>=':
+        actual_val = df[col_name].min()
+        if actual_val >= val:
+            return True, ''
+    if operator == '<=':
+        actual_val = df[col_name].min()
+        if actual_val <= val:
+            return True, ''
+    if operator not in ['==', '<=', '>=']:
+        return False, (f'column {col_name} value check '
+                       f'operator {operator} not recognised')
+    return False, (f'column {col_name} want value {operator} '
+                   f'{val}, got {actual_val}')
