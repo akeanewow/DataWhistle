@@ -79,7 +79,9 @@ class TestColChecks(unittest.TestCase):
         self.assertEqual(message, '')
         passed, message = dwpc.colcheck_no_blanks(self.df_file2, 'G')
         self.assertEqual(passed, False)
-        self.assertEqual(message, 'column G has blanks or whitesplace only values')
+        self.assertEqual(
+                message,
+                'column G has blanks or whitesplace only values')
 
     def test_col_no_nulls(self):
         passed, message = dwpc.colcheck_no_nulls(self.df_file1, 'A')
