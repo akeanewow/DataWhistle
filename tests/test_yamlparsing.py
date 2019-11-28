@@ -70,6 +70,12 @@ class TestYamlParsing(unittest.TestCase):
         self.assertEqual(col1.count_distinct_max, 10)
         self.assertEqual(col1.count_distinct_min, 1)
         self.assertEqual(col1.count_distinct, 5)
+        self.assertEqual(col2.format, None)
+        # col 9
+        self.assertEqual(col2.name, 'I')
+        self.assertEqual(col2.type, 'datetime')
+        self.assertEqual(col2.allow_nulls, False)
+        self.assertEqual(col2.format, '%m%d%Y')
 
 
 if __name__ == '__main__':

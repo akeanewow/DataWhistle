@@ -23,3 +23,9 @@ columns:
     count_distinct_max: 10
     count_distinct_min: 1
     count_distinct: 5
+
+  - name: I
+    type: datetime
+    allow_nulls: false
+    format: %m%d%Y
+

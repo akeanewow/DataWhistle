@@ -98,6 +98,7 @@ class ColumnCheckSuite:
         self.count_distinct_min: Optional[int] = None
         self.count_distinct: Optional[int] = None
         self.min_val: Optional[float] = None
+        self.format: Optional[str] = None
         # other properties
         self.error_messages: List[str] = []
         self._checks: List[Callable] = []
@@ -272,6 +273,16 @@ class PandasColumnCheckSuite(ColumnCheckSuite):
             return dwpc.colcheck_is_numeric(self.dataframe, self.name)
         if self.type == 'string':
             return dwpc.colcheck_is_str(self.dataframe, self.name)
+        if self.type == 'datetime':
+            success, msg = dwpc.colcheck_is_datetime(self.dataframe, self.name, self.format)
+
+            if success:
+                if self.format is not None:
+                    pd.to_datetime(self.dataframe[self.name], format=self.format)
+                else:
+                    pd.to_datetime(self.dataframe[self.name])
+
+            return success, msg
         return False, (f'column {self.name} could not tested '
                        f'for type {self.type} (unknown type)')
 

@@ -94,6 +94,23 @@ def colcheck_is_str(df: pd.DataFrame, col_name: str) -> Tuple[bool, str]:
     return False, f'column {col_name} expected to be string type but is not'
 
 
+def colcheck_is_datetime(df: pd.DataFrame, col_name: str, format: str) -> Tuple[bool, str]:
+    '''Check if a column is datetime type, optional format.'''
+
+    try:
+        if format is not None:
+            df[col_name] = pd.to_datetime(df[col_name], format=format)
+        else:
+            df[col_name] = pd.to_datetime(df[col_name])
+    except ValueError:
+        return False, f'column {col_name} data does not match datetime format specified'
+    except Exception as ex:
+        return False, f'column {col_name} parse error when reading data as type datetime'
+
+    if pd.api.types.is_datetime64_dtype(df[col_name]):
+        return True, ''
+    return False, f'column {col_name} expected to be datetime type but is not'
+
 def colcheck_min_val(df: pd.DataFrame,
                      col_name: str,
                      min_val: float) -> Tuple[bool, str]:
