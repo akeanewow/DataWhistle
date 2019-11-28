@@ -105,11 +105,12 @@ def colcheck_is_datetime(df: pd.DataFrame, col_name: str, format: str) -> Tuple[
     except ValueError:
         return False, f'column {col_name} data does not match datetime format specified'
     except Exception as ex:
-        return False, f'column {col_name} parse error when reading data as type datetime'
+        return False, f'column {col_name} expected to be datetime type but is not'
 
     if pd.api.types.is_datetime64_dtype(df[col_name]):
         return True, ''
     return False, f'column {col_name} expected to be datetime type but is not'
+
 
 def colcheck_min_val(df: pd.DataFrame,
                      col_name: str,

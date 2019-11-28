@@ -73,6 +73,22 @@ class TestColChecks(unittest.TestCase):
         passed, message = dwpc.colcheck_is_str(self.df_file1, 'C')
         self.assertEqual(passed, True)
 
+    def test_col_is_datetime(self):
+        passed, message = dwpc.colcheck_is_str(self.df_file1, 'J','%m%d%Y')
+        self.assertEqual(passed, False)
+        self.assertEqual(
+                message,
+                'column J data does not match datetime format specified')
+        passed, message = dwpc.colcheck_is_str(self.df_file1, 'J')
+        self.assertEqual(passed, False)
+        self.assertEqual(
+            message,
+            'column J expected to be datetime type but is not')
+        passed, message = dwpc.colcheck_is_str(self.df_file1, 'I')
+        self.assertEqual(passed, True)
+        passed, message = dwpc.colcheck_is_str(self.df_file1, 'I','%m%d%Y')
+        self.assertEqual(passed, True)
+
     def test_min_val(self):
         passed, message = dwpc.colcheck_min_val(self.df_file1, 'A', -1)
         self.assertEqual(passed, True)
