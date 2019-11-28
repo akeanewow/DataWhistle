@@ -55,6 +55,7 @@ class TestYamlParsing(unittest.TestCase):
         self.assertEqual(len(checksuite.columns), 2)
         col1 = checksuite.columns[0]
         col2 = checksuite.columns[1]
+        col9 = checksuite.columns[10]
         # col 1
         self.assertEqual(col1.name, 'A')
         self.assertEqual(col1.type, 'numeric')
@@ -72,10 +73,10 @@ class TestYamlParsing(unittest.TestCase):
         self.assertEqual(col1.count_distinct, 5)
         self.assertEqual(col2.format, None)
         # col 9
-        self.assertEqual(col2.name, 'I')
-        self.assertEqual(col2.type, 'datetime')
-        self.assertEqual(col2.allow_nulls, False)
-        self.assertEqual(col2.format, '%m%d%Y')
+        self.assertEqual(col9.name, 'I')
+        self.assertEqual(col9.type, 'datetime')
+        self.assertEqual(col9.allow_nulls, False)
+        self.assertEqual(col9.format, '%m%d%Y')
 
 
 if __name__ == '__main__':
