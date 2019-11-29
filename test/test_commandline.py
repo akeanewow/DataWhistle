@@ -1,8 +1,12 @@
-import io, inspect, os, sys, unittest
-HDIR = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
+import io
+import inspect
+import os
+import sys
+import unittest
+HDIR = os.path.dirname(os.path.abspath(
+            inspect.getfile(inspect.currentframe())))
 PARENTDIR = os.path.dirname(HDIR)
 sys.path.insert(0, PARENTDIR)
-import pandas as pd  # type: ignore
 import datawhistle as dw
 
 
@@ -48,7 +52,7 @@ class TestWhistle(unittest.TestCase):
         self.dfile2 = os.path.join(HDIR, 'data/file2.csv')
         self.dfilez = os.path.join(HDIR, 'data/zile2.csv')
         self.yfile1 = os.path.join(HDIR, 'yamls/file1.yaml')
-        self.yfile1a  = os.path.join(HDIR, 'yamls/file1a.yaml')
+        self.yfile1a = os.path.join(HDIR, 'yamls/file1a.yaml')
         self.yfile3 = os.path.join(HDIR, 'yamls/file3.yaml')
         self.yfilez = os.path.join(HDIR, 'yamls/zile1.yaml')
 
@@ -80,8 +84,7 @@ class TestWhistle(unittest.TestCase):
 
     def test_all_failed(self):
         with self.assertRaises(SystemExit) as e:
-            dw.commandline_check_csv(self.dfile2, self.yfile1a,
-                    True)
+            dw.commandline_check_csv(self.dfile2, self.yfile1a, True)
         self.assertEqual(e.exception.code, 1)
         self.assertEqual(self.capturedStout.getvalue(), _ALL_FAILED)
 

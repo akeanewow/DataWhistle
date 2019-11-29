@@ -1,5 +1,8 @@
-import inspect, os, unittest
-HDIR = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
+import inspect
+import os
+import unittest
+HDIR = os.path.dirname(os.path.abspath(
+            inspect.getfile(inspect.currentframe())))
 
 loader = unittest.TestLoader()
 suite = loader.discover(HDIR)

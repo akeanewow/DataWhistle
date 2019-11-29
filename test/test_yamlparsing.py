@@ -1,5 +1,9 @@
-import inspect, os, sys, unittest
-HDIR = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
+import inspect
+import os
+import sys
+import unittest
+HDIR = os.path.dirname(os.path.abspath(
+            inspect.getfile(inspect.currentframe())))
 PARENTDIR = os.path.dirname(HDIR)
 sys.path.insert(0, PARENTDIR)
 import pandas as pd  # type: ignore
