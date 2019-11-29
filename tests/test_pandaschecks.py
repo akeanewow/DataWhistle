@@ -1,15 +1,16 @@
-import unittest
+import inspect, os, sys, unittest
+HDIR = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
+PARENTDIR = os.path.dirname(HDIR)
+sys.path.insert(0, PARENTDIR)
 import pandas as pd  # type: ignore
-import sys
-sys.path.append('..')
 import datawhistle.pandaschecks as dwpc
 
 
 class TestDFChecks(unittest.TestCase):
 
     def setUp(self):
-        self.df_file1 = pd.read_csv('data/file1.csv')
-        self.df_file2 = pd.read_csv('data/file2.csv')
+        self.df_file1 = pd.read_csv(os.path.join(HDIR, 'data/file1.csv'))
+        self.df_file2 = pd.read_csv(os.path.join(HDIR, 'data/file2.csv'))
 
     def test_row_count(self):
         passed, message = dwpc.dfcheck_row_count(self.df_file1, 5, '>=')
@@ -31,8 +32,8 @@ class TestDFChecks(unittest.TestCase):
 class TestColChecks(unittest.TestCase):
 
     def setUp(self):
-        self.df_file1 = pd.read_csv('data/file1.csv')
-        self.df_file2 = pd.read_csv('data/file2.csv')
+        self.df_file1 = pd.read_csv(os.path.join(HDIR, 'data/file1.csv'))
+        self.df_file2 = pd.read_csv(os.path.join(HDIR, 'data/file2.csv'))
 
     def test_col_exists(self):
         passed, message = dwpc.colcheck_exists(self.df_file1, 'x')
