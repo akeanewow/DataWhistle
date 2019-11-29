@@ -1,7 +1,8 @@
-import unittest
-import io
-import sys
-sys.path.append('..')
+import io, inspect, os, sys, unittest
+HDIR = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
+PARENTDIR = os.path.dirname(HDIR)
+sys.path.insert(0, PARENTDIR)
+import pandas as pd  # type: ignore
 import datawhistle as dw
 
 
@@ -43,42 +44,44 @@ class TestWhistle(unittest.TestCase):
         self.maxDiff = None
         self.capturedStout = io.StringIO()
         sys.stdout = self.capturedStout
+        self.dfile1 = os.path.join(HDIR, 'data/file1.csv')
+        self.dfile2 = os.path.join(HDIR, 'data/file2.csv')
+        self.dfilez = os.path.join(HDIR, 'data/zile2.csv')
+        self.yfile1 = os.path.join(HDIR, 'yamls/file1.yaml')
+        self.yfile1a  = os.path.join(HDIR, 'yamls/file1a.yaml')
+        self.yfile3 = os.path.join(HDIR, 'yamls/file3.yaml')
+        self.yfilez = os.path.join(HDIR, 'yamls/zile1.yaml')
 
     def tearDown(self):
         sys.stdout = sys.__stdout__
 
     def test_allpassed_silent(self):
-        dw.commandline_check_csv('data/file1.csv', 'yamls/file1.yaml',
-                                 False)
+        dw.commandline_check_csv(self.dfile1, self.yfile1, False)
         self.assertEqual(self.capturedStout.getvalue(), '')
 
     def test_allpassed_verbose(self):
-        dw.commandline_check_csv('data/file1.csv', 'yamls/file1.yaml',
-                                 True)
+        dw.commandline_check_csv(self.dfile1, self.yfile1, True)
         self.assertEqual(self.capturedStout.getvalue(), _ALL_PASSED)
 
     def test_csvfile_not_found(self):
         with self.assertRaises(SystemExit) as e:
-            dw.commandline_check_csv('data/zile1.csv',
-                                     'yamls/file1.yaml', True)
+            dw.commandline_check_csv(self.dfilez, self.yfile1, True)
         self.assertEqual(e.exception.code, 2)
 
     def test_yamlfile_not_found(self):
         with self.assertRaises(SystemExit) as e:
-            dw.commandline_check_csv('data/file1.csv',
-                                     'yamls/zile1.yaml', True)
+            dw.commandline_check_csv(self.dfile1, self.yfilez, True)
         self.assertEqual(e.exception.code, 4)
 
     def test_yamlerror(self):
         with self.assertRaises(SystemExit) as e:
-            dw.commandline_check_csv('data/file1.csv',
-                                     'yamls/file3.yaml', True)
+            dw.commandline_check_csv(self.dfile1, self.yfile3, True)
         self.assertEqual(e.exception.code, 5)
 
     def test_all_failed(self):
         with self.assertRaises(SystemExit) as e:
-            dw.commandline_check_csv('data/file2.csv', 'yamls/file1a.yaml',
-                                     True)
+            dw.commandline_check_csv(self.dfile2, self.yfile1a,
+                    True)
         self.assertEqual(e.exception.code, 1)
         self.assertEqual(self.capturedStout.getvalue(), _ALL_FAILED)
 

@@ -1,15 +1,16 @@
-import unittest
+import inspect, os, sys, unittest
+HDIR = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
+PARENTDIR = os.path.dirname(HDIR)
+sys.path.insert(0, PARENTDIR)
 import pandas as pd  # type: ignore
-import sys
-sys.path.append('..')
 import datawhistle as dw
 
 
 class TestPandasDatasetCheckSuite(unittest.TestCase):
 
     def setUp(self):
-        self.df_file1 = pd.read_csv('data/file1.csv')
-        self.df_file2 = pd.read_csv('data/file2.csv')
+        self.df_file1 = pd.read_csv(os.path.join(HDIR, 'data/file1.csv'))
+        self.df_file2 = pd.read_csv(os.path.join(HDIR, 'data/file2.csv'))
 
     def test_runchecks_datsetobjectonly(self):
         pdcs = dw.PandasDatsetCheckSuite(self.df_file1)

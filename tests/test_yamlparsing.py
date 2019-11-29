@@ -1,49 +1,56 @@
-import unittest
+import inspect, os, sys, unittest
+HDIR = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
+PARENTDIR = os.path.dirname(HDIR)
+sys.path.insert(0, PARENTDIR)
 import pandas as pd  # type: ignore
-import sys
-sys.path.append('..')
 import datawhistle as dw
 
 
 class TestYamlParsing(unittest.TestCase):
 
     def setUp(self):
-        self.df_file1 = pd.read_csv('data/file1.csv')
+        filepath = os.path.join(HDIR, 'data/file1.csv')
+        self.df_file1 = pd.read_csv(filepath)
+        self.file1path = os.path.join(HDIR, 'yamls/file1.yaml')
+        self.file2path = os.path.join(HDIR, 'yamls/file2.yaml')
+        self.file3path = os.path.join(HDIR, 'yamls/file3.yaml')
+        self.file4path = os.path.join(HDIR, 'yamls/file4.yaml')
+        self.file5path = os.path.join(HDIR, 'yamls/file5.yaml')
 
     def test_load_raw_yaml(self):
         self.assertRaises(FileNotFoundError,
                           dw.load_yaml_file_to_dict, 'xxxx')
         self.assertRaises(dw.YamlParsingError,
-                          dw.load_yaml_file_to_dict, 'yamls/file2.yaml')
-        result = dw.load_yaml_file_to_dict('yamls/file1.yaml')
+                          dw.load_yaml_file_to_dict, self.file2path)
+        result = dw.load_yaml_file_to_dict(self.file1path)
         self.assertTrue(isinstance(result, dict))
 
     def test_apply_yamldict_to_checksuite_keyerrors(self):
         checksuite = dw.PandasDatsetCheckSuite(self.df_file1)
-        ymld = dw.load_yaml_file_to_dict('yamls/file3.yaml')
+        ymld = dw.load_yaml_file_to_dict(self.file3path)
         self.assertTrue(isinstance(ymld, dict))
         self.assertRaises(dw.YamlParsingError,
                           dw.apply_yamldict_to_checksuite,
                           ymld,
                           checksuite)
-        ymld = dw.load_yaml_file_to_dict('yamls/file4.yaml')
+        ymld = dw.load_yaml_file_to_dict(self.file4path)
         self.assertRaises(dw.YamlParsingError,
                           dw.apply_yamldict_to_checksuite,
                           ymld,
                           checksuite)
-        ymld = dw.load_yaml_file_to_dict('yamls/file5.yaml')
+        ymld = dw.load_yaml_file_to_dict(self.file5path)
         self.assertRaises(dw.YamlParsingError,
                           dw.apply_yamldict_to_checksuite,
                           ymld,
                           checksuite)
         # The following should not raise an error - test will
         # fail if it does
-        ymld = dw.load_yaml_file_to_dict('yamls/file1.yaml')
+        ymld = dw.load_yaml_file_to_dict(self.file1path)
         dw.apply_yamldict_to_checksuite(ymld, checksuite)
 
     def test_apply_yamldict_to_checksuite_valuechecks(self):
         checksuite = dw.PandasDatsetCheckSuite(self.df_file1)
-        ymld = dw.load_yaml_file_to_dict('yamls/file1.yaml')
+        ymld = dw.load_yaml_file_to_dict(self.file1path)
         dw.apply_yamldict_to_checksuite(ymld, checksuite)
         # Dataset checks
         self.assertFalse(checksuite.allow_duplicate_rows)
