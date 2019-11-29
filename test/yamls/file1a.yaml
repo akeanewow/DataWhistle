@@ -1,4 +1,3 @@
-# well formed yaml file passing yamllint
 ---
 dataset:
   allow_duplicate_rows: false
