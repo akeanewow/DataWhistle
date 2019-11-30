@@ -2,9 +2,9 @@
 
 BigQuery unit tests assume that the files in the testing/data directory have
 been uploaded to BigQuery tables with naming convention file*.csv
-becoming table*. The testing tables need to be accessible through the bq
-commandline tool i.e. the user is already logged into a test project with
-the test data pre-loaded.
+becoming table*, in a dataset called 'datawhistle'. The testing tables need
+to be accessible through the bq commandline tool i.e. the user is already
+logged into a test project with the test data pre-loaded.
 
 bq commands to load the test files from a storage bucket:
 

@@ -11,8 +11,11 @@ import datawhistle.bqchecks as dwbc
 
 class TestDFChecks(unittest.TestCase):
 
-    def setUp(self):
-        pass
+    def test_bqcheck_row_count(self):
+        passed, message = dwbc.bqcheck_row_count('datawhistle', 'table1',
+                                                 5, '>=')
+        self.assertEqual(passed, True)
+        self.assertEqual(message, '')
 
 
 if __name__ == '__main__':
