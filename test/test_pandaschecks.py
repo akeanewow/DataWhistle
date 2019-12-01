@@ -120,6 +120,14 @@ class TestColChecks(unittest.TestCase):
         self.assertEqual(message, (f'column A want all values = 1,'
                                    ' got different values'))
 
+    def test_col_no_duplicates(self):
+        passed, message = dwpc.colcheck_no_duplicates(self.df_file1, 'I')
+        self.assertFalse(passed)
+        self.assertEqual(message, 'column I want 0 duplicate rows, got 4')
+        passed, message = dwpc.colcheck_no_duplicates(self.df_file1, 'A')
+        self.assertTrue(passed)
+        self.assertEqual(message, '')
+
 
 if __name__ == '__main__':
     unittest.main()

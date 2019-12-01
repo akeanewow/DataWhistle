@@ -6,6 +6,7 @@ import pandas as pd  # type: ignore
 # are described in functions using the naming convention
 # dfcheck_[some name](df: pd.DataFrame, [inputs]) -> Tuple[bool, str].
 # The return value is a tuple containing a bool indicating if the
+# The return value is a tuple containing a bool indicating if the
 # test passed or failed (true = passed) and a string describing
 # the error condition if the test failed. Error messages follow
 # the pattern 'want [expected value or condition], got [actual
@@ -139,3 +140,10 @@ def colcheck_val(df: pd.DataFrame, col_name: str, val: Union[int, float],
                        f'operator {operator} not recognised')
     return False, (f'column {col_name} want value {operator} '
                    f'{val}, got {actual_val}')
+
+def colcheck_no_duplicates(df: pd.DataFrame, col_name: str) -> Tuple[bool, str]:
+
+    num_duplicates: int = sum(df[col_name].duplicated())
+    if num_duplicates == 0:
+        return True, ''
+    return False, (f'column {col_name} want 0 duplicate rows, got {num_duplicates}')
