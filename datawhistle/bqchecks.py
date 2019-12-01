@@ -20,9 +20,14 @@ SELECT "False" AS bool FROM (SELECT 1)
 LEFT JOIN query1 ON FALSE WHERE NOT EXISTS (SELECT 1 FROM query1);
 '''
 
+# Count the distinct values in a column.
+SQL_COL_COUNTDISTINCT = '''SELECT COUNT(DISTINCT {columnname}) AS number
+FROM {datasetname}.{tablename};
+'''
+
 # Get column's type, without returning an empty result if the column does
 # not exist.
-SQL_COLTYPE = '''WITH query1 AS
+SQL_COL_TYPE = '''WITH query1 AS
   (SELECT data_type AS string
    FROM {datasetname}.INFORMATION_SCHEMA.COLUMNS
    WHERE table_name = "{tablename}" AND column_name="{columnname}")
@@ -160,3 +165,29 @@ def colcheck_exists(datasetname: str, tablename: str,
     if col_exists:
         return True, ''
     return False, f'column {columnname} not found in table {tablename}'
+
+
+def colcheck_count_distinct(datasetname: str, tablename: str,
+                            columnname: str, count: int,
+                            operator: str = '==') -> Tuple[bool, str]:
+    '''
+    Check if the count of distinct values in a column is equal to, greater
+    than or less than a specified count.
+
+    The operator parameter can be '==', '>=' or '<='.
+    '''
+    sql = SQL_COL_COUNTDISTINCT.format(datasetname=datasetname,
+                                       tablename=tablename,
+                                       columnname=columnname)
+    count_val = _bqquery_get_number(sql)
+    if operator == '==' and count_val == count:
+        return True, ''
+    if operator == '>=' and count_val >= count:
+        return True, ''
+    if operator == '<=' and count_val <= count:
+        return True, ''
+    if operator not in ['==', '<=', '>=']:
+        return False, (f'column {columnname} count distinct '
+                       f'operator {operator} not recognised')
+    return False, (f'column {columnname} want count distinct {operator} '
+                   f'{count}, got {count_val}')

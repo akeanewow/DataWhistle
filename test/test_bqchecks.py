@@ -59,6 +59,38 @@ class TestColumnLevelChecks(unittest.TestCase):
         self.assertFalse(passed)
         self.assertEqual(message, 'column XX not found in table table1')
 
+    def test_colcheck_count_distinct(self):
+        # >=
+        passed, message = dwbc.colcheck_count_distinct('datawhistle', 'table1',
+                                                       'A', 5, '>=')
+        self.assertTrue(passed)
+        self.assertEqual(message, '')
+        passed, message = dwbc.colcheck_count_distinct('datawhistle', 'table1',
+                                                       'A', 6, '>=')
+        self.assertFalse(passed)
+        self.assertEqual(message, ('column A want count distinct >= 6, '
+                                   'got 5.0'))
+        # <=
+        passed, message = dwbc.colcheck_count_distinct('datawhistle', 'table1',
+                                                       'A', 10, '<=')
+        self.assertTrue(passed)
+        self.assertEqual(message, '')
+        passed, message = dwbc.colcheck_count_distinct('datawhistle', 'table1',
+                                                       'A', 3, '<=')
+        self.assertFalse(passed)
+        self.assertEqual(message, ('column A want count distinct <= 3, '
+                                   'got 5.0'))
+        # ==
+        passed, message = dwbc.colcheck_count_distinct('datawhistle', 'table1',
+                                                       'A', 5, '==')
+        self.assertTrue(passed)
+        self.assertEqual(message, '')
+        passed, message = dwbc.colcheck_count_distinct('datawhistle', 'table1',
+                                                       'A', 6, '==')
+        self.assertFalse(passed)
+        self.assertEqual(message, ('column A want count distinct == 6, '
+                                   'got 5.0'))
+
 
 if __name__ == '__main__':
     unittest.main()
