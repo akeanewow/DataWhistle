@@ -15,7 +15,7 @@ import pandas as pd  # type: ignore
 def dfcheck_row_count(df: pd.DataFrame, count: int,
                       operator: str = '==') -> Tuple[bool, str]:
     '''
-    Check if the number of rows in a dataset is equal to, greater
+    Check if the number of rows in a table is equal to, greater
     than or less than a specified count.
 
     The operator parameter can be '==', '>=' or '<='.
@@ -28,7 +28,7 @@ def dfcheck_row_count(df: pd.DataFrame, count: int,
     if operator == '<=' and num_rows <= count:
         return True, ''
     if operator not in ['==', '<=', '>=']:
-        return False, (f'dataset row count '
+        return False, (f'table row count '
                        f'operator {operator} not recognised')
     return False, f'want row count {operator} {count}, got {num_rows}'
 
@@ -52,7 +52,7 @@ def dfcheck_no_duplicate_rows(df: pd.DataFrame) -> Tuple[bool, str]:
 
 
 def colcheck_exists(df: pd.DataFrame, col_name: str) -> Tuple[bool, str]:
-    '''Check if a column with the specified name exists in the dataset.'''
+    '''Check if a column with the specified name exists in the table.'''
     if col_name in df.columns:
         return True, ''
     return False, f'column {col_name} not found in data'

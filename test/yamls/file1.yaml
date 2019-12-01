@@ -1,5 +1,5 @@
 ---
-dataset:
+table:
   allow_duplicate_rows: false
   row_count_max: 10
   row_count_min: 3

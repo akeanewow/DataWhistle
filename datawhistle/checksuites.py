@@ -5,9 +5,9 @@ from typing import Callable, Optional, List, Tuple, Union
 import datawhistle.pandaschecks as dwpc
 
 
-class DataSetCheckSuite:
+class TableCheckSuite:
     '''
-    The DataSetCheckSuite object is used to run checks. Checks are implemented
+    The TableCheckSuite object is used to run checks. Checks are implemented
     in child classes by overriding check_* methods to enable checking of
     different data sources.
     '''
@@ -182,7 +182,7 @@ class ColumnCheckSuite:
         raise NotImplementedError
 
 
-class PandasDatsetCheckSuite(DataSetCheckSuite):
+class PandasDatsetCheckSuite(TableCheckSuite):
     '''
     Pandas DataFrame testing object. Check methods from the parent class are
     overriden to implement Pandas specific functionality.
@@ -297,7 +297,7 @@ class PandasColumnCheckSuite(ColumnCheckSuite):
 
 # TODO: implement an override on the parent runchecks method to add a check
 # if the table exists before proceeding.
-class BqDatsetCheckSuite(DataSetCheckSuite):
+class BqTableCheckSuite(TableCheckSuite):
     '''
     BigQuery table testing object. Check methods from the parent class are
     overriden to implement BigQuery specific functionality.

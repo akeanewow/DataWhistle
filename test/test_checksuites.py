@@ -10,7 +10,7 @@ import pandas as pd  # type: ignore
 import datawhistle as dw
 
 
-class TestPandasDatasetCheckSuite(unittest.TestCase):
+class TestPandasTableCheckSuite(unittest.TestCase):
 
     def setUp(self):
         self.df_file1 = pd.read_csv(os.path.join(HDIR, 'data/file1.csv'))
