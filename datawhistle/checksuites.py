@@ -103,6 +103,8 @@ class ColumnCheckSuite:
         # other properties
         self.error_messages: List[str] = []
         self._checks: List[Callable] = []
+        self.allow_duplicates: bool = True
+
 
     def _assemble_checks(self) -> None:
         self._checks = []
@@ -121,6 +123,8 @@ class ColumnCheckSuite:
             self._checks.append(self.check_col_count_distinct_min)
         if self.count_distinct is not None:
             self._checks.append(self.check_col_count_distinct)
+        if not self.allow_duplicates:
+            self._checks.append(self.check_col_no_duplicates)
 
     def runchecks(self, stop_on_fail: bool,
                   verbose: bool = False) -> List[str]:
@@ -180,6 +184,10 @@ class ColumnCheckSuite:
 
     def check_col_type(self) -> Tuple[bool, str]:
         raise NotImplementedError
+
+    def check_col_no_duplicates(self) -> Tuple[bool, str]:
+        raise NotImplementedError
+
 
 
 class PandasDatsetCheckSuite(TableCheckSuite):
@@ -293,6 +301,9 @@ class PandasColumnCheckSuite(ColumnCheckSuite):
             return dwpc.colcheck_is_str(self.dataframe, self.name)
         return False, (f'column {self.name} could not tested '
                        f'for type {self.type} (unknown type)')
+
+    def check_col_no_duplicates(self) -> Tuple[bool, str]:
+        return dwpc.colcheck_no_duplicates(self.dataframe,self.name)
 
 
 # TODO: implement an override on the parent runchecks method to add a check
