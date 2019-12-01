@@ -46,14 +46,14 @@ class DataSetCheckSuite:
             passed, message = check()
             if not passed:
                 if verbose:
-                    print('F', end='')
+                    print('F', end='', flush=True)
                 self.error_messages.append(message)
                 if self.stop_on_fail:
                     checks_failed = True
                     break
             else:
                 if verbose:
-                    print('.', end='')
+                    print('.', end='', flush=True)
         if not checks_failed:
             for column in self.columns:
                 error_messages = column.runchecks(self.stop_on_fail,
@@ -145,13 +145,13 @@ class ColumnCheckSuite:
             passed, message = check()
             if not passed:
                 if verbose:
-                    print('F', end='')
+                    print('F', end='', flush=True)
                 self.error_messages.append(message)
                 if stop_on_fail:
                     break
             else:
                 if verbose:
-                    print('.', end='')
+                    print('.', end='', flush=True)
         return self.error_messages
 
     def check_col_count_distinct_max(self) -> Tuple[bool, str]:

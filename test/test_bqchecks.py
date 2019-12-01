@@ -9,33 +9,33 @@ sys.path.insert(0, PARENTDIR)
 import datawhistle.bqchecks as dwbc
 
 
-class TestDFChecks(unittest.TestCase):
+class TestTableLevelChecks(unittest.TestCase):
 
-    def test_bqcheck_row_count(self):
+    def test_dscheck_row_count(self):
         # >=
-        passed, message = dwbc.bqcheck_row_count('datawhistle', 'table1',
+        passed, message = dwbc.dscheck_row_count('datawhistle', 'table1',
                                                  5, '>=')
         self.assertEqual(passed, True)
         self.assertEqual(message, '')
-        passed, message = dwbc.bqcheck_row_count('datawhistle', 'table1',
+        passed, message = dwbc.dscheck_row_count('datawhistle', 'table1',
                                                  10, '>=')
         self.assertEqual(passed, False)
         self.assertEqual(message, 'want row count >= 10, got 5.0')
         # <=
-        passed, message = dwbc.bqcheck_row_count('datawhistle', 'table1',
+        passed, message = dwbc.dscheck_row_count('datawhistle', 'table1',
                                                  10, '<=')
         self.assertEqual(passed, True)
         self.assertEqual(message, '')
-        passed, message = dwbc.bqcheck_row_count('datawhistle', 'table1',
+        passed, message = dwbc.dscheck_row_count('datawhistle', 'table1',
                                                  2, '<=')
         self.assertEqual(passed, False)
         self.assertEqual(message, 'want row count <= 2, got 5.0')
         # ==
-        passed, message = dwbc.bqcheck_row_count('datawhistle', 'table1',
+        passed, message = dwbc.dscheck_row_count('datawhistle', 'table1',
                                                  5, '==')
         self.assertEqual(passed, True)
         self.assertEqual(message, '')
-        passed, message = dwbc.bqcheck_row_count('datawhistle', 'table1',
+        passed, message = dwbc.dscheck_row_count('datawhistle', 'table1',
                                                  10, '==')
         self.assertEqual(passed, False)
         self.assertEqual(message, 'want row count == 10, got 5.0')
