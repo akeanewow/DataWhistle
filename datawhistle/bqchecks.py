@@ -8,10 +8,20 @@ from typing import Tuple
 BQ_QUERY = ['bq', 'query', '--nouse_legacy_sql', '--format=json',
             '--quiet=true']
 
-# Get the column type (longer than would be expected to return "__no_data__"
-# instead of nothing if the column does not exist, to know with certainty
-# that a JSON parsing error hasn't occurred in the _bqquery_get_string
-# function.
+# Check if a column exists in the dataset schema, without returning an
+# empty result if the column doesn't exist.
+SQL_COL_EXISTS = '''WITH query1 AS
+  (SELECT "True" AS bool
+   FROM {datasetname}.INFORMATION_SCHEMA.COLUMNS
+   WHERE table_name = "{tablename}" AND column_name = "{columnname}")
+SELECT * FROM query1
+UNION ALL
+SELECT "False" AS bool FROM (SELECT 1)
+LEFT JOIN query1 ON FALSE WHERE NOT EXISTS (SELECT 1 FROM query1);
+'''
+
+# Get column's type, without returning an empty result if the column does
+# not exist.
 SQL_COLTYPE = '''WITH query1 AS
   (SELECT data_type AS string
    FROM {datasetname}.INFORMATION_SCHEMA.COLUMNS
@@ -25,7 +35,8 @@ LEFT JOIN query1 ON FALSE WHERE NOT EXISTS (SELECT 1 FROM query1);
 # Count the number of rows in a table.
 SQL_COUNTROWS = 'SELECT count(*) AS number FROM {datasetname}.{tablename};'
 
-# Check if a table exists in the dataset schema.
+# Check if a table exists in the dataset schema, without returning an empty
+# result if the table doesn't exist.
 SQL_TABLE_EXISTS = '''WITH query1 AS
   (SELECT "True" AS bool
    FROM {datasetname}.INFORMATION_SCHEMA.TABLES
@@ -140,8 +151,12 @@ def dscheck_table_exists(datasetname: str, tablename: str) -> Tuple[bool, str]:
 # condition], got [actual value or condition]'.
 
 
-#def colcheck_exists(datasetname: str, tablename: str,
-##                    columnname: str) -> Tuple[bool, str]:
-#    '''Check if a column with the specified name exists in the table.'''
-#    sql = SQL_COUNTCOLS.format(datasetname=datasetname
-#    return False, 'not implemented'
+def colcheck_exists(datasetname: str, tablename: str,
+                    columnname: str) -> Tuple[bool, str]:
+    '''Check if a column with the specified name exists in the table.'''
+    sql = SQL_COL_EXISTS.format(datasetname=datasetname, tablename=tablename,
+                               columnname=columnname)
+    col_exists: bool = _bqquery_get_bool(sql)
+    if col_exists:
+        return True, ''
+    return False, f'column {columnname} not found in table {tablename}'

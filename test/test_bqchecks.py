@@ -15,29 +15,29 @@ class TestTableLevelChecks(unittest.TestCase):
         # >=
         passed, message = dwbc.dscheck_row_count('datawhistle', 'table1',
                                                  5, '>=')
-        self.assertEqual(passed, True)
+        self.assertTrue(passed)
         self.assertEqual(message, '')
         passed, message = dwbc.dscheck_row_count('datawhistle', 'table1',
                                                  10, '>=')
-        self.assertEqual(passed, False)
+        self.assertFalse(passed)
         self.assertEqual(message, 'want row count >= 10, got 5.0')
         # <=
         passed, message = dwbc.dscheck_row_count('datawhistle', 'table1',
                                                  10, '<=')
-        self.assertEqual(passed, True)
+        self.assertTrue(passed)
         self.assertEqual(message, '')
         passed, message = dwbc.dscheck_row_count('datawhistle', 'table1',
                                                  2, '<=')
-        self.assertEqual(passed, False)
+        self.assertFalse(passed)
         self.assertEqual(message, 'want row count <= 2, got 5.0')
         # ==
         passed, message = dwbc.dscheck_row_count('datawhistle', 'table1',
                                                  5, '==')
-        self.assertEqual(passed, True)
+        self.assertTrue(passed)
         self.assertEqual(message, '')
         passed, message = dwbc.dscheck_row_count('datawhistle', 'table1',
                                                  10, '==')
-        self.assertEqual(passed, False)
+        self.assertFalse(passed)
         self.assertEqual(message, 'want row count == 10, got 5.0')
 
     def test_dscheck_table_exists(self):
@@ -49,13 +49,15 @@ class TestTableLevelChecks(unittest.TestCase):
         self.assertEqual(message, 'table zzz not found in dataset datawhistle')
 
 
-#class TestTableLevelChecks(unittest.TestCase):
-#
-#    def test_colcheck_exists(self):
-#        passed, message = dwbc.colcheck_exists('datawhistle', 'table1',
-#                                               'A')
-#        self.assertTrue(passed)
-#        self.assertEqual(message, '')
+class TestColumnLevelChecks(unittest.TestCase):
+
+    def test_colcheck_exists(self):
+        passed, message = dwbc.colcheck_exists('datawhistle', 'table1', 'A')
+        self.assertTrue(passed)
+        self.assertEqual(message, '')
+        passed, message = dwbc.colcheck_exists('datawhistle', 'table1', 'XX')
+        self.assertFalse(passed)
+        self.assertEqual(message, 'column XX not found in table table1')
 
 
 if __name__ == '__main__':
