@@ -40,6 +40,23 @@ class TestTableLevelChecks(unittest.TestCase):
         self.assertEqual(passed, False)
         self.assertEqual(message, 'want row count == 10, got 5.0')
 
+    def test_dscheck_table_exists(self):
+        passed, message = dwbc.dscheck_table_exists('datawhistle', 'table1')
+        self.assertTrue(passed)
+        self.assertEqual(message, '')
+        passed, message = dwbc.dscheck_table_exists('datawhistle', 'zzz')
+        self.assertFalse(passed)
+        self.assertEqual(message, 'table zzz not found in dataset datawhistle')
+
+
+#class TestTableLevelChecks(unittest.TestCase):
+#
+#    def test_colcheck_exists(self):
+#        passed, message = dwbc.colcheck_exists('datawhistle', 'table1',
+#                                               'A')
+#        self.assertTrue(passed)
+#        self.assertEqual(message, '')
+
 
 if __name__ == '__main__':
     unittest.main()

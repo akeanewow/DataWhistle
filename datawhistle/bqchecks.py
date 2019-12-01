@@ -22,13 +22,19 @@ SELECT "__no_data__" AS string FROM (SELECT 1)
 LEFT JOIN query1 ON FALSE WHERE NOT EXISTS (SELECT 1 FROM query1);
 '''
 
-# Get the number of columns in a table.
-SQL_COUNTCOLS = '''SELECT count(*) as number
-FROM {datasetname}.INFORMATION_SCHEMA.COLUMNS
-WHERE table_name = '{tablename}';'''
-
 # Count the number of rows in a table.
 SQL_COUNTROWS = 'SELECT count(*) AS number FROM {datasetname}.{tablename};'
+
+# Check if a table exists in the dataset schema.
+SQL_TABLE_EXISTS = '''WITH query1 AS
+  (SELECT "True" AS bool
+   FROM {datasetname}.INFORMATION_SCHEMA.TABLES
+   WHERE table_name = "{tablename}")
+SELECT * FROM query1
+UNION ALL
+SELECT "False" AS bool FROM (SELECT 1)
+LEFT JOIN query1 ON FALSE WHERE NOT EXISTS (SELECT 1 FROM query1);
+'''
 
 
 class BqError(Exception):
@@ -58,6 +64,17 @@ def _bqquery_get_string(query: str) -> str:
     if 'string' not in jsondict.keys():
         raise BqError('Could not convert bq command output')
     return jsondict['string']
+
+
+def _bqquery_get_bool(query: str) -> bool:
+    jsontxt = _bqquery_run(query)
+    jsondict = json.loads(jsontxt)
+    if len(jsondict) == 0:
+        raise BqError('Could not convert bq command output')
+    jsondict = jsondict[0]
+    if 'bool' not in jsondict.keys():
+        raise BqError('Could not convert bq command output')
+    return jsondict['bool'] == 'True'
 
 
 def _bqquery_run(query: str) -> str:
@@ -103,6 +120,15 @@ def dscheck_row_count(datasetname: str, tablename: str, count: int,
     return False, f'want row count {operator} {count}, got {num_rows}'
 
 
+def dscheck_table_exists(datasetname: str, tablename: str) -> Tuple[bool, str]:
+    '''Check if a table exists in the specified dataset.'''
+    sql = SQL_TABLE_EXISTS.format(datasetname=datasetname, tablename=tablename)
+    table_exists: bool = _bqquery_get_bool(sql)
+    if table_exists:
+        return True, ''
+    return False, f'table {tablename} not found in dataset {datasetname}'
+
+
 # Table column level checks are described in functions using
 # the naming convention
 # colcheck_[some name](datasetname: str, tablename: str,
@@ -114,9 +140,8 @@ def dscheck_row_count(datasetname: str, tablename: str, count: int,
 # condition], got [actual value or condition]'.
 
 
-# To be converted:
-# def colcheck_exists(df: pd.DataFrame, col_name: str) -> Tuple[bool, str]:
-#    '''Check if a column with the specified name exists in the dataset.'''
-#    if col_name in df.columns:
-#        return True, ''
-#    return False, f'column {col_name} not found in data'
+#def colcheck_exists(datasetname: str, tablename: str,
+##                    columnname: str) -> Tuple[bool, str]:
+#    '''Check if a column with the specified name exists in the table.'''
+#    sql = SQL_COUNTCOLS.format(datasetname=datasetname
+#    return False, 'not implemented'

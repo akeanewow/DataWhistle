@@ -295,6 +295,8 @@ class PandasColumnCheckSuite(ColumnCheckSuite):
                        f'for type {self.type} (unknown type)')
 
 
+# TODO: implement an override on the parent runchecks method to add a check
+# if the table exists before proceeding.
 class BqDatsetCheckSuite(DataSetCheckSuite):
     '''
     BigQuery table testing object. Check methods from the parent class are
