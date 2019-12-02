@@ -7,5 +7,10 @@ PARENTDIR = os.path.dirname(HDIR)
 sys.path.insert(0, PARENTDIR)
 import datawhistle as dw
 
-if __name__ == '__main__':
+
+def main():
     dw.commandline_main()
+
+
+if __name__ == '__main__':
+    main()
