@@ -93,6 +93,7 @@ class ColumnCheckSuite:
         # test settings
         self.name: str = colname
         self.type: str = coltype
+        self.allow_blanks: bool = True
         self.allow_duplicates: bool = True
         self.allow_nulls: bool = True
         self.count_distinct_max: Optional[int] = None
@@ -108,22 +109,24 @@ class ColumnCheckSuite:
     def _assemble_checks(self) -> None:
         self._checks = []
         self._checks.append(self.check_col_type)
+        if not self.allow_blanks:
+            self._checks.append(self.check_col_no_blanks)
+        if not self.allow_duplicates:
+            self._checks.append(self.check_col_no_duplicates)
         if not self.allow_nulls:
             self._checks.append(self.check_col_non_nulls)
-        if self.min_val is not None:
-            self._checks.append(self.check_col_min_val)
-        if self.max_val is not None:
-            self._checks.append(self.check_col_max_val)
-        if self.val is not None:
-            self._checks.append(self.check_col_val)
         if self.count_distinct_max is not None:
             self._checks.append(self.check_col_count_distinct_max)
         if self.count_distinct_min is not None:
             self._checks.append(self.check_col_count_distinct_min)
         if self.count_distinct is not None:
             self._checks.append(self.check_col_count_distinct)
-        if not self.allow_duplicates:
-            self._checks.append(self.check_col_no_duplicates)
+        if self.min_val is not None:
+            self._checks.append(self.check_col_min_val)
+        if self.max_val is not None:
+            self._checks.append(self.check_col_max_val)
+        if self.val is not None:
+            self._checks.append(self.check_col_val)
 
     def runchecks(self, stop_on_fail: bool,
                   verbose: bool = False) -> List[str]:
@@ -173,6 +176,9 @@ class ColumnCheckSuite:
         raise NotImplementedError
 
     def check_col_max_val(self) -> Tuple[bool, str]:
+        raise NotImplementedError
+
+    def check_col_no_blanks(self) -> Tuple[bool, str]:
         raise NotImplementedError
 
     def check_col_no_duplicates(self) -> Tuple[bool, str]:
@@ -279,6 +285,12 @@ class PandasColumnCheckSuite(ColumnCheckSuite):
                            'maximum value')
         max_val = float(self.max_val)
         return dwpc.colcheck_val(self.dataframe, self.name, max_val, '<=')
+
+    def check_col_no_blanks(self) -> Tuple[bool, str]:
+        if not self.type == 'string':
+            return False, (f'column {self.name} cannot check for blanks '
+                            'in non-string column')
+        return dwpc.colcheck_no_blanks(self.dataframe, self.name)
 
     def check_col_no_duplicates(self) -> Tuple[bool, str]:
         return dwpc.colcheck_no_duplicates(self.dataframe, self.name)

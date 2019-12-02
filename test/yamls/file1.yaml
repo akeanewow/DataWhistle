@@ -20,6 +20,7 @@ columns:
 
   - name: C
     type: string
+    allow_blanks: false
     allow_nulls: false
     count_distinct_max: 10
     count_distinct_min: 1

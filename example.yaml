@@ -22,6 +22,7 @@ columns:
 
   - name: C                    # Name of a column expected in the table
     type: string               # Column type ('numeric' or 'string')
+    allow_blanks: false        # Allow whitespace values in column (bool)
     allow_nulls: false         # Null values allowed in column (bool)
     allow_duplicates: true     # Duplicate values are allowed (bool)
     count_distinct_max: 10     # Maximum number of distinct values (int)

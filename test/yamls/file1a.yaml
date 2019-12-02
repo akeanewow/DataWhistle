@@ -39,5 +39,9 @@ columns:
     type: string
     allow_nulls: false
 
+  - name: G
+    type: string
+    allow_blanks: false
+
   - name: X
     type: string

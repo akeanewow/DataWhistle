@@ -13,6 +13,7 @@ YAML_TABLE_KEYS = [
 YAML_COLUMN_KEYS = [
     'name',
     'type',
+    'allow_blanks',
     'allow_duplicates',
     'allow_nulls',
     'count_distinct_max',
@@ -120,7 +121,10 @@ def apply_yamldict_to_checksuite(ymld: Dict,
         coltype = coldict['type']
         _check_yaml_column_type(coltype)
         col = suite.addcolumn(colname, coltype)
-        # allow null values  in the column
+        # allow blanks in the column
+        if 'allow_blanks' in colkeys:
+            col.allow_blanks = _check_bool_val(coldict['allow_blanks'])
+        # allow null values in the column
         if 'allow_nulls' in colkeys:
             col.allow_nulls = _check_bool_val(coldict['allow_nulls'])
         # duplicate rows

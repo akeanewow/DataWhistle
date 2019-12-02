@@ -80,10 +80,11 @@ class TestYamlParsing(unittest.TestCase):
         # col 2
         self.assertEqual(col2.name, 'C')
         self.assertEqual(col2.type, 'string')
+        self.assertEqual(col2.allow_blanks, False)
         self.assertEqual(col2.allow_nulls, False)
-        self.assertEqual(col1.count_distinct_max, 10)
-        self.assertEqual(col1.count_distinct_min, 1)
-        self.assertEqual(col1.count_distinct, 5)
+        self.assertEqual(col2.count_distinct_max, 10)
+        self.assertEqual(col2.count_distinct_min, 1)
+        self.assertEqual(col2.count_distinct, 5)
         # col 3
         self.assertEqual(col3.name, 'I')
         self.assertEqual(col3.type, 'numeric')

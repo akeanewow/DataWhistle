@@ -12,25 +12,25 @@ import datawhistle as dw
 
 _ALL_PASSED = '''Reading data file ... done.
 Parsing rules file ... done.
-Running checks ..................... done.
+Running checks ...................... done.
 All checks passed.
 '''
 
 _ALL_FAILED = '''Reading data file ... done.
 Parsing rules file ... done.
-Running checks FFFF.FFFFFFF..FFF....FFFF..FF done.
-Checks failed (20):
+Running checks FFFF.FFFFFFF..FFF....FFFF..F..FF done.
+Checks failed (21):
 want 0 duplicate rows, got 2
 want row count <= 1, got 7
 want row count >= 8, got 7
 want row count == 6, got 7
 column A expected to be string type but is not
-column A cannot check minimum value on a non-numeric column
-column A cannot check maximum value on a non-numeric column
+column A want 0 duplicate rows, got 2
 column A want count distinct <= 1, got 5
 column A want count distinct >= 10, got 5
 column A want count distinct == 7, got 5
-column A want 0 duplicate rows, got 2
+column A cannot check minimum value on a non-numeric column
+column A cannot check maximum value on a non-numeric column
 column B want value >= 10.1, got 1.0
 column B want value <= 3.0, got 5.4
 column B want all values = 1.0, got different values
@@ -39,6 +39,7 @@ column D want count distinct <= 1, got 3
 column D want count distinct >= 10, got 3
 column D want count distinct == 4, got 3
 column F want 0 nulls, got 2
+column G has blanks or whitesplace only values
 column X not found in data
 '''
 
