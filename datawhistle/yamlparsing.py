@@ -3,16 +3,17 @@ from typing import Any, Dict, List
 import datawhistle as dw
 
 
-_YAML_TOPLEVEL_KEYS = ['table', 'columns']
-_YAML_DATASET_KEYS = [
+YAML_TOPLEVEL_KEYS = ['table', 'columns']
+YAML_TABLE_KEYS = [
     'stop_on_fail',
     'allow_duplicate_rows',
     'row_count_max',
     'row_count_min',
     'row_count']
-_YAML_COLUMN_KEYS = [
+YAML_COLUMN_KEYS = [
     'name',
     'type',
+    'allow_duplicates',
     'allow_nulls',
     'count_distinct_max',
     'count_distinct_min',
@@ -20,9 +21,9 @@ _YAML_COLUMN_KEYS = [
     'min',
     'max',
     'val']
-_YAML_COLUMN_TYPES = ['numeric', 'string']
-_TRUE_VALS = [True, 1, 'true', 'True', '1']
-_FALSE_VALS = [False, 0, 'false', 'False', '0']
+YAML_COLUMN_TYPES = ['numeric', 'string']
+TRUE_VALS = [True, 1, 'true', 'True', '1']
+FALSE_VALS = [False, 0, 'false', 'False', '0']
 
 
 class YamlParsingError(Exception):
@@ -30,9 +31,9 @@ class YamlParsingError(Exception):
 
 
 def _check_bool_val(val: Any) -> bool:
-    if val in _TRUE_VALS:
+    if val in TRUE_VALS:
         return True
-    if val not in _FALSE_VALS:
+    if val not in FALSE_VALS:
         raise YamlParsingError(f'want boolean value, got {val}')
     return False
 
@@ -43,24 +44,24 @@ def _check_yaml_column_keys(colkeys: List[str]) -> None:
     if 'type' not in colkeys:
         raise YamlParsingError('column type missing')
     for key in colkeys:
-        if key not in _YAML_COLUMN_KEYS:
+        if key not in YAML_COLUMN_KEYS:
             raise YamlParsingError(f'unexpected column attribute: {key}')
 
 
 def _check_yaml_column_type(coltype: str) -> None:
-    if coltype not in _YAML_COLUMN_TYPES:
+    if coltype not in YAML_COLUMN_TYPES:
         raise YamlParsingError(f'column type {coltype} not recognised')
 
 
 def _check_yaml_toplevel_keys(ykeys: List[str]) -> None:
     for key in ykeys:
-        if key not in _YAML_TOPLEVEL_KEYS:
+        if key not in YAML_TOPLEVEL_KEYS:
             raise YamlParsingError(f'unexpected yaml attribute: {key}')
 
 
 def _check_yaml_table_keys(dsdictkeys: List[str]) -> None:
     for key in dsdictkeys:
-        if key not in _YAML_DATASET_KEYS:
+        if key not in YAML_TABLE_KEYS:
             raise YamlParsingError(f'unexpected table attribute: {key}')
 
 
@@ -122,6 +123,9 @@ def apply_yamldict_to_checksuite(ymld: Dict,
         # allow null values  in the column
         if 'allow_nulls' in colkeys:
             col.allow_nulls = _check_bool_val(coldict['allow_nulls'])
+        # duplicate rows
+        if 'allow_duplicates' in colkeys:
+            col.allow_duplicates = _check_bool_val(coldict['allow_duplicates'])
         # count distinct checks
         if 'count_distinct_max' in colkeys:
             val = coldict['count_distinct_max']

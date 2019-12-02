@@ -70,6 +70,7 @@ class TestYamlParsing(unittest.TestCase):
         # col 1
         self.assertEqual(col1.name, 'A')
         self.assertEqual(col1.type, 'numeric')
+        self.assertEqual(col1.allow_duplicates, False)
         self.assertEqual(col1.allow_nulls, True)
         self.assertEqual(col1.min_val, 0)
         self.assertEqual(col1.max_val, 5)
@@ -86,6 +87,7 @@ class TestYamlParsing(unittest.TestCase):
         # col 3
         self.assertEqual(col3.name, 'I')
         self.assertEqual(col3.type, 'numeric')
+        self.assertEqual(col3.allow_duplicates, True)
         self.assertEqual(col3.allow_nulls, True)
         self.assertEqual(col3.val, 1)
 

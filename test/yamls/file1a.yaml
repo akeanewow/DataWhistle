@@ -12,6 +12,7 @@ columns:
     min: 10
     max: 3
     allow_nulls: true
+    allow_duplicates: false
     count_distinct_max: 1
     count_distinct_min: 10
     count_distinct: 7

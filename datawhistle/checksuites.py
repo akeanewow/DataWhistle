@@ -93,6 +93,7 @@ class ColumnCheckSuite:
         # test settings
         self.name: str = colname
         self.type: str = coltype
+        self.allow_duplicates: bool = True
         self.allow_nulls: bool = True
         self.count_distinct_max: Optional[int] = None
         self.count_distinct_min: Optional[int] = None
@@ -103,7 +104,6 @@ class ColumnCheckSuite:
         # other properties
         self.error_messages: List[str] = []
         self._checks: List[Callable] = []
-        self.allow_duplicates: bool = True
 
 
     def _assemble_checks(self) -> None:
@@ -176,18 +176,17 @@ class ColumnCheckSuite:
     def check_col_max_val(self) -> Tuple[bool, str]:
         raise NotImplementedError
 
-    def check_col_val(self) -> Tuple[bool, str]:
+    def check_col_no_duplicates(self) -> Tuple[bool, str]:
         raise NotImplementedError
 
     def check_col_non_nulls(self) -> Tuple[bool, str]:
         raise NotImplementedError
 
+    def check_col_val(self) -> Tuple[bool, str]:
+        raise NotImplementedError
+
     def check_col_type(self) -> Tuple[bool, str]:
         raise NotImplementedError
-
-    def check_col_no_duplicates(self) -> Tuple[bool, str]:
-        raise NotImplementedError
-
 
 
 class PandasDatsetCheckSuite(TableCheckSuite):
@@ -282,6 +281,12 @@ class PandasColumnCheckSuite(ColumnCheckSuite):
         max_val = float(self.max_val)
         return dwpc.colcheck_val(self.dataframe, self.name, max_val, '<=')
 
+    def check_col_no_duplicates(self) -> Tuple[bool, str]:
+        return dwpc.colcheck_no_duplicates(self.dataframe,self.name)
+
+    def check_col_non_nulls(self) -> Tuple[bool, str]:
+        return dwpc.colcheck_no_nulls(self.dataframe, self.name)
+
     def check_col_val(self) -> Tuple[bool, str]:
         if not self.type == 'numeric':
             return False, (f'column {self.name} cannot check '
@@ -291,9 +296,6 @@ class PandasColumnCheckSuite(ColumnCheckSuite):
         val = float(self.val)
         return dwpc.colcheck_val(self.dataframe, self.name, val, '==')
 
-    def check_col_non_nulls(self) -> Tuple[bool, str]:
-        return dwpc.colcheck_no_nulls(self.dataframe, self.name)
-
     def check_col_type(self) -> Tuple[bool, str]:
         if self.type == 'numeric':
             return dwpc.colcheck_is_numeric(self.dataframe, self.name)
@@ -301,9 +303,6 @@ class PandasColumnCheckSuite(ColumnCheckSuite):
             return dwpc.colcheck_is_str(self.dataframe, self.name)
         return False, (f'column {self.name} could not tested '
                        f'for type {self.type} (unknown type)')
-
-    def check_col_no_duplicates(self) -> Tuple[bool, str]:
-        return dwpc.colcheck_no_duplicates(self.dataframe,self.name)
 
 
 # TODO: implement an override on the parent runchecks method to add a check

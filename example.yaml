@@ -12,6 +12,7 @@ columns:
   - name: A                    # Name of a column expected in the table
     type: numeric              # Column type ('numeric' or 'string')
     allow_nulls: true          # Null values allowed in column (bool)
+    allow_duplicates: false    # Duplicate values are allowed (bool)
     min: 0                     # Minimum value if numeric column (int / float)
     max: 5                     # Maximum value if numeric column (int / float)
     val: 1                     # All rows have same value (int / float)
@@ -22,6 +23,7 @@ columns:
   - name: C                    # Name of a column expected in the table
     type: string               # Column type ('numeric' or 'string')
     allow_nulls: false         # Null values allowed in column (bool)
+    allow_duplicates: true     # Duplicate values are allowed (bool)
     count_distinct_max: 10     # Maximum number of distinct values (int)
     count_distinct_min: 1      # Minimum number of distinct values (int)
     count_distinct: 5          # Number of distinct values expected (int)
