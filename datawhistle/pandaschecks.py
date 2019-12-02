@@ -104,12 +104,14 @@ def colcheck_no_blanks(df: pd.DataFrame, col_name: str) -> Tuple[bool, str]:
     return False, err
 
 
-def colcheck_no_duplicates(df: pd.DataFrame, col_name: str) -> Tuple[bool, str]:
+def colcheck_no_duplicates(df: pd.DataFrame,
+                           col_name: str) -> Tuple[bool, str]:
     '''Check that a column doesn't contain any duplicates.'''
     num_duplicates: int = sum(df[col_name].duplicated())
     if num_duplicates == 0:
         return True, ''
-    return False, (f'column {col_name} want 0 duplicate rows, got {num_duplicates}')
+    return False, (f'column {col_name} want 0 duplicate rows, '
+                   f'got {num_duplicates}')
 
 
 def colcheck_no_nulls(df: pd.DataFrame, col_name: str) -> Tuple[bool, str]:
@@ -147,4 +149,3 @@ def colcheck_val(df: pd.DataFrame, col_name: str, val: Union[int, float],
                        f'operator {operator} not recognised')
     return False, (f'column {col_name} want value {operator} '
                    f'{val}, got {actual_val}')
-

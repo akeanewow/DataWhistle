@@ -105,7 +105,6 @@ class ColumnCheckSuite:
         self.error_messages: List[str] = []
         self._checks: List[Callable] = []
 
-
     def _assemble_checks(self) -> None:
         self._checks = []
         self._checks.append(self.check_col_type)
@@ -282,7 +281,7 @@ class PandasColumnCheckSuite(ColumnCheckSuite):
         return dwpc.colcheck_val(self.dataframe, self.name, max_val, '<=')
 
     def check_col_no_duplicates(self) -> Tuple[bool, str]:
-        return dwpc.colcheck_no_duplicates(self.dataframe,self.name)
+        return dwpc.colcheck_no_duplicates(self.dataframe, self.name)
 
     def check_col_non_nulls(self) -> Tuple[bool, str]:
         return dwpc.colcheck_no_nulls(self.dataframe, self.name)

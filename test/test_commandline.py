@@ -89,6 +89,13 @@ class TestWhistle(unittest.TestCase):
         self.assertEqual(e.exception.code, 1)
         self.assertEqual(self.capturedStout.getvalue(), _ALL_FAILED)
 
+    def test_stop_on_fail(self):
+        with self.assertRaises(SystemExit) as e:
+            dw.commandline_check_csv(self.dfile2, self.yfile1, False)
+        self.assertEqual(
+                self.capturedStout.getvalue(),
+                'want 0 duplicate rows, got 2\n')
+
 
 if __name__ == '__main__':
     unittest.main()

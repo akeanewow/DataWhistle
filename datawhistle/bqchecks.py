@@ -160,7 +160,7 @@ def colcheck_exists(datasetname: str, tablename: str,
                     columnname: str) -> Tuple[bool, str]:
     '''Check if a column with the specified name exists in the table.'''
     sql = SQL_COL_EXISTS.format(datasetname=datasetname, tablename=tablename,
-                               columnname=columnname)
+                                columnname=columnname)
     col_exists: bool = _bqquery_get_bool(sql)
     if col_exists:
         return True, ''
