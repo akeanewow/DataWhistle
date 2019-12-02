@@ -191,3 +191,14 @@ def colcheck_count_distinct(datasetname: str, tablename: str,
                        f'operator {operator} not recognised')
     return False, (f'column {columnname} want count distinct {operator} '
                    f'{count}, got {count_val}')
+
+
+def colcheck_is_numeric(datasetname: str, tablename: str,
+            columnname: str) -> Tuple[bool, str]:
+    '''Check if a column is numeric.'''
+    sql = SQL_COL_TYPE.format(datasetname=datasetname, tablename=tablename,
+                              columnname=columnname)
+    coltype = _bqquery_get_string(sql)
+    if coltype in ['INT64', 'NUMERIC', 'FLOAT64']:
+        return True, ''
+    return False, f'column {columnname} want numeric type, got {coltype}'

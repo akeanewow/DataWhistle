@@ -91,6 +91,20 @@ class TestColumnLevelChecks(unittest.TestCase):
         self.assertEqual(message, ('column A want count distinct == 6, '
                                    'got 5.0'))
 
+    def test_colcheck_is_numeric(self):
+        passed, message = dwbc.colcheck_is_numeric('datawhistle', 'table1',
+                                                   'A')
+        self.assertTrue(passed)
+        self.assertEqual(message, '')
+        passed, message = dwbc.colcheck_is_numeric('datawhistle', 'table1',
+                                                   'B')
+        self.assertTrue(passed)
+        self.assertEqual(message, '')
+        passed, message = dwbc.colcheck_is_numeric('datawhistle', 'table1',
+                                                   'C')
+        self.assertFalse(passed)
+        self.assertEqual(message, 'column C want numeric type, got STRING')
+
 
 if __name__ == '__main__':
     unittest.main()
