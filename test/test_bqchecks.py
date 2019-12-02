@@ -105,6 +105,16 @@ class TestColumnLevelChecks(unittest.TestCase):
         self.assertFalse(passed)
         self.assertEqual(message, 'column C want numeric type, got STRING')
 
+    def test_colcheck_is_str(self):
+        passed, message = dwbc.colcheck_is_str('datawhistle', 'table1',
+                                               'C')
+        self.assertTrue(passed)
+        self.assertEqual(message, '')
+        passed, message = dwbc.colcheck_is_str('datawhistle', 'table1',
+                                               'A')
+        self.assertFalse(passed)
+        self.assertEqual(message, 'column A want string type, got INT64')
+
 
 if __name__ == '__main__':
     unittest.main()

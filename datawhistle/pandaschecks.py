@@ -2,6 +2,9 @@ from typing import Tuple, Union
 import pandas as pd  # type: ignore
 
 
+# TODO: refactor col_name to columnname to be consistent with
+# bqchecks.py. Also col_type to columntype.
+
 # DataFrame level checks (as opposed to column level checks)
 # are described in functions using the naming convention
 # dfcheck_[some name](df: pd.DataFrame, [inputs]) -> Tuple[bool, str].
