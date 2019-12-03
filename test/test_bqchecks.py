@@ -115,6 +115,16 @@ class TestColumnLevelChecks(unittest.TestCase):
         self.assertFalse(passed)
         self.assertEqual(message, 'column A want string type, got INT64')
 
+    def test_colcheck_no_blanks(self):
+        passed, message = dwbc.colcheck_no_blanks('datawhistle', 'table1',
+                                                  'C')
+        self.assertTrue(passed)
+        self.assertEqual(message, '')
+        passed, message = dwbc.colcheck_no_blanks('datawhistle', 'table2',
+                                                  'G')
+        self.assertFalse(passed)
+        self.assertEqual(message, 'column G want no blanks, got 1.0')
+
 
 if __name__ == '__main__':
     unittest.main()

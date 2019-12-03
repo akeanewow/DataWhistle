@@ -289,7 +289,7 @@ class PandasColumnCheckSuite(ColumnCheckSuite):
     def check_col_no_blanks(self) -> Tuple[bool, str]:
         if not self.type == 'string':
             return False, (f'column {self.name} cannot check for blanks '
-                            'in non-string column')
+                           'in non-string column')
         return dwpc.colcheck_no_blanks(self.dataframe, self.name)
 
     def check_col_no_duplicates(self) -> Tuple[bool, str]:

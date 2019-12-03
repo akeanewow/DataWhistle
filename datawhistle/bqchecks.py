@@ -37,6 +37,14 @@ SELECT "__no_data__" AS string FROM (SELECT 1)
 LEFT JOIN query1 ON FALSE WHERE NOT EXISTS (SELECT 1 FROM query1);
 '''
 
+# Count the number of blank (whitespace) string values in a column.
+SQL_COUNTBLANKS = '''SELECT SUM(flag) as number
+FROM (SELECT CASE WHEN TRIM({columnname}) = ""
+                  THEN 1 ELSE 0
+             END AS flag
+      FROM {datasetname}.{tablename});
+'''
+
 # Count the number of rows in a table.
 SQL_COUNTROWS = 'SELECT count(*) AS number FROM {datasetname}.{tablename};'
 
@@ -194,7 +202,7 @@ def colcheck_count_distinct(datasetname: str, tablename: str,
 
 
 def colcheck_is_numeric(datasetname: str, tablename: str,
-            columnname: str) -> Tuple[bool, str]:
+                        columnname: str) -> Tuple[bool, str]:
     '''Check if a column is numeric.'''
     sql = SQL_COL_TYPE.format(datasetname=datasetname, tablename=tablename,
                               columnname=columnname)
@@ -205,7 +213,7 @@ def colcheck_is_numeric(datasetname: str, tablename: str,
 
 
 def colcheck_is_str(datasetname: str, tablename: str,
-            columnname: str) -> Tuple[bool, str]:
+                    columnname: str) -> Tuple[bool, str]:
     '''Check if a column is string type.'''
     sql = SQL_COL_TYPE.format(datasetname=datasetname, tablename=tablename,
                               columnname=columnname)
@@ -213,3 +221,14 @@ def colcheck_is_str(datasetname: str, tablename: str,
     if coltype == 'STRING':
         return True, ''
     return False, f'column {columnname} want string type, got {coltype}'
+
+
+def colcheck_no_blanks(datasetname: str, tablename: str,
+                       columnname: str) -> Tuple[bool, str]:
+    '''Check if a string column contains blanks or whitespace only values.'''
+    sql = SQL_COUNTBLANKS.format(datasetname=datasetname, tablename=tablename,
+                                 columnname=columnname)
+    count = _bqquery_get_number(sql)
+    if count == 0:
+        return True, ''
+    return False, f'column {columnname} want no blanks, got {count}'
