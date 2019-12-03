@@ -45,6 +45,13 @@ FROM (SELECT CASE WHEN TRIM({columnname}) = ""
       FROM {datasetname}.{tablename});
 '''
 
+# Count the number of duplicate values in a column.
+SQL_COUNTDUPLICATES = '''SELECT SUM(count) AS number
+FROM (SELECT {columnname} AS rowvalue,
+      CASE WHEN COUNT(*) > 1 THEN 1 ELSE 0 END AS count
+      FROM {datasetname}.{tablename} GROUP BY {columnname});
+'''
+
 # Count the number of rows in a table.
 SQL_COUNTROWS = 'SELECT count(*) AS number FROM {datasetname}.{tablename};'
 
@@ -232,3 +239,16 @@ def colcheck_no_blanks(datasetname: str, tablename: str,
     if count == 0:
         return True, ''
     return False, f'column {columnname} want no blanks, got {count}'
+
+
+def colcheck_no_duplicates(datasetname: str, tablename: str,
+                           columnname: str) -> Tuple[bool, str]:
+    '''Check that a column doesn't contain any duplicates.'''
+    sql = SQL_COUNTDUPLICATES.format(datasetname=datasetname,
+                                     tablename=tablename,
+                                     columnname=columnname)
+    num_duplicates = _bqquery_get_number(sql)
+    if num_duplicates == 0:
+        return True, ''
+    return False, (f'column {columnname} want 0 duplicate rows, '
+                   f'got {num_duplicates}')
