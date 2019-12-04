@@ -52,6 +52,12 @@ FROM (SELECT {columnname} AS rowvalue,
       FROM {datasetname}.{tablename} GROUP BY {columnname});
 '''
 
+# Count the number of null values in a column.
+SQL_COUNTNULLS = '''SELECT SUM(number) AS number
+FROM (SELECT CASE WHEN {columnname} IS NULL THEN 1 ELSE 0 END AS number
+      FROM {datasetname}.{tablename});
+'''
+
 # Count the number of rows in a table.
 SQL_COUNTROWS = 'SELECT count(*) AS number FROM {datasetname}.{tablename};'
 
@@ -252,3 +258,15 @@ def colcheck_no_duplicates(datasetname: str, tablename: str,
         return True, ''
     return False, (f'column {columnname} want 0 duplicate rows, '
                    f'got {num_duplicates}')
+
+
+def colcheck_no_nulls(datasetname: str, tablename: str,
+                      columnname: str) -> Tuple[bool, str]:
+    '''Check if a column contains null values.'''
+    sql = SQL_COUNTNULLS.format(datasetname=datasetname,
+                                tablename=tablename,
+                                columnname=columnname)
+    countnull = _bqquery_get_number(sql)
+    if countnull == 0:
+        return True, ''
+    return False, f'column {columnname} want 0 nulls, got {countnull}'

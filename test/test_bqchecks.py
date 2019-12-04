@@ -135,6 +135,14 @@ class TestColumnLevelChecks(unittest.TestCase):
         self.assertFalse(passed)
         self.assertEqual(message, 'column A want 0 duplicate rows, got 2.0')
 
+    def test_colcheck_no_nulls(self):
+        passed, message = dwbc.colcheck_no_nulls('datawhistle', 'table1', 'A')
+        self.assertTrue(passed)
+        self.assertEqual(message, '')
+        passed, message = dwbc.colcheck_no_nulls('datawhistle', 'table1', 'D')
+        self.assertFalse(passed)
+        self.assertEqual(message, 'column D want 0 nulls, got 2.0')
+
 
 if __name__ == '__main__':
     unittest.main()
