@@ -143,6 +143,26 @@ class TestColumnLevelChecks(unittest.TestCase):
         self.assertFalse(passed)
         self.assertEqual(message, 'column D want 0 nulls, got 2.0')
 
+    def test_col_val(self):
+        # >= checks
+        passed, message = dwbc.colcheck_val('datawhistle', 'table1', 'A',
+                                            -1, '>=')
+        self.assertTrue(passed)
+        self.assertEqual(message, '')
+        passed, message = dwbc.colcheck_val('datawhistle', 'table1', 'A',
+                                            2, '>=')
+        self.assertFalse(passed)
+        self.assertEqual(message, 'column A want value >= 2, got 1.0')
+        # <= checks
+        passed, message = dwbc.colcheck_val('datawhistle', 'table1', 'A',
+                                            5, '<=')
+        self.assertTrue(passed)
+        self.assertEqual(message, '')
+        passed, message = dwbc.colcheck_val('datawhistle', 'table1','A',
+                                            2, '<=')
+        self.assertFalse(passed)
+        self.assertEqual(message, 'column A want value <= 2, got 5.0')
+
 
 if __name__ == '__main__':
-    unittest.main()
+    unittest.main()

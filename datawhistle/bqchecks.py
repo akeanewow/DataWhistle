@@ -1,6 +1,6 @@
 import subprocess
 import json
-from typing import Tuple
+from typing import Tuple, Union
 
 
 # Note this is defined as a list because that is how the subprocess.run
@@ -21,8 +21,18 @@ LEFT JOIN query1 ON FALSE WHERE NOT EXISTS (SELECT 1 FROM query1);
 '''
 
 # Count the distinct values in a column.
-SQL_COL_COUNTDISTINCT = '''SELECT COUNT(DISTINCT {columnname}) AS number
+SQL_COUNTDISTINCT = '''SELECT COUNT(DISTINCT {columnname}) AS number
 FROM {datasetname}.{tablename};
+'''
+
+# Get the maximum value in a column.
+SQL_COL_MAX = '''SELECT MAX({columnname})
+AS number from {datasetname}.{tablename};
+'''
+
+# Get the minimum value in a column.
+SQL_COL_MIN = '''SELECT MIN({columnname})
+AS number from {datasetname}.{tablename};
 '''
 
 # Get column's type, without returning an empty result if the column does
@@ -197,9 +207,9 @@ def colcheck_count_distinct(datasetname: str, tablename: str,
 
     The operator parameter can be '==', '>=' or '<='.
     '''
-    sql = SQL_COL_COUNTDISTINCT.format(datasetname=datasetname,
-                                       tablename=tablename,
-                                       columnname=columnname)
+    sql = SQL_COUNTDISTINCT.format(datasetname=datasetname,
+                                   tablename=tablename,
+                                   columnname=columnname)
     count_val = _bqquery_get_number(sql)
     if operator == '==' and count_val == count:
         return True, ''
@@ -270,3 +280,31 @@ def colcheck_no_nulls(datasetname: str, tablename: str,
     if countnull == 0:
         return True, ''
     return False, f'column {columnname} want 0 nulls, got {countnull}'
+
+
+def colcheck_val(datasetname: str, tablename: str,
+                 columnname: str, val: Union[int, float],
+                 operator: str = '==') -> Tuple[bool, str]:
+    '''
+    Check if the values in a column are equal to, greater than or less than
+    a specified value.
+
+    The operator parameter can be '==', '>=' or '<='.
+    '''
+    if operator not in ['==', '<=', '>=']:
+        return False, (f'column {columnname} value check '
+                       f'operator {operator} not recognised')
+    if operator == '<=':
+        sql = SQL_COL_MAX.format(datasetname=datasetname, tablename=tablename,
+                                 columnname=columnname)
+        actual_val = _bqquery_get_number(sql)
+        if actual_val <= val:
+            return True, ''
+    if operator == '>=':
+        sql = SQL_COL_MIN.format(datasetname=datasetname, tablename=tablename,
+                          columnname=columnname)
+        actual_val = _bqquery_get_number(sql)
+        if actual_val >= val:
+            return True, ''
+    return False, (f'column {columnname} want value {operator} '
+                   f'{val}, got {actual_val}')
