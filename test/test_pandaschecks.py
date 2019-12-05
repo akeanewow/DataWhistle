@@ -89,19 +89,19 @@ class TestColChecks(unittest.TestCase):
                 'column G has blanks or whitesplace only values')
 
     def test_col_is_datetime(self):
-        passed, message = dwpc.colcheck_is_datetime(self.df_file1, 'J', '%m%d%Y')
+        passed, message = dwpc.colcheck_is_datetime(self.df_file1, 'K', '%m%d%Y')
         self.assertEqual(passed, False)
         self.assertEqual(
             message,
-            'column J data does not match datetime format specified')
+            'column K data does not match datetime format specified')
+        passed, message = dwpc.colcheck_is_datetime(self.df_file1, 'K')
+        self.assertEqual(passed, False)
+        self.assertEqual(
+            message,
+            'column K expected to be datetime type but is not')
         passed, message = dwpc.colcheck_is_datetime(self.df_file1, 'J')
-        self.assertEqual(passed, False)
-        self.assertEqual(
-            message,
-            'column J expected to be datetime type but is not')
-        passed, message = dwpc.colcheck_is_datetime(self.df_file1, 'I')
         self.assertEqual(passed, True)
-        passed, message = dwpc.colcheck_is_datetime(self.df_file1, 'I', '%m%d%Y')
+        passed, message = dwpc.colcheck_is_datetime(self.df_file1, 'J', '%m%d%Y')
         self.assertEqual(passed, True)
 
 

@@ -23,7 +23,7 @@ YAML_COLUMN_KEYS = [
     'max',
     'val',
     'format']
-YAML_COLUMN_TYPES = ['numeric', 'string']
+YAML_COLUMN_TYPES = ['numeric', 'string', 'datetime']
 TRUE_VALS = [True, 1, 'true', 'True', '1']
 FALSE_VALS = [False, 0, 'false', 'False', '0']
 
