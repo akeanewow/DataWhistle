@@ -1,6 +1,16 @@
+import inspect
+import os
 import sys
-sys.path.append('..')
+HDIR = os.path.dirname(os.path.abspath(
+            inspect.getfile(inspect.currentframe())))
+PARENTDIR = os.path.dirname(HDIR)
+sys.path.insert(0, PARENTDIR)
 import datawhistle as dw
 
-if __name__ == '__main__':
+
+def main():
     dw.commandline_main()
+
+
+if __name__ == '__main__':
+    main()

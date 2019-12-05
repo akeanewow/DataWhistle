@@ -1,5 +1,5 @@
 ---
-dataset:
+table:
   allow_duplicate_rows: true
   stop_on_fail: true
   row_count_min: 1

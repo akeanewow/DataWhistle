@@ -1,6 +1,5 @@
-# well formed yaml file passing yamllint
 ---
-dataset:
+table:
   allow_duplicate_rows: false
   row_count_max: 10
   row_count_min: 3
@@ -12,20 +11,27 @@ columns:
   - name: A
     type: numeric
     allow_nulls: true
+    allow_duplicates: false
     min: 0
+    max: 5
     count_distinct_max: 10
     count_distinct_min: 1
     count_distinct: 5
 
   - name: C
     type: string
+    allow_blanks: false
     allow_nulls: false
     count_distinct_max: 10
     count_distinct_min: 1
     count_distinct: 5
 
   - name: I
-    type: datetime
-    allow_nulls: false
-    format: %m%d%Y
+    allow_duplicates: true
+    type: numeric
+    val: 1
 
+  - name: I
+      type: datetime
+      allow_nulls: false
+      format: %m%d%Y

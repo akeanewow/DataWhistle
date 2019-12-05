@@ -1,13 +1,13 @@
 # Avoid forward decalaration type check errors. See PEP563.
 from __future__ import annotations
 import pandas as pd  # type: ignore
-from typing import Callable, Optional, List, Tuple
+from typing import Callable, Optional, List, Tuple, Union
 import datawhistle.pandaschecks as dwpc
 
 
-class DataSetCheckSuite:
+class TableCheckSuite:
     '''
-    The DataSetCheckSuite object is used to run checks. Checks are implemented
+    The TableCheckSuite object is used to run checks. Checks are implemented
     in child classes by overriding check_* methods to enable checking of
     different data sources.
     '''
@@ -46,14 +46,14 @@ class DataSetCheckSuite:
             passed, message = check()
             if not passed:
                 if verbose:
-                    print('F', end='')
+                    print('F', end='', flush=True)
                 self.error_messages.append(message)
                 if self.stop_on_fail:
                     checks_failed = True
                     break
             else:
                 if verbose:
-                    print('.', end='')
+                    print('.', end='', flush=True)
         if not checks_failed:
             for column in self.columns:
                 error_messages = column.runchecks(self.stop_on_fail,
@@ -93,11 +93,15 @@ class ColumnCheckSuite:
         # test settings
         self.name: str = colname
         self.type: str = coltype
+        self.allow_blanks: bool = True
+        self.allow_duplicates: bool = True
         self.allow_nulls: bool = True
         self.count_distinct_max: Optional[int] = None
         self.count_distinct_min: Optional[int] = None
         self.count_distinct: Optional[int] = None
-        self.min_val: Optional[float] = None
+        self.min_val: Optional[Union[int, float]] = None
+        self.max_val: Optional[Union[int, float]] = None
+        self.val: Optional[Union[int, float]] = None
         self.format: Optional[str] = None
         # other properties
         self.error_messages: List[str] = []
@@ -106,16 +110,24 @@ class ColumnCheckSuite:
     def _assemble_checks(self) -> None:
         self._checks = []
         self._checks.append(self.check_col_type)
+        if not self.allow_blanks:
+            self._checks.append(self.check_col_no_blanks)
+        if not self.allow_duplicates:
+            self._checks.append(self.check_col_no_duplicates)
         if not self.allow_nulls:
             self._checks.append(self.check_col_non_nulls)
-        if self.min_val is not None:
-            self._checks.append(self.check_col_min_val)
         if self.count_distinct_max is not None:
             self._checks.append(self.check_col_count_distinct_max)
         if self.count_distinct_min is not None:
             self._checks.append(self.check_col_count_distinct_min)
         if self.count_distinct is not None:
             self._checks.append(self.check_col_count_distinct)
+        if self.min_val is not None:
+            self._checks.append(self.check_col_min_val)
+        if self.max_val is not None:
+            self._checks.append(self.check_col_max_val)
+        if self.val is not None:
+            self._checks.append(self.check_col_val)
 
     def runchecks(self, stop_on_fail: bool,
                   verbose: bool = False) -> List[str]:
@@ -140,13 +152,13 @@ class ColumnCheckSuite:
             passed, message = check()
             if not passed:
                 if verbose:
-                    print('F', end='')
+                    print('F', end='', flush=True)
                 self.error_messages.append(message)
                 if stop_on_fail:
                     break
             else:
                 if verbose:
-                    print('.', end='')
+                    print('.', end='', flush=True)
         return self.error_messages
 
     def check_col_count_distinct_max(self) -> Tuple[bool, str]:
@@ -164,14 +176,26 @@ class ColumnCheckSuite:
     def check_col_min_val(self) -> Tuple[bool, str]:
         raise NotImplementedError
 
+    def check_col_max_val(self) -> Tuple[bool, str]:
+        raise NotImplementedError
+
+    def check_col_no_blanks(self) -> Tuple[bool, str]:
+        raise NotImplementedError
+
+    def check_col_no_duplicates(self) -> Tuple[bool, str]:
+        raise NotImplementedError
+
     def check_col_non_nulls(self) -> Tuple[bool, str]:
+        raise NotImplementedError
+
+    def check_col_val(self) -> Tuple[bool, str]:
         raise NotImplementedError
 
     def check_col_type(self) -> Tuple[bool, str]:
         raise NotImplementedError
 
 
-class PandasDatsetCheckSuite(DataSetCheckSuite):
+class PandasDatsetCheckSuite(TableCheckSuite):
     '''
     Pandas DataFrame testing object. Check methods from the parent class are
     overriden to implement Pandas specific functionality.
@@ -251,8 +275,7 @@ class PandasColumnCheckSuite(ColumnCheckSuite):
             return False, (f'column {self.name} could not check '
                            'minimum value')
         min_val = float(self.min_val)
-        return dwpc.colcheck_min_val(self.dataframe, self.name, min_val)
-
+        return dwpc.colcheck_val(self.dataframe, self.name, min_val, '>=')
 
     def check_col_max_val(self) -> Tuple[bool, str]:
         if not self.type == 'numeric':
@@ -262,11 +285,28 @@ class PandasColumnCheckSuite(ColumnCheckSuite):
             return False, (f'column {self.name} could not check '
                            'maximum value')
         max_val = float(self.max_val)
-        return dwpc.colcheck_max_val(self.dataframe, self.name, max_val)
+        return dwpc.colcheck_val(self.dataframe, self.name, max_val, '<=')
 
+    def check_col_no_blanks(self) -> Tuple[bool, str]:
+        if not self.type == 'string':
+            return False, (f'column {self.name} cannot check for blanks '
+                           'in non-string column')
+        return dwpc.colcheck_no_blanks(self.dataframe, self.name)
+
+    def check_col_no_duplicates(self) -> Tuple[bool, str]:
+        return dwpc.colcheck_no_duplicates(self.dataframe, self.name)
 
     def check_col_non_nulls(self) -> Tuple[bool, str]:
         return dwpc.colcheck_no_nulls(self.dataframe, self.name)
+
+    def check_col_val(self) -> Tuple[bool, str]:
+        if not self.type == 'numeric':
+            return False, (f'column {self.name} cannot check '
+                           'value of a non-numeric column')
+        if self.val is None:
+            return False, (f'column {self.name} could not check value')
+        val = float(self.val)
+        return dwpc.colcheck_val(self.dataframe, self.name, val, '==')
 
     def check_col_type(self) -> Tuple[bool, str]:
         if self.type == 'numeric':
@@ -287,7 +327,9 @@ class PandasColumnCheckSuite(ColumnCheckSuite):
                        f'for type {self.type} (unknown type)')
 
 
-class BqDatsetCheckSuite(DataSetCheckSuite):
+# TODO: implement an override on the parent runchecks method to add a check
+# if the table exists before proceeding.
+class BqTableCheckSuite(TableCheckSuite):
     '''
     BigQuery table testing object. Check methods from the parent class are
     overriden to implement BigQuery specific functionality.
@@ -304,6 +346,6 @@ class BqColumnCheckSuite(ColumnCheckSuite):
     are overriden to implement BigQuery specific functionality.
     '''
 
-    def __init__(self, tablename: str , colname: str, coltype: str):
+    def __init__(self, tablename: str, colname: str, coltype: str):
         self.tablename = tablename
         super().__init__(colname, coltype)

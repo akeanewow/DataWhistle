@@ -3,25 +3,29 @@ from typing import Any, Dict, List
 import datawhistle as dw
 
 
-_YAML_TOPLEVEL_KEYS = ['dataset', 'columns']
-_YAML_DATASET_KEYS = [
+YAML_TOPLEVEL_KEYS = ['table', 'columns']
+YAML_TABLE_KEYS = [
     'stop_on_fail',
     'allow_duplicate_rows',
     'row_count_max',
     'row_count_min',
     'row_count']
-_YAML_COLUMN_KEYS = [
+YAML_COLUMN_KEYS = [
     'name',
     'type',
+    'allow_blanks',
+    'allow_duplicates',
     'allow_nulls',
     'count_distinct_max',
     'count_distinct_min',
     'count_distinct',
     'min',
+    'max',
+    'val',
     'format']
-_YAML_COLUMN_TYPES = ['numeric', 'string', 'datetime']
-_TRUE_VALS = [True, 1, 'true', 'True', '1']
-_FALSE_VALS = [False, 0, 'false', 'False', '0']
+YAML_COLUMN_TYPES = ['numeric', 'string']
+TRUE_VALS = [True, 1, 'true', 'True', '1']
+FALSE_VALS = [False, 0, 'false', 'False', '0']
 
 
 class YamlParsingError(Exception):
@@ -29,9 +33,9 @@ class YamlParsingError(Exception):
 
 
 def _check_bool_val(val: Any) -> bool:
-    if val in _TRUE_VALS:
+    if val in TRUE_VALS:
         return True
-    if val not in _FALSE_VALS:
+    if val not in FALSE_VALS:
         raise YamlParsingError(f'want boolean value, got {val}')
     return False
 
@@ -42,25 +46,25 @@ def _check_yaml_column_keys(colkeys: List[str]) -> None:
     if 'type' not in colkeys:
         raise YamlParsingError('column type missing')
     for key in colkeys:
-        if key not in _YAML_COLUMN_KEYS:
+        if key not in YAML_COLUMN_KEYS:
             raise YamlParsingError(f'unexpected column attribute: {key}')
 
 
 def _check_yaml_column_type(coltype: str) -> None:
-    if coltype not in _YAML_COLUMN_TYPES:
+    if coltype not in YAML_COLUMN_TYPES:
         raise YamlParsingError(f'column type {coltype} not recognised')
 
 
 def _check_yaml_toplevel_keys(ykeys: List[str]) -> None:
     for key in ykeys:
-        if key not in _YAML_TOPLEVEL_KEYS:
+        if key not in YAML_TOPLEVEL_KEYS:
             raise YamlParsingError(f'unexpected yaml attribute: {key}')
 
 
-def _check_yaml_dataset_keys(dsdictkeys: List[str]) -> None:
+def _check_yaml_table_keys(dsdictkeys: List[str]) -> None:
     for key in dsdictkeys:
-        if key not in _YAML_DATASET_KEYS:
-            raise YamlParsingError(f'unexpected dataset attribute: {key}')
+        if key not in YAML_TABLE_KEYS:
+            raise YamlParsingError(f'unexpected table attribute: {key}')
 
 
 def _yamlerr(message: str) -> None:
@@ -73,11 +77,11 @@ def apply_yamldict_to_checksuite(ymld: Dict,
     ykeys = list(ymld.keys())
     _check_yaml_toplevel_keys(ykeys)
     #
-    # Process dataset
-    if 'dataset' in ykeys:
-        dsdict = ymld['dataset']
+    # Process table
+    if 'table' in ykeys:
+        dsdict = ymld['table']
         dsdictkeys = list(dsdict.keys())
-        _check_yaml_dataset_keys(dsdictkeys)
+        _check_yaml_table_keys(dsdictkeys)
         # stop on first check fail
         if 'stop_on_fail' in dsdictkeys:
             suite.stop_on_fail = _check_bool_val(dsdict['stop_on_fail'])
@@ -89,21 +93,21 @@ def apply_yamldict_to_checksuite(ymld: Dict,
         if 'row_count_max' in dsdictkeys:
             val = dsdict['row_count_max']
             if not isinstance(val, int):
-                _yamlerr((f'dataset: row_count_max want an integer, '
+                _yamlerr((f'table: row_count_max want an integer, '
                           f'got {val}({type(val)})'))
             suite.row_count_max = val
         #  minimum number of rows
         if 'row_count_min' in dsdictkeys:
             val = dsdict['row_count_min']
             if not isinstance(val, int):
-                _yamlerr((f'dataset: row_count_min want an integer, '
+                _yamlerr((f'table: row_count_min want an integer, '
                           f'got {val}({type(val)})'))
             suite.row_count_min = val
         #  number of rows
         if 'row_count' in dsdictkeys:
             val = dsdict['row_count']
             if not isinstance(val, int):
-                _yamlerr((f'dataset: row_count want an integer, '
+                _yamlerr((f'table: row_count want an integer, '
                           f'got {val}({type(val)})'))
             suite.row_count = val
     #
@@ -118,9 +122,15 @@ def apply_yamldict_to_checksuite(ymld: Dict,
         coltype = coldict['type']
         _check_yaml_column_type(coltype)
         col = suite.addcolumn(colname, coltype)
-        # allow null values  in the column
+        # allow blanks in the column
+        if 'allow_blanks' in colkeys:
+            col.allow_blanks = _check_bool_val(coldict['allow_blanks'])
+        # allow null values in the column
         if 'allow_nulls' in colkeys:
             col.allow_nulls = _check_bool_val(coldict['allow_nulls'])
+        # duplicate rows
+        if 'allow_duplicates' in colkeys:
+            col.allow_duplicates = _check_bool_val(coldict['allow_duplicates'])
         # count distinct checks
         if 'count_distinct_max' in colkeys:
             val = coldict['count_distinct_max']
@@ -149,6 +159,18 @@ def apply_yamldict_to_checksuite(ymld: Dict,
                 _yamlerr(f'column {colname} cannot check minimum value of non '
                          f'numeric column')
             col.min_val = val
+        if 'max' in colkeys:
+            val = coldict['max']
+            if (not isinstance(val, int)) and (not isinstance(val, float)):
+                _yamlerr(f'column {colname} cannot check maximum value of non '
+                         f'numeric column')
+            col.max_val = val
+        if 'val' in colkeys:
+            val = coldict['val']
+            if (not isinstance(val, int)) and (not isinstance(val, float)):
+                _yamlerr(f'column {colname} cannot check value of non '
+                         f'numeric column')
+            col.val = val
 
 
 def load_yaml_file_to_dict(filename: str) -> Dict:

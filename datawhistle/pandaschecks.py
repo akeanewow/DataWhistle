@@ -1,6 +1,9 @@
-from typing import Tuple
+from typing import Tuple, Union
 import pandas as pd  # type: ignore
 
+
+# TODO: refactor col_name to columnname to be consistent with
+# bqchecks.py. Also col_type to columntype.
 
 # DataFrame level checks (as opposed to column level checks)
 # are described in functions using the naming convention
@@ -15,7 +18,7 @@ import pandas as pd  # type: ignore
 def dfcheck_row_count(df: pd.DataFrame, count: int,
                       operator: str = '==') -> Tuple[bool, str]:
     '''
-    Check if the number of rows in a dataset is equal to, greater
+    Check if the number of rows in a table is equal to, greater
     than or less than a specified count.
 
     The operator parameter can be '==', '>=' or '<='.
@@ -28,7 +31,7 @@ def dfcheck_row_count(df: pd.DataFrame, count: int,
     if operator == '<=' and num_rows <= count:
         return True, ''
     if operator not in ['==', '<=', '>=']:
-        return False, (f'dataset row count '
+        return False, (f'table row count '
                        f'operator {operator} not recognised')
     return False, f'want row count {operator} {count}, got {num_rows}'
 
@@ -52,7 +55,7 @@ def dfcheck_no_duplicate_rows(df: pd.DataFrame) -> Tuple[bool, str]:
 
 
 def colcheck_exists(df: pd.DataFrame, col_name: str) -> Tuple[bool, str]:
-    '''Check if a column with the specified name exists in the dataset.'''
+    '''Check if a column with the specified name exists in the table.'''
     if col_name in df.columns:
         return True, ''
     return False, f'column {col_name} not found in data'
@@ -116,30 +119,6 @@ def colcheck_is_datetime(df: pd.DataFrame, col_name: str, format: str = None) ->
     return False, f'column {col_name} expected to be datetime type but is not'
 
 
-def colcheck_min_val(df: pd.DataFrame,
-                     col_name: str,
-                     min_val: float) -> Tuple[bool, str]:
-    '''Check if a column has a value less than a minimum value.'''
-    actual_min = df[col_name].min()
-    if actual_min >= min_val:
-        return True, ''
-    return False, (f'column {col_name} '
-                   f'want {min_val} minimum value, '
-                   f'got {actual_min}')
-
-
-def colcheck_max_val(df: pd.DataFrame,
-                     col_name: str,
-                     max_val: float) -> Tuple[bool, str]:
-    '''Check if a column has a value greater than a maximum value.'''
-    actual_max = df[col_name].max()
-    if actual_max >= max_val:
-        return True, ''
-    return False, (f'column {col_name} '
-                   f'want {max_val} maximum value, '
-                   f'got {actual_max}')
-
-
 def colcheck_no_blanks(df: pd.DataFrame, col_name: str) -> Tuple[bool, str]:
     '''Check if a string column contains blanks or whitespace only values.'''
     err = f'column {col_name} has blanks or whitesplace only values'
@@ -150,9 +129,48 @@ def colcheck_no_blanks(df: pd.DataFrame, col_name: str) -> Tuple[bool, str]:
     return False, err
 
 
+def colcheck_no_duplicates(df: pd.DataFrame,
+                           col_name: str) -> Tuple[bool, str]:
+    '''Check that a column doesn't contain any duplicates.'''
+    num_duplicates: int = sum(df[col_name].duplicated())
+    if num_duplicates == 0:
+        return True, ''
+    return False, (f'column {col_name} want 0 duplicate rows, '
+                   f'got {num_duplicates}')
+
+
 def colcheck_no_nulls(df: pd.DataFrame, col_name: str) -> Tuple[bool, str]:
     '''Check if a column contains null values.'''
     countnull = pd.isnull(df[col_name]).sum()
     if countnull == 0:
         return True, ''
     return False, f'column {col_name} want 0 nulls, got {countnull}'
+
+
+def colcheck_val(df: pd.DataFrame, col_name: str, val: Union[int, float],
+                 operator: str = '==') -> Tuple[bool, str]:
+    '''
+    Check if the values in a column are equal to, greater than or less than
+    a specified value.
+
+    The operator parameter can be '==', '>=' or '<='.
+    '''
+    if operator == '==':
+        if sum(df[col_name] == val) == len(df):
+            return True, ''
+        else:
+            return False, (f'column {col_name} want all values = {val}, '
+                           f'got different values')
+    if operator == '>=':
+        actual_val = df[col_name].min()
+        if actual_val >= val:
+            return True, ''
+    if operator == '<=':
+        actual_val = df[col_name].max()
+        if actual_val <= val:
+            return True, ''
+    if operator not in ['==', '<=', '>=']:
+        return False, (f'column {col_name} value check '
+                       f'operator {operator} not recognised')
+    return False, (f'column {col_name} want value {operator} '
+                   f'{val}, got {actual_val}')

@@ -1,6 +1,6 @@
-# Example rules to apply to a dataset and columns in the dataset
+# Example rules to apply to a table and columns in the table
 ---
-dataset:
+table:
   allow_duplicate_rows: false  # More than one identical row allowed (bool)
   row_count_max: 10            # The maximum number of rows expected (int)
   row_count_min: 3             # The minimum number of data rows epxected (int)
@@ -9,17 +9,22 @@ dataset:
 
 columns:
 
-  - name: A                    # Name of a column expected in the dataset
+  - name: A                    # Name of a column expected in the table
     type: numeric              # Column type ('numeric' or 'string')
     allow_nulls: true          # Null values allowed in column (bool)
+    allow_duplicates: false    # Duplicate values are allowed (bool)
     min: 0                     # Minimum value if numeric column (int / float)
+    max: 5                     # Maximum value if numeric column (int / float)
+    val: 1                     # All rows have same value (int / float)
     count_distinct_max: 10     # Maximum number of distinct values (int)
     count_distinct_min: 1      # Minimum number of distinct values (int)
     count_distinct: 5          # Number of distinct values expected (int)
 
-  - name: C                    # Name of a column expected in the dataset
+  - name: C                    # Name of a column expected in the table
     type: string               # Column type ('numeric' or 'string')
+    allow_blanks: false        # Allow whitespace values in column (bool)
     allow_nulls: false         # Null values allowed in column (bool)
+    allow_duplicates: true     # Duplicate values are allowed (bool)
     count_distinct_max: 10     # Maximum number of distinct values (int)
     count_distinct_min: 1      # Minimum number of distinct values (int)
     count_distinct: 5          # Number of distinct values expected (int)
