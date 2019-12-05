@@ -155,6 +155,9 @@ def colcheck_val(df: pd.DataFrame, col_name: str, val: Union[int, float],
 
     The operator parameter can be '==', '>=' or '<='.
     '''
+    if operator not in ['==', '<=', '>=']:
+        return False, (f'column {col_name} value check '
+                       f'operator {operator} not recognised')
     if operator == '==':
         if sum(df[col_name] == val) == len(df):
             return True, ''
@@ -169,8 +172,5 @@ def colcheck_val(df: pd.DataFrame, col_name: str, val: Union[int, float],
         actual_val = df[col_name].max()
         if actual_val <= val:
             return True, ''
-    if operator not in ['==', '<=', '>=']:
-        return False, (f'column {col_name} value check '
-                       f'operator {operator} not recognised')
     return False, (f'column {col_name} want value {operator} '
                    f'{val}, got {actual_val}')
