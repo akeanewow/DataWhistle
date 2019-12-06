@@ -158,11 +158,11 @@ class TestColumnLevelChecks(unittest.TestCase):
                                             5, '<=')
         self.assertTrue(passed)
         self.assertEqual(message, '')
-        passed, message = dwbc.colcheck_val('datawhistle', 'table1','A',
+        passed, message = dwbc.colcheck_val('datawhistle', 'table1', 'A',
                                             2, '<=')
         self.assertFalse(passed)
         self.assertEqual(message, 'column A want value <= 2, got 5.0')
 
 
 if __name__ == '__main__':
-    unittest.main()
+    unittest.main()

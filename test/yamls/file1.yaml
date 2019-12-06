@@ -34,4 +34,4 @@ columns:
   - name: J
     type: datetime
     allow_nulls: false
-    format: '%m%d%Y'
+    dateformat: '%m/%d/%Y'

@@ -102,7 +102,7 @@ class ColumnCheckSuite:
         self.min_val: Optional[Union[int, float]] = None
         self.max_val: Optional[Union[int, float]] = None
         self.val: Optional[Union[int, float]] = None
-        self.format: Optional[str] = None
+        self.dateformat: Optional[str] = None
         # other properties
         self.error_messages: List[str] = []
         self._checks: List[Callable] = []
@@ -314,14 +314,15 @@ class PandasColumnCheckSuite(ColumnCheckSuite):
         if self.type == 'string':
             return dwpc.colcheck_is_str(self.dataframe, self.name)
         if self.type == 'datetime':
-            success, msg = dwpc.colcheck_is_datetime(self.dataframe, self.name, self.format)
-
+            success, msg = dwpc.colcheck_is_datetime(self.dataframe,
+                                                     self.name,
+                                                     self.dateformat)
             if success:
-                if self.format is not None:
-                    pd.to_datetime(self.dataframe[self.name], format=self.format)
+                if self.dateformat is not None:
+                    pd.to_datetime(self.dataframe[self.name],
+                                   format=self.dateformat)
                 else:
                     pd.to_datetime(self.dataframe[self.name])
-
             return success, msg
         return False, (f'column {self.name} could not tested '
                        f'for type {self.type} (unknown type)')

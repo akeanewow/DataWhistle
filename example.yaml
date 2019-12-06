@@ -10,7 +10,7 @@ table:
 columns:
 
   - name: A                    # Name of a column expected in the table
-    type: numeric              # Column type ('numeric' or 'string')
+    type: numeric              # Column type ('numeric', 'string' or 'datetime')
     allow_nulls: true          # Null values allowed in column (bool)
     allow_duplicates: false    # Duplicate values are allowed (bool)
     min: 0                     # Minimum value if numeric column (int / float)
@@ -21,10 +21,15 @@ columns:
     count_distinct: 5          # Number of distinct values expected (int)
 
   - name: C                    # Name of a column expected in the table
-    type: string               # Column type ('numeric' or 'string')
+    type: string               # Column type ('numeric', 'string' or 'datetime')
     allow_blanks: false        # Allow whitespace values in column (bool)
     allow_nulls: false         # Null values allowed in column (bool)
     allow_duplicates: true     # Duplicate values are allowed (bool)
     count_distinct_max: 10     # Maximum number of distinct values (int)
     count_distinct_min: 1      # Minimum number of distinct values (int)
     count_distinct: 5          # Number of distinct values expected (int)
+
+  - name: J                    # Name of a column expected in the table
+    type: datetime             # Column type ('numeric', 'string' or 'datetime')
+    allow_nulls: False         # Null values allwoed in column (bool)
+    dateformat: '%m/%d/%Y'     # Format string - see: https://docs.python.org/3/library/datetime.html#strftime-and-strptime-behavior

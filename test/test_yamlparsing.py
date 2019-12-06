@@ -96,7 +96,8 @@ class TestYamlParsing(unittest.TestCase):
         self.assertEqual(col9.name, 'J')
         self.assertEqual(col9.type, 'datetime')
         self.assertEqual(col9.allow_nulls, False)
-        self.assertEqual(col9.format, '%m%d%Y')
+        self.assertEqual(col9.dateformat, '%m/%d/%Y')
+
 
 if __name__ == '__main__':
     unittest.main()

@@ -302,7 +302,7 @@ def colcheck_val(datasetname: str, tablename: str,
             return True, ''
     if operator == '>=':
         sql = SQL_COL_MIN.format(datasetname=datasetname, tablename=tablename,
-                          columnname=columnname)
+                                 columnname=columnname)
         actual_val = _bqquery_get_number(sql)
         if actual_val >= val:
             return True, ''

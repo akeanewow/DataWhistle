@@ -1,4 +1,4 @@
-from typing import Tuple, Union
+from typing import Optional, Tuple, Union
 import pandas as pd  # type: ignore
 
 
@@ -97,25 +97,30 @@ def colcheck_is_str(df: pd.DataFrame, col_name: str) -> Tuple[bool, str]:
     return False, f'column {col_name} expected to be string type but is not'
 
 
-def colcheck_is_datetime(df: pd.DataFrame, col_name: str, format: str = None) -> Tuple[bool, str]:
-    '''Check if a column is datetime type,  format.'''
-
-
-    if format is not None:
+def colcheck_is_datetime(df: pd.DataFrame, col_name: str,
+                         dateformat: Optional[str] = None) -> Tuple[bool, str]:
+    '''
+    Check if a column is datetime, optionally using a datetime format
+    format string.
+    '''
+    if dateformat is not None:
         try:
-            df[col_name] = pd.to_datetime(df[col_name], format=format)
+            df[col_name] = pd.to_datetime(df[col_name], format=dateformat,
+                                          exact=True)
+            return True, ''
         except ValueError:
-            return False, f'column {col_name} data does not match datetime format specified'
-        except Exception as ex:
-            return False, f'column {col_name} expected to be datetime type but is not'
+            return False, (f'column {col_name} data does not match datetime '
+                           f'format {dateformat}')
+        except Exception:
+            return False, (f'column {col_name} expected to be datetime type '
+                           'but is not')
     else:
         try:
             df[col_name] = pd.to_datetime(df[col_name])
-        except Exception as ex:
-            return False, f'column {col_name} expected to be datetime type but is not'
-
-    if pd.api.types.is_datetime64_dtype(df[col_name]):
-        return True, ''
+            return True, ''
+        except Exception:
+            return False, (f'column {col_name} expected to be datetime type '
+                           'but is not')
     return False, f'column {col_name} expected to be datetime type but is not'
 
 

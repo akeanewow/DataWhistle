@@ -12,7 +12,7 @@ import datawhistle as dw
 
 _ALL_PASSED = '''Reading data file ... done.
 Parsing rules file ... done.
-Running checks ...................... done.
+Running checks ......................... done.
 All checks passed.
 '''
 
@@ -40,8 +40,6 @@ column D want count distinct >= 10, got 3
 column D want count distinct == 4, got 3
 column F want 0 nulls, got 2
 column G has blanks or whitesplace only values
-column K data does not match datetime format specified
-column K expected to be datetime type but is not
 column X not found in data
 '''
 

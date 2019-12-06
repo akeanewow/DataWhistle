@@ -19,10 +19,10 @@ YAML_COLUMN_KEYS = [
     'count_distinct_max',
     'count_distinct_min',
     'count_distinct',
+    'dateformat',
     'min',
     'max',
-    'val',
-    'format']
+    'val']
 YAML_COLUMN_TYPES = ['numeric', 'string', 'datetime']
 TRUE_VALS = [True, 1, 'true', 'True', '1']
 FALSE_VALS = [False, 0, 'false', 'False', '0']
@@ -147,11 +147,11 @@ def apply_yamldict_to_checksuite(ymld: Dict,
             if not isinstance(val, int):
                 _yamlerr(f'column {colname} count_distinct error {val}')
             col.count_distinct = val
-        if 'format' in colkeys:
-            val = coldict['format']
+        if 'dateformat' in colkeys:
+            val = coldict['dateformat']
             if not isinstance(val, str):
                 _yamlerr(f'column {colname} format error {val}')
-            col.format = val
+            col.dateformat = val
         # column value checks
         if 'min' in colkeys:
             val = coldict['min']
