@@ -30,3 +30,8 @@ columns:
     allow_duplicates: true
     type: numeric
     val: 1
+
+  - name: J
+    type: datetime
+    allow_nulls: false
+    format: '%m%d%Y'

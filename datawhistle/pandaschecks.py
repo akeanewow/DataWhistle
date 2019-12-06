@@ -97,6 +97,28 @@ def colcheck_is_str(df: pd.DataFrame, col_name: str) -> Tuple[bool, str]:
     return False, f'column {col_name} expected to be string type but is not'
 
 
+def colcheck_is_datetime(df: pd.DataFrame, col_name: str, format: str = None) -> Tuple[bool, str]:
+    '''Check if a column is datetime type,  format.'''
+
+
+    if format is not None:
+        try:
+            df[col_name] = pd.to_datetime(df[col_name], format=format)
+        except ValueError:
+            return False, f'column {col_name} data does not match datetime format specified'
+        except Exception as ex:
+            return False, f'column {col_name} expected to be datetime type but is not'
+    else:
+        try:
+            df[col_name] = pd.to_datetime(df[col_name])
+        except Exception as ex:
+            return False, f'column {col_name} expected to be datetime type but is not'
+
+    if pd.api.types.is_datetime64_dtype(df[col_name]):
+        return True, ''
+    return False, f'column {col_name} expected to be datetime type but is not'
+
+
 def colcheck_no_blanks(df: pd.DataFrame, col_name: str) -> Tuple[bool, str]:
     '''Check if a string column contains blanks or whitespace only values.'''
     err = f'column {col_name} has blanks or whitesplace only values'
