@@ -43,5 +43,9 @@ columns:
     type: string
     allow_blanks: false
 
+  - name: H
+    type: datetime
+    dateformat: '%Y-%d'
+
   - name: X
     type: string

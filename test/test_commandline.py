@@ -18,8 +18,8 @@ All checks passed.
 
 _ALL_FAILED = '''Reading data file ... done.
 Parsing rules file ... done.
-Running checks FFFF.FFFFFFF..FFF....FFFF..F..FF done.
-Checks failed (21):
+Running checks FFFF.FFFFFFF..FFF....FFFF..F..F.FF done.
+Checks failed (22):
 want 0 duplicate rows, got 2
 want row count <= 1, got 7
 want row count >= 8, got 7
@@ -40,6 +40,7 @@ column D want count distinct >= 10, got 3
 column D want count distinct == 4, got 3
 column F want 0 nulls, got 2
 column G has blanks or whitesplace only values
+column H data does not match datetime format %Y-%d
 column X not found in data
 '''
 
