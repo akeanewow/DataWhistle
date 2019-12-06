@@ -6,7 +6,7 @@ HDIR = os.path.dirname(os.path.abspath(
             inspect.getfile(inspect.currentframe())))
 PARENTDIR = os.path.dirname(HDIR)
 sys.path.insert(0, PARENTDIR)
-import datawhistle.bqchecks as dwbc
+import datawhistle.bqchecks as dwbc  # noqa
 
 
 class TestTableLevelChecks(unittest.TestCase):
@@ -162,6 +162,15 @@ class TestColumnLevelChecks(unittest.TestCase):
                                             2, '<=')
         self.assertFalse(passed)
         self.assertEqual(message, 'column A want value <= 2, got 5.0')
+        # == checks
+        passed, message = dwbc.colcheck_val('datawhistle', 'table1', 'I',
+                                            1, '==')
+        self.assertTrue(passed)
+        self.assertEqual(message, '')
+        passed, message = dwbc.colcheck_val('datawhistle', 'table1', 'A',
+                                            1, '==')
+        self.assertFalse(passed)
+        self.assertEqual(message, 'column A want value == 1, got 4.0 not')
 
 
 if __name__ == '__main__':

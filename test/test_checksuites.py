@@ -7,7 +7,7 @@ HDIR = os.path.dirname(os.path.abspath(
 PARENTDIR = os.path.dirname(HDIR)
 sys.path.insert(0, PARENTDIR)
 import pandas as pd  # type: ignore
-import datawhistle as dw
+import datawhistle as dw  # noqa
 
 
 class TestPandasTableCheckSuite(unittest.TestCase):

@@ -25,14 +25,21 @@ SQL_COUNTDISTINCT = '''SELECT COUNT(DISTINCT {columnname}) AS number
 FROM {datasetname}.{tablename};
 '''
 
+# Count instances where column value is not equal to a specified
+# value.
+SQL_COUNTNOT_EQ = '''SELECT SUM(flags) AS number
+FROM (SELECT CASE WHEN {columnname} = {value} THEN 0 ELSE 1 END AS flags
+      FROM {datasetname}.{tablename});
+'''
+
 # Get the maximum value in a column.
-SQL_COL_MAX = '''SELECT MAX({columnname})
-AS number from {datasetname}.{tablename};
+SQL_COL_MAX = '''SELECT MAX({columnname}) AS number
+FROM {datasetname}.{tablename};
 '''
 
 # Get the minimum value in a column.
-SQL_COL_MIN = '''SELECT MIN({columnname})
-AS number from {datasetname}.{tablename};
+SQL_COL_MIN = '''SELECT MIN({columnname}) AS number
+FROM {datasetname}.{tablename};
 '''
 
 # Get column's type, without returning an empty result if the column does
@@ -306,5 +313,14 @@ def colcheck_val(datasetname: str, tablename: str,
         actual_val = _bqquery_get_number(sql)
         if actual_val >= val:
             return True, ''
+    if operator == '==':
+        sql = SQL_COUNTNOT_EQ.format(datasetname=datasetname,
+                                     tablename=tablename,
+                                     columnname=columnname,
+                                     value=val)
+        count = _bqquery_get_number(sql)
+        if count == 0:
+            return True, ''
+        actual_val = f'{count} not'
     return False, (f'column {columnname} want value {operator} '
                    f'{val}, got {actual_val}')

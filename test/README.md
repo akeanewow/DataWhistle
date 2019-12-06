@@ -6,14 +6,12 @@ becoming table*, in a dataset called 'datawhistle'. The testing tables need
 to be accessible through the bq commandline tool i.e. the user is already
 logged into a test project with the test data pre-loaded.
 
-bq commands to load the test files from a storage bucket:
+bq commands to load the test files:
 
 ```sh
-gsutil cp file1.csv gs://[bucket url]
-gsutil cp file2.csv gs://[bucket url]
-bq mk datawhistle
-bq load --source_format=CSV --autodetect datawhistle.table1 gs://[bucket url]/file1.csv
-bq load --source_format=CSV --autodetect datawhistle.table2 gs://[bucket url]/file2.csv
+bq mk datawhistle  # if it doesn't already exist
+bq load --source_format=CSV --autodetect datawhistle.table1 test/data/file1.csv
+bq load --source_format=CSV --autodetect datawhistle.table2 test/data/file2.csv
 ```
 
 ### BigQuery command examples

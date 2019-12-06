@@ -7,7 +7,7 @@ HDIR = os.path.dirname(os.path.abspath(
             inspect.getfile(inspect.currentframe())))
 PARENTDIR = os.path.dirname(HDIR)
 sys.path.insert(0, PARENTDIR)
-import datawhistle as dw
+import datawhistle as dw  # noqa
 
 
 _ALL_PASSED = '''Reading data file ... done.
@@ -92,7 +92,7 @@ class TestWhistle(unittest.TestCase):
         self.assertEqual(self.capturedStout.getvalue(), _ALL_FAILED)
 
     def test_stop_on_fail(self):
-        with self.assertRaises(SystemExit) as e:
+        with self.assertRaises(SystemExit):
             dw.commandline_check_csv(self.dfile2, self.yfile1, False)
         self.assertEqual(
                 self.capturedStout.getvalue(),
