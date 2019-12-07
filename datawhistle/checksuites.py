@@ -279,14 +279,14 @@ class PandasColumnCheckSuite(ColumnCheckSuite):
                            'value on a non-numeric column')
         if self.min_val is None:
             return False, (f'column {self.name} could not check '
-                           f'minimum value')
+                           'minimum value')
         min_val = float(self.min_val)
         return dwpc.colcheck_val(self.dataframe, self.name, min_val, '>=')
 
     def check_col_max_val(self) -> Tuple[bool, str]:
         if not self.type == 'numeric':
             return False, (f'column {self.name} cannot check maximum '
-                           f'value on a non-numeric column')
+                           'value on a non-numeric column')
         if self.max_val is None:
             return False, (f'column {self.name} could not check '
                            'maximum value')
@@ -296,13 +296,13 @@ class PandasColumnCheckSuite(ColumnCheckSuite):
     def check_col_iqr(self) -> Tuple[bool, str]:
         if not self.type == 'numeric':
             return False, (f'column (self.name) cannot check inter-quartile '
-                           f'range on a non-numeric column')
+                           'range on a non-numeric column')
         return dwpc.colcheck_iqr(self.dataframe, self.name)
 
     def check_col_no_blanks(self) -> Tuple[bool, str]:
         if not self.type == 'string':
             return False, (f'column {self.name} cannot check for blanks '
-                           f'in non-string column')
+                           'in non-string column')
         return dwpc.colcheck_no_blanks(self.dataframe, self.name)
 
     def check_col_no_duplicates(self) -> Tuple[bool, str]:
@@ -314,7 +314,7 @@ class PandasColumnCheckSuite(ColumnCheckSuite):
     def check_col_val(self) -> Tuple[bool, str]:
         if not self.type == 'numeric':
             return False, (f'column {self.name} cannot check '
-                           f'value of a non-numeric column')
+                           'value of a non-numeric column')
         if self.val is None:
             return False, (f'column {self.name} could not check value')
         val = float(self.val)
