@@ -1,5 +1,6 @@
 from typing import Optional, Tuple, Union
-import pandas as pd  # type: ignore
+import pandas as pd     # type: ignore
+import numpy as np      # type: ignore
 
 
 # TODO: refactor col_name to columnname to be consistent with
@@ -179,3 +180,21 @@ def colcheck_val(df: pd.DataFrame, col_name: str, val: Union[int, float],
             return True, ''
     return False, (f'column {col_name} want value {operator} '
                    f'{val}, got {actual_val}')
+
+
+def colcheck_iqr(df: pd.DataFrame, col_name: str) -> Tuple[bool, str]:
+    '''
+    Check if the values in a column are outliers greater than or less than
+    1.5 times the inter-quartile range plus Q3 or Q1 respectively
+    '''
+    q25, q75 = np.percentile(df[col_name], [25, 75])
+    upper = round(q75 + (q75 - q25) * 1.5, 2)
+    lower = round(q25 - (q75 - q25) * 1.5, 2)
+
+    if max(df[col_name]) > upper:
+        return False, (f'column {col_name} want values below {upper} '
+                       f'got {max(df[col_name])}')
+    if min(df[col_name]) < lower:
+        return False, (f'column {col_name} want values above {lower} '
+                       f'got {min(df[col_name])}')
+    return True, ''
