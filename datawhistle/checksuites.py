@@ -96,6 +96,7 @@ class ColumnCheckSuite:
         self.allow_blanks: bool = True
         self.allow_duplicates: bool = True
         self.allow_nulls: bool = True
+        self.allow_outliers: bool = True
         self.count_distinct_max: Optional[int] = None
         self.count_distinct_min: Optional[int] = None
         self.count_distinct: Optional[int] = None
@@ -116,6 +117,8 @@ class ColumnCheckSuite:
             self._checks.append(self.check_col_no_duplicates)
         if not self.allow_nulls:
             self._checks.append(self.check_col_non_nulls)
+        if not self.allow_outliers:
+            self._checks.append(self.check_col_iqr)
         if self.count_distinct_max is not None:
             self._checks.append(self.check_col_count_distinct_max)
         if self.count_distinct_min is not None:
@@ -186,6 +189,9 @@ class ColumnCheckSuite:
         raise NotImplementedError
 
     def check_col_non_nulls(self) -> Tuple[bool, str]:
+        raise NotImplementedError
+
+    def check_col_iqr(self) -> Tuple[bool, str]:
         raise NotImplementedError
 
     def check_col_val(self) -> Tuple[bool, str]:
@@ -273,24 +279,30 @@ class PandasColumnCheckSuite(ColumnCheckSuite):
                            'value on a non-numeric column')
         if self.min_val is None:
             return False, (f'column {self.name} could not check '
-                           'minimum value')
+                           f'minimum value')
         min_val = float(self.min_val)
         return dwpc.colcheck_val(self.dataframe, self.name, min_val, '>=')
 
     def check_col_max_val(self) -> Tuple[bool, str]:
         if not self.type == 'numeric':
             return False, (f'column {self.name} cannot check maximum '
-                           'value on a non-numeric column')
+                           f'value on a non-numeric column')
         if self.max_val is None:
             return False, (f'column {self.name} could not check '
                            'maximum value')
         max_val = float(self.max_val)
         return dwpc.colcheck_val(self.dataframe, self.name, max_val, '<=')
 
+    def check_col_iqr(self) -> Tuple[bool, str]:
+        if not self.type == 'numeric':
+            return False, (f'column (self.name) cannot check inter-quartile '
+                           f'range on a non-numeric column')
+        return dwpc.colcheck_iqr(self.dataframe, self.name)
+
     def check_col_no_blanks(self) -> Tuple[bool, str]:
         if not self.type == 'string':
             return False, (f'column {self.name} cannot check for blanks '
-                           'in non-string column')
+                           f'in non-string column')
         return dwpc.colcheck_no_blanks(self.dataframe, self.name)
 
     def check_col_no_duplicates(self) -> Tuple[bool, str]:
@@ -302,7 +314,7 @@ class PandasColumnCheckSuite(ColumnCheckSuite):
     def check_col_val(self) -> Tuple[bool, str]:
         if not self.type == 'numeric':
             return False, (f'column {self.name} cannot check '
-                           'value of a non-numeric column')
+                           f'value of a non-numeric column')
         if self.val is None:
             return False, (f'column {self.name} could not check value')
         val = float(self.val)
