@@ -35,3 +35,9 @@ columns:
     type: datetime
     allow_nulls: false
     dateformat: '%m/%d/%Y'
+
+  - name: C
+    type: string
+    allow_blanks: false
+    allow_nulls: false
+    regex_rule: "[]"
