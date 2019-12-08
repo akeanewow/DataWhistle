@@ -253,6 +253,17 @@ def colcheck_is_str(datasetname: str, tablename: str,
     return False, f'column {columnname} want string type, got {coltype}'
 
 
+def colcheck_is_datetime(datasetname: str, tablename: str,
+                         columnname: str) -> Tuple[bool, str]:
+    '''Check if a column is datetime type.'''
+    sql = SQL_COL_TYPE.format(datasetname=datasetname, tablename=tablename,
+                              columnname=columnname)
+    coltype = _bqquery_get_string(sql)
+    if coltype in ['DATE', 'DATETIME']:
+        return True, ''
+    return False, f'column {columnname} want datetime type, got {coltype}'
+
+
 def colcheck_no_blanks(datasetname: str, tablename: str,
                        columnname: str) -> Tuple[bool, str]:
     '''Check if a string column contains blanks or whitespace only values.'''

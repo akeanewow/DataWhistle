@@ -115,6 +115,16 @@ class TestColumnLevelChecks(unittest.TestCase):
         self.assertFalse(passed)
         self.assertEqual(message, 'column A want string type, got INT64')
 
+    def test_colcheck_is_datetime(self):
+        passed, message = dwbc.colcheck_is_datetime('datawhistle', 'table1',
+                                                    'J')
+        self.assertTrue(passed)
+        self.assertEqual(message, '')
+        passed, message = dwbc.colcheck_is_datetime('datawhistle', 'table1',
+                                                    'K')
+        self.assertFalse(passed)
+        self.assertEqual(message, 'column K want datetime type, got STRING')
+
     def test_colcheck_no_blanks(self):
         passed, message = dwbc.colcheck_no_blanks('datawhistle', 'table1',
                                                   'C')
