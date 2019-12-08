@@ -2,7 +2,7 @@
 table:
   allow_duplicate_rows: false
   row_count_max: 1
-  row_count_min: 8
+  row_count_min: 9
   row_count: 6
   stop_on_fail: false
 

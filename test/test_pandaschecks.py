@@ -7,7 +7,6 @@ HDIR = os.path.dirname(os.path.abspath(
 PARENTDIR = os.path.dirname(HDIR)
 sys.path.insert(0, PARENTDIR)
 import pandas as pd     # type: ignore
-import numpy as np      # type: ignore
 import datawhistle.pandaschecks as dwpc  # noqa
 
 
@@ -153,7 +152,7 @@ class TestColChecks(unittest.TestCase):
         self.assertEqual(message, '')
         passed, message = dwpc.colcheck_iqr(self.df_file2, 'B')
         self.assertFalse(passed)
-        self.assertEqual(message, 'column B want values below 10.35 got 12.1')
+        self.assertEqual(message, 'column B outlier above 1.5xIQR 10.35: 12.1')
 
 
 if __name__ == '__main__':
