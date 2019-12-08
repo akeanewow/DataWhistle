@@ -12,6 +12,7 @@ columns:
   - name: A                    # Name of a column expected in the table
     type: numeric              # Column type ('numeric', 'string' or 'datetime')
     allow_nulls: true          # Null values allowed in column (bool)
+    allow_outliers: false      # All values are within 1.5xIQR boundaries (bool)
     allow_duplicates: false    # Duplicate values are allowed (bool)
     min: 0                     # Minimum value if numeric column (int / float)
     max: 5                     # Maximum value if numeric column (int / float)
