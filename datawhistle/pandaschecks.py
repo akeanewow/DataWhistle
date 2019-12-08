@@ -1,6 +1,6 @@
 from typing import Optional, Tuple, Union
 import pandas as pd  # type: ignore
-
+import re
 
 # TODO: refactor col_name to columnname to be consistent with
 # bqchecks.py. Also col_type to columntype.
@@ -150,6 +150,28 @@ def colcheck_no_nulls(df: pd.DataFrame, col_name: str) -> Tuple[bool, str]:
     if countnull == 0:
         return True, ''
     return False, f'column {col_name} want 0 nulls, got {countnull}'
+
+
+def colcheck_regex(df: pd.DataFrame, col_name: str, regex_rule: str, regex_type: str) -> Tuple[bool, str]:
+    '''Check to see if a column contains all the same regex type, or if the column does
+    not contain a regex type.'''
+
+    try:
+        reg_results = df['col1'].str.findall(regex_rule)
+    except re.error:
+        return False, f'column {col_name} invalid regex_rule {regex_rule}'
+
+    for row in reg_results.values:
+        if row == ['']:
+            # Not found
+            if regex_type == 'mandatory':
+                return False, f'column {col_name} found invalid regex {row[0]} with rule {regex_rule}'
+        else:
+            # Found
+            if regex_type == 'exclude':
+                return False, f'column {col_name} found invalid regex {row[0]} with rule {regex_rule}'
+
+    return True, ''
 
 
 def colcheck_val(df: pd.DataFrame, col_name: str, val: Union[int, float],

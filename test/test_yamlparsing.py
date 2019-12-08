@@ -86,6 +86,8 @@ class TestYamlParsing(unittest.TestCase):
         self.assertEqual(col2.count_distinct_max, 10)
         self.assertEqual(col2.count_distinct_min, 1)
         self.assertEqual(col2.count_distinct, 5)
+        self.assertEqual(col2.regex_type, 'mandatory')
+        self.assertEqual(col2.regex_rule, '[a-m]')
         # col 3
         self.assertEqual(col3.name, 'I')
         self.assertEqual(col3.type, 'numeric')
@@ -97,6 +99,7 @@ class TestYamlParsing(unittest.TestCase):
         self.assertEqual(col9.type, 'datetime')
         self.assertEqual(col9.allow_nulls, False)
         self.assertEqual(col9.dateformat, '%m/%d/%Y')
+
 
 
 if __name__ == '__main__':
