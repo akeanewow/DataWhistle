@@ -330,7 +330,6 @@ class PandasColumnCheckSuite(ColumnCheckSuite):
         return False, (f'column {self.name} could not tested '
                        f'for type {self.type} (unknown type)')
 
-
     def check_col_regex(self) -> Tuple[bool, str]:
         return dwpc.colcheck_regex(self.dataframe, self.name, self.regex_rule, self.regex_type)
 

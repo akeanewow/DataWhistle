@@ -1,0 +1,11 @@
+---
+table:
+  allow_duplicate_rows: true
+  stop_on_fail: true
+  row_count_min: 3
+
+columns:
+  - name: A
+    type: numeric
+    regex_rule: "[a-m]" #<-------- deliberate regex rule with numeric type
+    regex_type: "mandatory"
