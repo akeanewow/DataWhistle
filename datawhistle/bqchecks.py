@@ -54,6 +54,25 @@ SELECT "__no_data__" AS string FROM (SELECT 1)
 LEFT JOIN query1 ON FALSE WHERE NOT EXISTS (SELECT 1 FROM query1);
 '''
 
+# Count the number of values outside 1.5 times the inter quartile
+# range in a column.
+SQL_COUNTOUTLIERS = '''DECLARE q25 FLOAT64;
+DECLARE q75 FLOAT64;
+DECLARE IQRX FLOAT64;
+SET (q25, q75) = (
+  SELECT AS STRUCT percentiles[offset(25)] AS q25,
+                   percentiles[offset(75)] AS q75
+  FROM (SELECT APPROX_QUANTILES({columnname}, 100) percentiles
+        FROM {datasetname}.{tablename}));
+SET IQRX = 1.5 * (q75 - q25);
+WITH query1 AS
+  (SELECT CASE WHEN {columnname} < (q25 - IQRX) THEN 1
+               WHEN {columnname} > (q75 + IQRX) THEN 1
+               ELSE 0 END AS flag
+   FROM {datasetname}.{tablename})
+SELECT sum(flag) AS number FROM query1;
+'''
+
 # Count the number of blank (whitespace) string values in a column.
 SQL_COUNTBLANKS = '''SELECT SUM(flag) as number
 FROM (SELECT CASE WHEN TRIM({columnname}) = ""
@@ -101,6 +120,10 @@ def _bqquery_get_number(query: str) -> float:
     if len(jsondict) == 0:
         raise BqError('Could not convert bq command output')
     jsondict = jsondict[0]
+    # FIXME: hack required because SQL_COUNTOUTLIERS returns
+    # an extra list wrapping.
+    if isinstance(jsondict, list) and len(jsondict) > 0:
+        jsondict = jsondict[0]
     if 'number' not in jsondict.keys():
         raise BqError('Could not convert bq command output')
     try:
@@ -251,6 +274,21 @@ def colcheck_is_str(datasetname: str, tablename: str,
     if coltype == 'STRING':
         return True, ''
     return False, f'column {columnname} want string type, got {coltype}'
+
+
+def colcheck_iqr(datasetname: str, tablename: str,
+                 columnname: str) -> Tuple[bool, str]:
+    '''
+    Check if the values in a column are outliers greater than or less than
+    1.5 times the inter-quartile range plus Q3 or Q1 respectively
+    '''
+    query = SQL_COUNTOUTLIERS.format(datasetname=datasetname,
+                                     tablename=tablename,
+                                     columnname=columnname)
+    outliercount = _bqquery_get_number(query)
+    if outliercount == 0:
+        return True, ''
+    return False, f'column {columnname} want 0 outliers, got {outliercount}'
 
 
 def colcheck_is_datetime(datasetname: str, tablename: str,

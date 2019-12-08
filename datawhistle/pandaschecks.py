@@ -190,7 +190,6 @@ def colcheck_iqr(df: pd.DataFrame, col_name: str) -> Tuple[bool, str]:
     q25, q75 = np.percentile(df[col_name], [25, 75])
     upper = round(q75 + (q75 - q25) * 1.5, 2)
     lower = round(q25 - (q75 - q25) * 1.5, 2)
-
     if max(df[col_name]) > upper:
         return False, (f'column {col_name} outlier above 1.5xIQR {upper}: '
                        f'{max(df[col_name])}')

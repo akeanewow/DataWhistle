@@ -115,6 +115,14 @@ class TestColumnLevelChecks(unittest.TestCase):
         self.assertFalse(passed)
         self.assertEqual(message, 'column A want string type, got INT64')
 
+    def test_colcheck_iqr(self):
+        passed, message = dwbc.colcheck_iqr('datawhistle', 'table1', 'A')
+        self.assertTrue(passed)
+        self.assertEqual(message, '')
+        passed, message = dwbc.colcheck_iqr('datawhistle', 'table2', 'B')
+        self.assertFalse(passed)
+        self.assertEqual(message, 'column B want 0 outliers, got 1.0')
+
     def test_colcheck_is_datetime(self):
         passed, message = dwbc.colcheck_is_datetime('datawhistle', 'table1',
                                                     'J')
