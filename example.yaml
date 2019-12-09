@@ -33,6 +33,6 @@ columns:
   - name: J                    # Name of a column expected in the table
     type: datetime             # Column type ('numeric', 'string' or 'datetime')
     allow_nulls: false         # Null values allowed in column (bool)
-    dateformat: '%m/%d/%Y'     # Formatting of the date time column
+    dateformat: '%m/%d/%Y'     # CSV file formatting of the datetime column
     # See the following link for format string parameters:
     # https://docs.python.org/3/library/datetime.html#strftime-and-strptime-behavior
