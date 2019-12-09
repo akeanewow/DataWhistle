@@ -57,7 +57,7 @@ class TestYamlParsing(unittest.TestCase):
         ymld = dw.load_yaml_file_to_dict(self.file1path)
         dw.apply_yamldict_to_checksuite(ymld, checksuite)
         # Dataset checks
-        self.assertFalse(checksuite.allow_duplicate_rows)
+        self.assertTrue(checksuite.allow_duplicate_rows)
         self.assertTrue(checksuite.stop_on_fail)
         self.assertEqual(checksuite.row_count_max, 10)
         self.assertEqual(checksuite.row_count_min, 3)

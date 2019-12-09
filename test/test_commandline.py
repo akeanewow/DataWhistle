@@ -12,7 +12,7 @@ import datawhistle as dw  # noqa
 
 _ALL_PASSED = '''Reading data file ... done.
 Parsing rules file ... done.
-Running checks .......................... done.
+Running checks ......................... done.
 All checks passed.
 '''
 
@@ -97,7 +97,7 @@ class TestWhistle(unittest.TestCase):
             dw.commandline_check_csv(self.dfile2, self.yfile1, False)
         self.assertEqual(
                 self.capturedStout.getvalue(),
-                'want 0 duplicate rows, got 2\n')
+                'want row count == 5, got 8\n')
 
 
 if __name__ == '__main__':

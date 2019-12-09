@@ -373,7 +373,7 @@ class BqTableCheckSuite(TableCheckSuite):
                   columntype: str) -> BqColumnCheckSuite:
         '''Add a column to set rules on.'''
         column = BqColumnCheckSuite(self.datasetname, self.tablename,
-                                    self.columnname, self.columntype)
+                                    columnname, columntype)
         self.columns.append(column)
         return column
 
@@ -419,25 +419,25 @@ class BqColumnCheckSuite(ColumnCheckSuite):
             return True, ''
         max_val = int(self.count_distinct_max)
         return dwbc.colcheck_count_distinct(self.datasetname, self.tablename,
-                                            self.columnname, max_val, '<=')
+                                            self.name, max_val, '<=')
 
     def check_col_count_distinct_min(self) -> Tuple[bool, str]:
         if self.count_distinct_min is None:
             return True, ''
         min_val = int(self.count_distinct_min)
         return dwbc.colcheck_count_distinct(self.datasetname, self.tablename,
-                                            self.columnname, min_val, '>=')
+                                            self.name, min_val, '>=')
 
     def check_col_count_distinct(self) -> Tuple[bool, str]:
         if self.count_distinct is None:
             return True, ''
         val = int(self.count_distinct)
         return dwbc.colcheck_count_distinct(self.datasetname, self.tablename,
-                                            self.columnname, val, '==')
+                                            self.name, val, '==')
 
     def check_col_exists(self) -> Tuple[bool, str]:
         return dwbc.colcheck_exists(self.datasetname, self.tablename,
-                                    self.columnname)
+                                    self.name)
 
     def check_col_min_val(self) -> Tuple[bool, str]:
         if not self.type == 'numeric':
@@ -448,7 +448,7 @@ class BqColumnCheckSuite(ColumnCheckSuite):
                            'minimum value')
         min_val = float(self.min_val)
         return dwbc.colcheck_val(self.datasetname, self.tablename,
-                                 self.columnname, min_val, '>=')
+                                 self.name, min_val, '>=')
 
     def check_col_max_val(self) -> Tuple[bool, str]:
         if not self.type == 'numeric':
@@ -459,29 +459,29 @@ class BqColumnCheckSuite(ColumnCheckSuite):
                            'maximum value')
         max_val = float(self.max_val)
         return dwbc.colcheck_val(self.datasetname, self.tablename,
-                                 self.columnname, max_val, '<=')
+                                 self.name, max_val, '<=')
 
     def check_col_iqr(self) -> Tuple[bool, str]:
         if not self.type == 'numeric':
             return False, (f'column (self.name) cannot check inter-quartile '
                            'range on a non-numeric column')
         return dwbc.colcheck_iqr(self.datasetname, self.tablename,
-                                 self.columnname)
+                                 self.name)
 
     def check_col_no_blanks(self) -> Tuple[bool, str]:
         if not self.type == 'string':
             return False, (f'column {self.name} cannot check for blanks '
                            'in non-string column')
         return dwbc.colcheck_no_blanks(self.datasetname, self.tablename,
-                                       self.columnname)
+                                       self.name)
 
     def check_col_no_duplicates(self) -> Tuple[bool, str]:
         return dwbc.colcheck_no_duplicates(self.datasetname, self.tablename,
-                                           self.columnname)
+                                           self.name)
 
     def check_col_non_nulls(self) -> Tuple[bool, str]:
         return dwbc.colcheck_no_nulls(self.datasetname, self.tablename,
-                                      self.columnname)
+                                      self.name)
 
     def check_col_val(self) -> Tuple[bool, str]:
         if not self.type == 'numeric':
@@ -491,17 +491,17 @@ class BqColumnCheckSuite(ColumnCheckSuite):
             return False, (f'column {self.name} could not check value')
         val = float(self.val)
         return dwbc.colcheck_val(self.datasetname, self.tablename,
-                                 self.columnname, val, '==')
+                                 self.name, val, '==')
 
     def check_col_type(self) -> Tuple[bool, str]:
         if self.type == 'numeric':
             return dwbc.colcheck_is_numeric(self.datasetname, self.tablename,
-                                            self.columnname)
+                                            self.name)
         if self.type == 'string':
             return dwbc.colcheck_is_str(self.datasetname, self.tablename,
-                                        self.columnname)
+                                        self.name)
         if self.type == 'datetime':
             return dwbc.colcheck_is_datetime(self.datasetname, self.tablename,
-                                             self.columnname)
+                                             self.name)
         return False, (f'column {self.name} could not tested '
                        f'for type {self.type} (unknown type)')

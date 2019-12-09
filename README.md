@@ -17,10 +17,20 @@ tools.
 Example command line usage, testing a CSV file:
 
 ```sh
-$ python3 -m datawhistle --csv data.csv --rules checks.yaml --verbose
+$ python3 -m datawhistle --source CSV --file data.csv --rules checks.yaml --verbose
 Reading data file ... done.
 Parsing rules file ... done.
 Running checks .F....................................... done.
 Checks failed (1):
 want 0 duplicate rows, got 2
+```
+
+Example command line usage, testing a BigQuery table:
+
+```sh
+$  python3 -m datawhistle --source BQ --dataset stuff --table table1 --rules checks.yaml --verbose
+Reading data file ... done.
+Parsing rules file ... done.
+Running checks ........................................ done.
+All checks passed.
 ```
