@@ -1,5 +1,5 @@
 import yaml  # type: ignore
-from typing import Any, Dict, List
+from typing import Any, Dict, List, Union
 import datawhistle as dw
 
 
@@ -73,7 +73,8 @@ def _yamlerr(message: str) -> None:
 
 
 def apply_yamldict_to_checksuite(ymld: Dict,
-                                 suite: dw.PandasDatsetCheckSuite) -> None:
+                                 suite: Union[dw.PandasDatsetCheckSuite,
+                                              dw.BqTableCheckSuite]) -> None:
     '''Apply yaml parsed into dictionary to a checksuite object.'''
     ykeys = list(ymld.keys())
     _check_yaml_toplevel_keys(ykeys)
