@@ -152,9 +152,12 @@ def colcheck_no_nulls(df: pd.DataFrame, col_name: str) -> Tuple[bool, str]:
     return False, f'column {col_name} want 0 nulls, got {countnull}'
 
 
-def colcheck_regex(df: pd.DataFrame, col_name: str, regex_rule: str, regex_type: str) -> Tuple[bool, str]:
+def colcheck_regex(df: pd.DataFrame, col_name: str, regex_rule: Optional[str], regex_type: Optional[str]) -> Tuple[bool, str]:
     '''Check to see if a column contains all the same regex type, or if the column does
     not contain a regex type.'''
+
+    if regex_rule is None or regex_type is None:
+        return False, f'column {col_name} None regex_rule or regex_type'
 
     if regex_rule == '':
         return False, f'column {col_name} blank regex_rule'
