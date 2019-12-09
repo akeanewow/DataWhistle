@@ -85,6 +85,7 @@ class TestYamlParsing(unittest.TestCase):
         self.assertEqual(col1.type, 'numeric')
         self.assertEqual(col1.allow_duplicates, False)
         self.assertEqual(col1.allow_nulls, True)
+        self.assertEqual(col1.allow_outliers, False)
         self.assertEqual(col1.min_val, 0)
         self.assertEqual(col1.max_val, 5)
         self.assertEqual(col1.count_distinct_max, 10)

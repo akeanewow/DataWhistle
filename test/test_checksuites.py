@@ -52,6 +52,8 @@ class TestPandasTableCheckSuite(unittest.TestCase):
         self.assertEqual(
                 pdcs.error_messages,
                 ['column A expected to be string type but is not'])
+        pdcs = dw.PandasColumnCheckSuite(self.df_file2, 'B', 'numeric')
+        pdcs.runchecks(False)
 
 
 if __name__ == '__main__':

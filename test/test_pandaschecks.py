@@ -6,7 +6,7 @@ HDIR = os.path.dirname(os.path.abspath(
             inspect.getfile(inspect.currentframe())))
 PARENTDIR = os.path.dirname(HDIR)
 sys.path.insert(0, PARENTDIR)
-import pandas as pd  # type: ignore
+import pandas as pd     # type: ignore
 import datawhistle.pandaschecks as dwpc  # noqa
 
 
@@ -179,6 +179,14 @@ class TestColChecks(unittest.TestCase):
         self.assertFalse(passed)
         self.assertEqual(message, (f'column A want all values = 1,'
                                    ' got different values'))
+
+    def test_col_iqr(self):
+        passed, message = dwpc.colcheck_iqr(self.df_file2, 'A')
+        self.assertTrue(passed)
+        self.assertEqual(message, '')
+        passed, message = dwpc.colcheck_iqr(self.df_file2, 'B')
+        self.assertFalse(passed)
+        self.assertEqual(message, 'column B outlier above 1.5xIQR 10.35: 12.1')
 
 
 if __name__ == '__main__':

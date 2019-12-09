@@ -11,6 +11,7 @@ columns:
   - name: A
     type: numeric
     allow_nulls: true
+    allow_outliers: false
     allow_duplicates: false
     min: 0
     max: 5

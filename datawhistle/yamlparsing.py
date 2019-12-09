@@ -13,6 +13,7 @@ YAML_TABLE_KEYS = [
 YAML_COLUMN_KEYS = [
     'name',
     'type',
+    'allow_outliers',
     'allow_blanks',
     'allow_duplicates',
     'allow_nulls',
@@ -124,6 +125,9 @@ def apply_yamldict_to_checksuite(ymld: Dict,
         coltype = coldict['type']
         _check_yaml_column_type(coltype)
         col = suite.addcolumn(colname, coltype)
+        # allow outliers in the column
+        if 'allow_outliers' in colkeys:
+            col.allow_outliers = _check_bool_val(coldict['allow_outliers'])
         # allow blanks in the column
         if 'allow_blanks' in colkeys:
             col.allow_blanks = _check_bool_val(coldict['allow_blanks'])
