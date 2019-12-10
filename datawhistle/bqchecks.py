@@ -1,6 +1,6 @@
 import subprocess
 import json
-from typing import Tuple, Union
+from typing import Tuple, Union, Optional
 
 
 # Note this is defined as a list because that is how the subprocess.run
@@ -346,7 +346,7 @@ def colcheck_no_nulls(datasetname: str, tablename: str,
 
 
 def colcheck_regex(datasetname: str, tablename: str,
-                      columnname: str, regex_rule: str, regex_type: str) -> Tuple[bool, str]:
+                      columnname: str, regex_rule: Optional[str], regex_type: Optional[str]) -> Tuple[bool, str]:
     '''Check to see if a column contains all the same regex type, or if the column does
     not contain a regex type.'''
 
