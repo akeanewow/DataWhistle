@@ -101,7 +101,6 @@ FROM (SELECT
   COUNT({columnname}) AS COL_COUNT
 FROM {datasetname}.{tablename})'''
 
-
 # Count the number of rows in a table.
 SQL_COUNTROWS = 'SELECT count(*) AS number FROM {datasetname}.{tablename};'
 
