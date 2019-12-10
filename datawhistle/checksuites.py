@@ -489,6 +489,9 @@ class BqColumnCheckSuite(ColumnCheckSuite):
         return dwbc.colcheck_no_nulls(self.datasetname, self.tablename,
                                       self.name)
 
+    def check_col_regex(self) -> Tuple[bool, str]:
+        return dwbc.colcheck_regex(self.datasetname, self.tablename, self.name, self.regex_rule, self.regex_type)
+
     def check_col_val(self) -> Tuple[bool, str]:
         if not self.type == 'numeric':
             return False, (f'column {self.name} cannot check '
