@@ -1,7 +1,7 @@
 # Avoid forward decalaration type check errors. See PEP563.
 from __future__ import annotations
-import pandas as pd  # type: ignore
 from typing import Callable, Optional, List, Tuple, Union
+import pandas as pd  # type: ignore
 import datawhistle.pandaschecks as dwpc
 import datawhistle.bqchecks as dwbc
 
@@ -95,7 +95,7 @@ class ColumnCheckSuite:
 
     def __init__(self, colname: str, coltype: str):
         # test settings
-        self.name: str = colname
+        self.columnname: str = colname
         self.type: str = coltype
         self.allow_blanks: bool = True
         self.allow_duplicates: bool = True
@@ -257,90 +257,92 @@ class PandasColumnCheckSuite(ColumnCheckSuite):
         if self.count_distinct_max is None:
             return True, ''
         max_val = int(self.count_distinct_max)
-        return dwpc.colcheck_count_distinct(self.dataframe, self.name,
+        return dwpc.colcheck_count_distinct(self.dataframe, self.columnname,
                                             max_val, '<=')
 
     def check_col_count_distinct_min(self) -> Tuple[bool, str]:
         if self.count_distinct_min is None:
             return True, ''
         min_val = int(self.count_distinct_min)
-        return dwpc.colcheck_count_distinct(self.dataframe, self.name,
+        return dwpc.colcheck_count_distinct(self.dataframe, self.columnname,
                                             min_val, '>=')
 
     def check_col_count_distinct(self) -> Tuple[bool, str]:
         if self.count_distinct is None:
             return True, ''
         val = int(self.count_distinct)
-        return dwpc.colcheck_count_distinct(self.dataframe, self.name,
+        return dwpc.colcheck_count_distinct(self.dataframe, self.columnname,
                                             val, '==')
 
     def check_col_exists(self) -> Tuple[bool, str]:
-        return dwpc.colcheck_exists(self.dataframe, self.name)
+        return dwpc.colcheck_exists(self.dataframe, self.columnname)
 
     def check_col_min_val(self) -> Tuple[bool, str]:
         if not self.type == 'numeric':
-            return False, (f'column {self.name} cannot check minimum '
+            return False, (f'column {self.columnname} cannot check minimum '
                            'value on a non-numeric column')
         if self.min_val is None:
-            return False, (f'column {self.name} could not check '
+            return False, (f'column {self.columnname} could not check '
                            'minimum value')
         min_val = float(self.min_val)
-        return dwpc.colcheck_val(self.dataframe, self.name, min_val, '>=')
+        return dwpc.colcheck_val(self.dataframe, self.columnname, min_val,
+                                 '>=')
 
     def check_col_max_val(self) -> Tuple[bool, str]:
         if not self.type == 'numeric':
-            return False, (f'column {self.name} cannot check maximum '
+            return False, (f'column {self.columnname} cannot check maximum '
                            'value on a non-numeric column')
         if self.max_val is None:
-            return False, (f'column {self.name} could not check '
+            return False, (f'column {self.columnname} could not check '
                            'maximum value')
         max_val = float(self.max_val)
-        return dwpc.colcheck_val(self.dataframe, self.name, max_val, '<=')
+        return dwpc.colcheck_val(self.dataframe, self.columnname, max_val,
+                                 '<=')
 
     def check_col_iqr(self) -> Tuple[bool, str]:
         if not self.type == 'numeric':
-            return False, (f'column (self.name) cannot check inter-quartile '
-                           'range on a non-numeric column')
-        return dwpc.colcheck_iqr(self.dataframe, self.name)
+            return False, (f'column (self.columnname) cannot check '
+                           'inter-quartile range on a non-numeric column')
+        return dwpc.colcheck_iqr(self.dataframe, self.columnname)
 
     def check_col_no_blanks(self) -> Tuple[bool, str]:
         if not self.type == 'string':
-            return False, (f'column {self.name} cannot check for blanks '
+            return False, (f'column {self.columnname} cannot check for blanks '
                            'in non-string column')
-        return dwpc.colcheck_no_blanks(self.dataframe, self.name)
+        return dwpc.colcheck_no_blanks(self.dataframe, self.columnname)
 
     def check_col_no_duplicates(self) -> Tuple[bool, str]:
-        return dwpc.colcheck_no_duplicates(self.dataframe, self.name)
+        return dwpc.colcheck_no_duplicates(self.dataframe, self.columnname)
 
     def check_col_non_nulls(self) -> Tuple[bool, str]:
-        return dwpc.colcheck_no_nulls(self.dataframe, self.name)
+        return dwpc.colcheck_no_nulls(self.dataframe, self.columnname)
 
     def check_col_val(self) -> Tuple[bool, str]:
         if not self.type == 'numeric':
-            return False, (f'column {self.name} cannot check '
+            return False, (f'column {self.columnname} cannot check '
                            'value of a non-numeric column')
         if self.val is None:
-            return False, (f'column {self.name} could not check value')
+            return False, (f'column {self.columnname} could not check value')
         val = float(self.val)
-        return dwpc.colcheck_val(self.dataframe, self.name, val, '==')
+        return dwpc.colcheck_val(self.dataframe, self.columnname, val, '==')
 
     def check_col_type(self) -> Tuple[bool, str]:
         if self.type == 'numeric':
-            return dwpc.colcheck_is_numeric(self.dataframe, self.name)
+            return dwpc.colcheck_is_numeric(self.dataframe, self.columnname)
         if self.type == 'string':
-            return dwpc.colcheck_is_str(self.dataframe, self.name)
+            return dwpc.colcheck_is_str(self.dataframe, self.columnname)
         if self.type == 'datetime':
             success, msg = dwpc.colcheck_is_datetime(self.dataframe,
-                                                     self.name,
+                                                     self.columnname,
                                                      self.dateformat)
             if success:
                 if self.dateformat is not None:
-                    pd.to_datetime(self.dataframe[self.name],
+                    pd.to_datetime(self.dataframe[self.columnname],
                                    format=self.dateformat)
                 else:
-                    pd.to_datetime(self.dataframe[self.name])
+                    pd.to_datetime(self.dataframe[self.columnname])
             return success, msg
-        return False, (f'column {self.name} could not tested '
+        return False, (f'column {self.columnname} could not tested '
                        f'for type {self.type} (unknown type)')
 
 
@@ -419,89 +421,89 @@ class BqColumnCheckSuite(ColumnCheckSuite):
             return True, ''
         max_val = int(self.count_distinct_max)
         return dwbc.colcheck_count_distinct(self.datasetname, self.tablename,
-                                            self.name, max_val, '<=')
+                                            self.columnname, max_val, '<=')
 
     def check_col_count_distinct_min(self) -> Tuple[bool, str]:
         if self.count_distinct_min is None:
             return True, ''
         min_val = int(self.count_distinct_min)
         return dwbc.colcheck_count_distinct(self.datasetname, self.tablename,
-                                            self.name, min_val, '>=')
+                                            self.columnname, min_val, '>=')
 
     def check_col_count_distinct(self) -> Tuple[bool, str]:
         if self.count_distinct is None:
             return True, ''
         val = int(self.count_distinct)
         return dwbc.colcheck_count_distinct(self.datasetname, self.tablename,
-                                            self.name, val, '==')
+                                            self.columnname, val, '==')
 
     def check_col_exists(self) -> Tuple[bool, str]:
         return dwbc.colcheck_exists(self.datasetname, self.tablename,
-                                    self.name)
+                                    self.columnname)
 
     def check_col_min_val(self) -> Tuple[bool, str]:
         if not self.type == 'numeric':
-            return False, (f'column {self.name} cannot check minimum '
+            return False, (f'column {self.columnname} cannot check minimum '
                            'value on a non-numeric column')
         if self.min_val is None:
-            return False, (f'column {self.name} could not check '
+            return False, (f'column {self.columnname} could not check '
                            'minimum value')
         min_val = float(self.min_val)
         return dwbc.colcheck_val(self.datasetname, self.tablename,
-                                 self.name, min_val, '>=')
+                                 self.columnname, min_val, '>=')
 
     def check_col_max_val(self) -> Tuple[bool, str]:
         if not self.type == 'numeric':
-            return False, (f'column {self.name} cannot check maximum '
+            return False, (f'column {self.columnname} cannot check maximum '
                            'value on a non-numeric column')
         if self.max_val is None:
-            return False, (f'column {self.name} could not check '
+            return False, (f'column {self.columnname} could not check '
                            'maximum value')
         max_val = float(self.max_val)
         return dwbc.colcheck_val(self.datasetname, self.tablename,
-                                 self.name, max_val, '<=')
+                                 self.columnname, max_val, '<=')
 
     def check_col_iqr(self) -> Tuple[bool, str]:
         if not self.type == 'numeric':
-            return False, (f'column (self.name) cannot check inter-quartile '
-                           'range on a non-numeric column')
+            return False, (f'column (self.columnname) cannot check '
+                           'inter-quartile range on a non-numeric column')
         return dwbc.colcheck_iqr(self.datasetname, self.tablename,
-                                 self.name)
+                                 self.columnname)
 
     def check_col_no_blanks(self) -> Tuple[bool, str]:
         if not self.type == 'string':
-            return False, (f'column {self.name} cannot check for blanks '
+            return False, (f'column {self.columnname} cannot check for blanks '
                            'in non-string column')
         return dwbc.colcheck_no_blanks(self.datasetname, self.tablename,
-                                       self.name)
+                                       self.columnname)
 
     def check_col_no_duplicates(self) -> Tuple[bool, str]:
         return dwbc.colcheck_no_duplicates(self.datasetname, self.tablename,
-                                           self.name)
+                                           self.columnname)
 
     def check_col_non_nulls(self) -> Tuple[bool, str]:
         return dwbc.colcheck_no_nulls(self.datasetname, self.tablename,
-                                      self.name)
+                                      self.columnname)
 
     def check_col_val(self) -> Tuple[bool, str]:
         if not self.type == 'numeric':
-            return False, (f'column {self.name} cannot check '
+            return False, (f'column {self.columnname} cannot check '
                            'value of a non-numeric column')
         if self.val is None:
-            return False, (f'column {self.name} could not check value')
+            return False, (f'column {self.columnname} could not check value')
         val = float(self.val)
         return dwbc.colcheck_val(self.datasetname, self.tablename,
-                                 self.name, val, '==')
+                                 self.columnname, val, '==')
 
     def check_col_type(self) -> Tuple[bool, str]:
         if self.type == 'numeric':
             return dwbc.colcheck_is_numeric(self.datasetname, self.tablename,
-                                            self.name)
+                                            self.columnname)
         if self.type == 'string':
             return dwbc.colcheck_is_str(self.datasetname, self.tablename,
-                                        self.name)
+                                        self.columnname)
         if self.type == 'datetime':
             return dwbc.colcheck_is_datetime(self.datasetname, self.tablename,
-                                             self.name)
-        return False, (f'column {self.name} could not tested '
+                                             self.columnname)
+        return False, (f'column {self.columnname} could not tested '
                        f'for type {self.type} (unknown type)')
