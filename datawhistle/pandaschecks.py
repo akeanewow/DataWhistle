@@ -1,7 +1,7 @@
 from typing import Optional, Tuple, Union
 import pandas as pd     # type: ignore
 import numpy as np      # type: ignore
-
+import re
 
 # DataFrame level checks (as opposed to column level checks)
 # are described in functions using the naming convention
@@ -149,6 +149,34 @@ def colcheck_no_nulls(df: pd.DataFrame, columnname: str) -> Tuple[bool, str]:
     if countnull == 0:
         return True, ''
     return False, f'column {columnname} want 0 nulls, got {countnull}'
+
+
+def colcheck_regex(df: pd.DataFrame, col_name: str, regex_rule: Optional[str], regex_type: Optional[str]) -> Tuple[bool, str]:
+    '''Check to see if a column contains all the same regex type, or if the column does
+    not contain a regex type.'''
+
+    if regex_rule is None or regex_type is None:
+        return False, f'column {col_name} None regex_rule or regex_type'
+
+    if regex_rule == '':
+        return False, f'column {col_name} blank regex_rule'
+
+    try:
+        reg_results = df[col_name].str.findall(regex_rule)
+    except re.error:
+        return False, f'column {col_name} invalid regex_rule {regex_rule}'
+
+    for row in reg_results.values:
+        if row == [''] or row == []:
+            # Not found
+            if regex_type == 'mandatory':
+                return False, f'column {col_name} found a non matching regex record with rule {regex_rule}'
+        else:
+            # Found
+            if regex_type == 'exclude':
+                return False, f'column {col_name} found invalid regex {row[0]} with rule {regex_rule}'
+
+    return True, ''
 
 
 def colcheck_val(df: pd.DataFrame, columnname: str, val: Union[int, float],

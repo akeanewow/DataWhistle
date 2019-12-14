@@ -1,6 +1,6 @@
 import subprocess
 import json
-from typing import Tuple, Union
+from typing import Tuple, Union, Optional
 
 
 # Note this is defined as a list because that is how the subprocess.run
@@ -93,6 +93,13 @@ SQL_COUNTNULLS = '''SELECT SUM(number) AS number
 FROM (SELECT CASE WHEN {columnname} IS NULL THEN 1 ELSE 0 END AS number
       FROM {datasetname}.{tablename});
 '''
+
+# Check a specific regex match on a column
+SQL_COUNTREGEX = '''SELECT MATCHES/COL_COUNT as number
+FROM (SELECT
+  SUM(CASE WHEN REGEXP_CONTAINS({columnname}, r"{regex_rule}") THEN 1 ELSE 0 END) AS MATCHES,
+  COUNT({columnname}) AS COL_COUNT
+FROM {datasetname}.{tablename})'''
 
 # Count the number of rows in a table.
 SQL_COUNTROWS = 'SELECT count(*) AS number FROM {datasetname}.{tablename};'
@@ -342,6 +349,32 @@ def colcheck_no_nulls(datasetname: str, tablename: str,
         return True, ''
     return False, f'column {columnname} want 0 nulls, got {countnull}'
 
+
+def colcheck_regex(datasetname: str, tablename: str,
+                      columnname: str, regex_rule: Optional[str], regex_type: Optional[str]) -> Tuple[bool, str]:
+    '''Check to see if a column contains all the same regex type, or if the column does
+    not contain a regex type.'''
+
+    if regex_rule is None or regex_type is None:
+        return False, f'column {columnname} None regex_rule or regex_type'
+
+    if regex_rule == '':
+        return False, f'column {columnname} blank regex_rule'
+
+    try:
+        sql = SQL_COUNTREGEX.format(datasetname=datasetname,
+                                tablename=tablename,
+                                columnname=columnname,
+                                regex_rule=regex_rule)
+        row_fraction_match = _bqquery_get_number(sql)
+    except BqError:
+        return False, f'column {columnname} BqError with rule {regex_rule}'
+
+    if regex_type == 'mandatory' and row_fraction_match < 1:
+        return False, f'column {columnname} found a non matching regex record with rule {regex_rule}'
+    elif regex_type == 'exclude' and row_fraction_match > 0:
+        return False, f'column {columnname} found invalid regex with rule {regex_rule}'
+    return True, ''
 
 def colcheck_val(datasetname: str, tablename: str,
                  columnname: str, val: Union[int, float],

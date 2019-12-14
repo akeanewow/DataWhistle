@@ -26,6 +26,8 @@ columns:
     count_distinct_max: 10
     count_distinct_min: 1
     count_distinct: 5
+    regex_rule: "[a-m]"
+    regex_type: "mandatory"
 
   - name: I
     allow_duplicates: true
@@ -36,3 +38,4 @@ columns:
     type: datetime
     allow_nulls: false
     dateformat: '%m/%d/%Y'
+

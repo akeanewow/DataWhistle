@@ -23,11 +23,13 @@ YAML_COLUMN_KEYS = [
     'dateformat',
     'min',
     'max',
-    'val']
+    'val',
+    'regex_rule',
+    'regex_type']
 YAML_COLUMN_TYPES = ['numeric', 'string', 'datetime']
 TRUE_VALS = [True, 1, 'true', 'True', '1']
 FALSE_VALS = [False, 0, 'false', 'False', '0']
-
+REGEX_VALS = ['mandatory', 'exclude']
 
 class YamlParsingError(Exception):
     pass
@@ -176,7 +178,22 @@ def apply_yamldict_to_checksuite(ymld: Dict,
                 _yamlerr(f'column {colname} cannot check value of non '
                          f'numeric column')
             col.val = val
-
+        if 'regex_rule' in colkeys:
+            val = coldict['regex_rule']
+            if not isinstance(val, str):
+                _yamlerr(f'column {colname} format error {val}')
+            elif coltype != 'string':
+                _yamlerr(f'column {colname} is of type {coltype}, but must be of type string for regex_rules')
+            col.regex_rule = val
+        if 'regex_type' in colkeys:
+            val = coldict['regex_type']
+            if not isinstance(val, str):
+                _yamlerr(f'column {colname} format error {val}')
+            elif coltype != 'string':
+                _yamlerr(f'column {colname} is of type {coltype}, but must be of type string for regex_rules')
+            elif val not in REGEX_VALS:
+                _yamlerr(f'regex type must be of the following types {".".join(REGEX_VALS)}')
+            col.regex_type = val
 
 def load_yaml_file_to_dict(filename: str) -> Dict:
     '''Parse a yaml file into a Dict object.'''
