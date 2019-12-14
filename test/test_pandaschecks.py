@@ -108,37 +108,39 @@ class TestColChecks(unittest.TestCase):
 
     def test_col_regex(self):
         #Fails
-        passed, message = dwpc.colcheck_regex(self.df_file1, 'C', '', 'mandatory')
+        passed, message = dwpc.colcheck_regex(self.df_file1, 'C', '',
+                                              'mandatory')
         self.assertEqual(passed, False)
         self.assertEqual(
             message,
             'column C blank regex_rule')
-        passed, message = dwpc.colcheck_regex(self.df_file1, 'C', '[', 'mandatory')
+        passed, message = dwpc.colcheck_regex(self.df_file1, 'C', '[',
+                                              'mandatory')
         self.assertEqual(passed, False)
         self.assertEqual(
             message,
             'column C invalid regex_rule [')
-        passed, message = dwpc.colcheck_regex(self.df_file1, 'C', '[a]', 'mandatory')
+        passed, message = dwpc.colcheck_regex(self.df_file1, 'C', '[a]',
+                                              'mandatory')
         self.assertEqual(passed, False)
         self.assertEqual(
             message,
             'column C found a non matching regex record with rule [a]')
-        passed, message = dwpc.colcheck_regex(self.df_file1, 'C', '[b]', 'exclude')
+        passed, message = dwpc.colcheck_regex(self.df_file1, 'C', '[b]',
+                                              'exclude')
         self.assertEqual(passed, False)
         self.assertEqual(
             message,
             'column C found invalid regex b with rule [b]')
         #Succeds
-        passed, message = dwpc.colcheck_regex(self.df_file1, 'C', '[z]', 'exclude')
+        passed, message = dwpc.colcheck_regex(self.df_file1, 'C', '[z]',
+                                              'exclude')
         self.assertEqual(passed, True)
-        self.assertEqual(
-            message,
-            '')
-        passed, message = dwpc.colcheck_regex(self.df_file1, 'C', '.', 'mandatory')
+        self.assertEqual(message, '')
+        passed, message = dwpc.colcheck_regex(self.df_file1, 'C', '.',
+                                              'mandatory')
         self.assertEqual(passed, True)
-        self.assertEqual(
-            message,
-            '')
+        self.assertEqual(message, '')
 
     def test_col_no_duplicates(self):
         passed, message = dwpc.colcheck_no_duplicates(self.df_file1, 'I')

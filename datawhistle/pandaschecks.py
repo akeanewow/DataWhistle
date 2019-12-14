@@ -151,31 +151,32 @@ def colcheck_no_nulls(df: pd.DataFrame, columnname: str) -> Tuple[bool, str]:
     return False, f'column {columnname} want 0 nulls, got {countnull}'
 
 
-def colcheck_regex(df: pd.DataFrame, col_name: str, regex_rule: Optional[str], regex_type: Optional[str]) -> Tuple[bool, str]:
-    '''Check to see if a column contains all the same regex type, or if the column does
-    not contain a regex type.'''
-
+def colcheck_regex(df: pd.DataFrame, columnname: str,
+                   regex_rule: Optional[str],
+                   regex_type: Optional[str]) -> Tuple[bool, str]:
+    '''
+    Check to see if a column contains all the same regex type, or if the
+    column does not contain a regex type.
+    '''
     if regex_rule is None or regex_type is None:
-        return False, f'column {col_name} None regex_rule or regex_type'
-
+        return False, f'column {columnname} None regex_rule or regex_type'
     if regex_rule == '':
-        return False, f'column {col_name} blank regex_rule'
-
+        return False, f'column {columnname} blank regex_rule'
     try:
-        reg_results = df[col_name].str.findall(regex_rule)
+        reg_results = df[columnname].str.findall(regex_rule)
     except re.error:
-        return False, f'column {col_name} invalid regex_rule {regex_rule}'
-
+        return False, f'column {columnname} invalid regex_rule {regex_rule}'
     for row in reg_results.values:
         if row == [''] or row == []:
             # Not found
             if regex_type == 'mandatory':
-                return False, f'column {col_name} found a non matching regex record with rule {regex_rule}'
+                return False, (f'column {columnname} found a non matching '
+                               f'regex record with rule {regex_rule}')
         else:
             # Found
             if regex_type == 'exclude':
-                return False, f'column {col_name} found invalid regex {row[0]} with rule {regex_rule}'
-
+                return False, (f'column {columnname} found invalid regex '
+                               f'{row[0]} with rule {regex_rule}')
     return True, ''
 
 
