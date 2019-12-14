@@ -127,10 +127,11 @@ def _bqquery_get_number(query: str) -> float:
     if len(jsondict) == 0:
         raise BqError('Could not convert bq command output')
     jsondict = jsondict[0]
-    # FIXME: hack required because SQL_COUNTOUTLIERS returns
-    # an extra list wrapping.
+    # SQL_COUNTOUTLIERS returns an extra list wrapping.
     if isinstance(jsondict, list) and len(jsondict) > 0:
         jsondict = jsondict[0]
+    if not isinstance(jsondict, dict):
+        raise BqError('Could not convert bq command output')
     if 'number' not in jsondict.keys():
         raise BqError('Could not convert bq command output')
     try:
@@ -145,6 +146,8 @@ def _bqquery_get_string(query: str) -> str:
     if len(jsondict) == 0:
         raise BqError('Could not convert bq command output')
     jsondict = jsondict[0]
+    if not isinstance(jsondict, dict):
+        raise BqError('Could not convert bq command output')
     if 'string' not in jsondict.keys():
         raise BqError('Could not convert bq command output')
     return jsondict['string']
@@ -156,6 +159,8 @@ def _bqquery_get_bool(query: str) -> bool:
     if len(jsondict) == 0:
         raise BqError('Could not convert bq command output')
     jsondict = jsondict[0]
+    if not isinstance(jsondict, dict):
+        raise BqError('Could not convert bq command output')
     if 'bool' not in jsondict.keys():
         raise BqError('Could not convert bq command output')
     return jsondict['bool'] == 'True'

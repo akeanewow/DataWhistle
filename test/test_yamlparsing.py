@@ -81,7 +81,7 @@ class TestYamlParsing(unittest.TestCase):
         col3 = checksuite.columns[2]
         col9 = checksuite.columns[3]
         # col 1
-        self.assertEqual(col1.name, 'A')
+        self.assertEqual(col1.columnname, 'A')
         self.assertEqual(col1.type, 'numeric')
         self.assertEqual(col1.allow_duplicates, False)
         self.assertEqual(col1.allow_nulls, True)
@@ -92,7 +92,7 @@ class TestYamlParsing(unittest.TestCase):
         self.assertEqual(col1.count_distinct_min, 1)
         self.assertEqual(col1.count_distinct, 5)
         # col 2
-        self.assertEqual(col2.name, 'C')
+        self.assertEqual(col2.columnname, 'C')
         self.assertEqual(col2.type, 'string')
         self.assertEqual(col2.allow_blanks, False)
         self.assertEqual(col2.allow_nulls, False)
@@ -102,13 +102,13 @@ class TestYamlParsing(unittest.TestCase):
         self.assertEqual(col2.regex_type, 'mandatory')
         self.assertEqual(col2.regex_rule, '[a-m]')
         # col 3
-        self.assertEqual(col3.name, 'I')
+        self.assertEqual(col3.columnname, 'I')
         self.assertEqual(col3.type, 'numeric')
         self.assertEqual(col3.allow_duplicates, True)
         self.assertEqual(col3.allow_nulls, True)
         self.assertEqual(col3.val, 1)
         # col 9
-        self.assertEqual(col9.name, 'J')
+        self.assertEqual(col9.columnname, 'J')
         self.assertEqual(col9.type, 'datetime')
         self.assertEqual(col9.allow_nulls, False)
         self.assertEqual(col9.dateformat, '%m/%d/%Y')
