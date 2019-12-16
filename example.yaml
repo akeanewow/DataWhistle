@@ -29,6 +29,12 @@ columns:
     count_distinct_max: 10     # Maximum number of distinct values (int)
     count_distinct_min: 1      # Minimum number of distinct values (int)
     count_distinct: 5          # Number of distinct values expected (int)
+    regex_rule: '[a-m]'        # Regular expression to test
+    # See the following link for regular expression syntax:
+    # https://docs.python.org/3.7/library/re.html
+    regex_type: 'mandatory'    # Either 'mandatory' or 'exclude': use 'mandatory'
+                               # to check all records match regex_rule; 'exclude'
+                               # to check no records match regex_rule
 
   - name: J                    # Name of a column expected in the table
     type: datetime             # Column type ('numeric', 'string' or 'datetime')
