@@ -12,7 +12,7 @@ import datawhistle as dw  # noqa
 
 _ALL_PASSED = '''Reading data file ... done.
 Parsing rules file ... done.
-Running checks ......................... done.
+Running checks .......................... done.
 All checks passed.
 '''
 

@@ -163,37 +163,33 @@ class TestColumnLevelChecks(unittest.TestCase):
 
     def test_colcheck_regex(self):
         # Fails
-        passed, message = dwbc.colcheck_regex('datawhistle', 'table1', 'C', '', 'mandatory')
+        passed, message = dwbc.colcheck_regex('datawhistle', 'table1', 'C',
+                                              '', 'mandatory')
         self.assertEqual(passed, False)
-        self.assertEqual(
-            message,
-            'column C blank regex_rule')
-        passed, message = dwbc.colcheck_regex('datawhistle', 'table1', 'C', '[', 'mandatory')
+        self.assertEqual(message, 'column C blank regex_rule')
+        passed, message = dwbc.colcheck_regex('datawhistle', 'table1', 'C',
+                                              '[', 'mandatory')
         self.assertEqual(passed, False)
-        self.assertEqual(
-            message,
-            'column C BqError with rule [')
-        passed, message = dwbc.colcheck_regex('datawhistle', 'table1', 'C', '[a]', 'mandatory')
+        self.assertEqual(message, 'column C BqError with rule [')
+        passed, message = dwbc.colcheck_regex('datawhistle', 'table1', 'C',
+                                              '[a]', 'mandatory')
         self.assertEqual(passed, False)
         self.assertEqual(
             message,
             'column C found a non matching regex record with rule [a]')
-        passed, message = dwbc.colcheck_regex('datawhistle', 'table1', 'C', '[b]', 'exclude')
+        passed, message = dwbc.colcheck_regex('datawhistle', 'table1', 'C',
+                                              '[b]', 'exclude')
         self.assertEqual(passed, False)
-        self.assertEqual(
-            message,
-            'column C found invalid regex with rule [b]')
-        # Succeds
-        passed, message = dwbc.colcheck_regex('datawhistle', 'table1', 'C', '[z]', 'exclude')
+        self.assertEqual(message, 'column C found invalid regex with rule [b]')
+        # Succeeds
+        passed, message = dwbc.colcheck_regex('datawhistle', 'table1', 'C',
+                                              '[z]', 'exclude')
         self.assertEqual(passed, True)
-        self.assertEqual(
-            message,
-            '')
-        passed, message = dwbc.colcheck_regex('datawhistle', 'table1', 'C', '.', 'mandatory')
+        self.assertEqual(message, '')
+        passed, message = dwbc.colcheck_regex('datawhistle', 'table1', 'C',
+                                              '.', 'mandatory')
         self.assertEqual(passed, True)
-        self.assertEqual(
-            message,
-            '')
+        self.assertEqual(message, '')
 
     def test_col_val(self):
         # >= checks

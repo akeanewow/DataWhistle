@@ -107,7 +107,7 @@ class TestColChecks(unittest.TestCase):
         self.assertEqual(passed, True)
 
     def test_col_regex(self):
-        #Fails
+        # Fails
         passed, message = dwpc.colcheck_regex(self.df_file1, 'C', '',
                                               'mandatory')
         self.assertEqual(passed, False)
@@ -132,7 +132,7 @@ class TestColChecks(unittest.TestCase):
         self.assertEqual(
             message,
             'column C found invalid regex b with rule [b]')
-        #Succeds
+        # Succeds
         passed, message = dwpc.colcheck_regex(self.df_file1, 'C', '[z]',
                                               'exclude')
         self.assertEqual(passed, True)

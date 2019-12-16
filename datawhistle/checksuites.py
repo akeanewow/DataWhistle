@@ -137,7 +137,8 @@ class ColumnCheckSuite:
             self._checks.append(self.check_col_max_val)
         if self.val is not None:
             self._checks.append(self.check_col_val)
-
+        if self.regex_rule is not None:
+            self._checks.append(self.check_col_regex)
 
     def runchecks(self, stop_on_fail: bool,
                   verbose: bool = False) -> List[str]:
@@ -196,6 +197,9 @@ class ColumnCheckSuite:
         raise NotImplementedError
 
     def check_col_non_nulls(self) -> Tuple[bool, str]:
+        raise NotImplementedError
+
+    def check_col_regex(self) -> Tuple[bool, str]:
         raise NotImplementedError
 
     def check_col_iqr(self) -> Tuple[bool, str]:
@@ -349,7 +353,8 @@ class PandasColumnCheckSuite(ColumnCheckSuite):
                        f'for type {self.type} (unknown type)')
 
     def check_col_regex(self) -> Tuple[bool, str]:
-        return dwpc.colcheck_regex(self.dataframe, self.columnname, self.regex_rule, self.regex_type)
+        return dwpc.colcheck_regex(self.dataframe, self.columnname,
+                                   self.regex_rule, self.regex_type)
 
 
 class BqTableCheckSuite(TableCheckSuite):
@@ -492,7 +497,9 @@ class BqColumnCheckSuite(ColumnCheckSuite):
                                       self.columnname)
 
     def check_col_regex(self) -> Tuple[bool, str]:
-        return dwbc.colcheck_regex(self.datasetname, self.tablename, self.columnname, self.regex_rule, self.regex_type)
+        return dwbc.colcheck_regex(self.datasetname, self.tablename,
+                                   self.columnname, self.regex_rule,
+                                   self.regex_type)
 
     def check_col_val(self) -> Tuple[bool, str]:
         if not self.type == 'numeric':

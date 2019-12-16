@@ -151,7 +151,8 @@ def colcheck_no_nulls(df: pd.DataFrame, columnname: str) -> Tuple[bool, str]:
     return False, f'column {columnname} want 0 nulls, got {countnull}'
 
 
-def colcheck_regex(df: pd.DataFrame, columnname: str,
+def colcheck_regex(df: pd.DataFrame,
+                   columnname: str,
                    regex_rule: Optional[str],
                    regex_type: Optional[str]) -> Tuple[bool, str]:
     '''
@@ -162,6 +163,9 @@ def colcheck_regex(df: pd.DataFrame, columnname: str,
         return False, f'column {columnname} None regex_rule or regex_type'
     if regex_rule == '':
         return False, f'column {columnname} blank regex_rule'
+    if regex_type not in ['mandatory', 'exclude']:
+        return False, (f'column {columnname} regex_type expect mandatory or '
+                       f'exclude, got {regex_type}')
     try:
         reg_results = df[columnname].str.findall(regex_rule)
     except re.error:
