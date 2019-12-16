@@ -28,6 +28,8 @@ columns:
   - name: C
     type: string
     allow_nulls: true
+    regex_rule: '[1-9]'
+    regex_type: 'mandatory'
 
   - name: D
     type: numeric
