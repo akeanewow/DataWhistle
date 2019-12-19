@@ -8,7 +8,7 @@
 | yamlparsing.py   | Functions to parse rules file and apply it to checksuite classes  |
 | commandline.py   | Command line functions                                            |
 
-Unit testing files have equivalent names with '_tests' added to the above names.
+Unit testing files have equivalent names starting with 'test_'.
 
 ### checksuites.py class hierarchy
 
