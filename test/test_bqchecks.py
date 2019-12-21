@@ -202,6 +202,18 @@ class TestColumnLevelChecks(unittest.TestCase):
                                               '.', 'mandatory')
         self.assertTrue(passed)
         self.assertEqual(message, '')
+        # No regex and no type
+        passed, message = dwbc.colcheck_regex('datawhistle', 'table1', 'C',
+                                              None, 'mandatory')
+        self.assertFalse(passed)
+        self.assertEqual(message, 'column C None regex_rule or regex_type')
+        passed, message = dwbc.colcheck_regex('datawhistle', 'table1', 'C',
+                                              '[', 'mandatoryx')
+        self.assertFalse(passed)
+        self.assertEqual(
+                message,
+                ('column C regex_type expect mandatory or exclude, got '
+                 'mandatoryx'))
 
     def test_col_val(self):
         # >= checks

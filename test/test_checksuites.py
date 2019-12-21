@@ -16,7 +16,7 @@ class TestPandasTableCheckSuite(unittest.TestCase):
         self.df_file1 = pd.read_csv(os.path.join(HDIR, 'data/file1.csv'))
         self.df_file2 = pd.read_csv(os.path.join(HDIR, 'data/file2.csv'))
 
-    def test_runchecks_datsetobjectonly(self):
+    def test_runchecks_datasetobjectonly(self):
         pdcs = dw.PandasDatsetCheckSuite(self.df_file1)
         pdcs.runchecks()
         self.assertEqual(len(pdcs.error_messages), 0)
@@ -54,6 +54,40 @@ class TestPandasTableCheckSuite(unittest.TestCase):
                 ['column A expected to be string type but is not'])
         pdcs = dw.PandasColumnCheckSuite(self.df_file2, 'B', 'numeric')
         pdcs.runchecks(False)
+
+
+class TestBqTableCheckSuite(unittest.TestCase):
+
+    def test_runchecks_tableobject_only(self):
+        bqts = dw.BqTableCheckSuite('datawhistle', 'table1')
+        bqts.runchecks()
+        self.assertEqual(len(bqts.error_messages), 0)
+
+    def test_runchecks_columnobjectonly(self):
+        # numeric type
+        bqcs = dw.BqColumnCheckSuite('datawhistle', 'table1', 'A', 'numeric')
+        bqcs.runchecks(False)
+        self.assertEqual(len(bqcs.error_messages), 0)
+        bqcs = dw.BqColumnCheckSuite('datawhistle', 'table1', 'C', 'numeric')
+        bqcs.runchecks(False)
+        self.assertEqual(
+                bqcs.error_messages,
+                ['column C want numeric type, got STRING'])
+        bqcs = dw.BqColumnCheckSuite('datawhistle', 'table1', 'X', 'numeric')
+        bqcs.runchecks(False)
+        self.assertEqual(bqcs.error_messages,
+                         ['column X not found in table table1'])
+        # string type
+        bqcs = dw.BqColumnCheckSuite('datawhistle', 'table1', 'C', 'string')
+        bqcs.runchecks(False)
+        self.assertEqual(len(bqcs.error_messages), 0)
+        bqcs = dw.BqColumnCheckSuite('datawhistle', 'table1', 'A', 'string')
+        bqcs.runchecks(False)
+        self.assertEqual(
+                bqcs.error_messages,
+                ['column A want string type, got INT64'])
+        bqcs = dw.BqColumnCheckSuite('datawhistle', 'table1', 'B', 'numeric')
+        bqcs.runchecks(False)
 
 
 if __name__ == '__main__':

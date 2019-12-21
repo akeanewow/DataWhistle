@@ -23,6 +23,9 @@ class TestDFChecks(unittest.TestCase):
         passed, message = dwpc.dfcheck_row_count(self.df_file1, 10, '>=')
         self.assertFalse(passed)
         self.assertEqual(message, 'want row count >= 10, got 5')
+        passed, message = dwpc.dfcheck_row_count(self.df_file1, 5, 'x=')
+        self.assertFalse(passed)
+        self.assertEqual(message, 'table row count operator x= not recognised')
 
     def test_no_duplicate_rows(self):
         passed, message = dwpc.dfcheck_no_duplicate_rows(self.df_file1)
@@ -60,6 +63,11 @@ class TestColChecks(unittest.TestCase):
         self.assertTrue(passed)
         passed, message = dwpc.colcheck_count_distinct(self.df_file1, 'A', 5)
         self.assertTrue(passed)
+        passed, message = dwpc.colcheck_count_distinct(self.df_file1,
+                                                       'G', 3, 'x=')
+        self.assertFalse(passed)
+        self.assertEqual(message,
+                         'column G count distinct operator x= not recognised')
 
     def test_col_is_numeric(self):
         passed, message = dwpc.colcheck_is_numeric(self.df_file1, 'C')
@@ -141,6 +149,17 @@ class TestColChecks(unittest.TestCase):
                                               'mandatory')
         self.assertTrue(passed)
         self.assertEqual(message, '')
+        # Incorrect regex parameters
+        passed, message = dwpc.colcheck_regex(self.df_file1, 'C', None,
+                                              'exclude')
+        self.assertFalse(passed)
+        self.assertEqual(message, 'column C None regex_rule or regex_type')
+        passed, message = dwpc.colcheck_regex(self.df_file1, 'C', '[z]',
+                                              'excludedx')
+        self.assertFalse(passed)
+        self.assertEqual(message,
+                         ('column C regex_type expect mandatory or exclude, '
+                          'got excludedx'))
 
     def test_col_no_duplicates(self):
         passed, message = dwpc.colcheck_no_duplicates(self.df_file1, 'I')
@@ -181,6 +200,12 @@ class TestColChecks(unittest.TestCase):
         self.assertFalse(passed)
         self.assertEqual(message, (f'column A want all values = 1,'
                                    ' got different values'))
+        # Incorrect operator
+        passed, message = dwpc.colcheck_val(self.df_file1, 'I', 1, 'x=')
+        self.assertFalse(passed)
+        self.assertEqual(
+                message,
+                'column I value check operator x= not recognised')
 
     def test_col_iqr(self):
         passed, message = dwpc.colcheck_iqr(self.df_file2, 'A')

@@ -105,22 +105,16 @@ def colcheck_is_datetime(df: pd.DataFrame, columnname: str,
         try:
             df[columnname] = pd.to_datetime(df[columnname], format=dateformat,
                                             exact=True)
-            return True, ''
         except ValueError:
             return False, (f'column {columnname} data does not match datetime '
                            f'format {dateformat}')
-        except Exception:
-            return False, (f'column {columnname} expected to be datetime type '
-                           'but is not')
     else:
         try:
             df[columnname] = pd.to_datetime(df[columnname])
-            return True, ''
         except Exception:
             return False, (f'column {columnname} expected to be datetime type '
                            'but is not')
-    return False, (f'column {columnname} expected to be datetime type '
-                   'but is not')
+    return True, ''
 
 
 def colcheck_no_blanks(df: pd.DataFrame, columnname: str) -> Tuple[bool, str]:
@@ -128,9 +122,9 @@ def colcheck_no_blanks(df: pd.DataFrame, columnname: str) -> Tuple[bool, str]:
     err = f'column {columnname} has blanks or whitesplace only values'
     if df[columnname].str.isspace().sum() > 0:
         return False, err
-    if sum(df[columnname] == '') == 0:
-        return True, ''
-    return False, err
+    if sum(df[columnname] == '') != 0:
+        return False, err
+    return True, ''
 
 
 def colcheck_no_duplicates(df: pd.DataFrame,
