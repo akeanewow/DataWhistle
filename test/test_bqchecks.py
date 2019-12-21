@@ -39,6 +39,12 @@ class TestTableLevelChecks(unittest.TestCase):
                                                  10, '==')
         self.assertFalse(passed)
         self.assertEqual(message, 'want row count == 10, got 5.0')
+        # operator flag error
+        passed, message = dwbc.dscheck_row_count('datawhistle', 'table1',
+                                                 5, 'x=')
+        self.assertFalse(passed)
+        self.assertEqual(message,
+                         'dataset row count operator x= not recognised')
 
     def test_dscheck_table_exists(self):
         passed, message = dwbc.dscheck_table_exists('datawhistle', 'table1')
@@ -90,6 +96,12 @@ class TestColumnLevelChecks(unittest.TestCase):
         self.assertFalse(passed)
         self.assertEqual(message, ('column A want count distinct == 6, '
                                    'got 5.0'))
+        # operator incorrect
+        passed, message = dwbc.colcheck_count_distinct('datawhistle', 'table1',
+                                                       'A', 5, 'x=')
+        self.assertFalse(passed)
+        self.assertEqual(message,
+                         'column A count distinct operator x= not recognised')
 
     def test_colcheck_is_numeric(self):
         passed, message = dwbc.colcheck_is_numeric('datawhistle', 'table1',
@@ -219,6 +231,12 @@ class TestColumnLevelChecks(unittest.TestCase):
                                             1, '==')
         self.assertFalse(passed)
         self.assertEqual(message, 'column A want value == 1, got 4.0 not')
+        # operator incorrect
+        passed, message = dwbc.colcheck_val('datawhistle', 'table1', 'I',
+                                            1, 'x=')
+        self.assertFalse(passed)
+        self.assertEqual(message,
+                         'column I value check operator x= not recognised')
 
 
 if __name__ == '__main__':
